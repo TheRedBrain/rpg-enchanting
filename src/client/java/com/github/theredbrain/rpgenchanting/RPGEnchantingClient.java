@@ -1,8 +1,8 @@
-package com.example;
+package com.github.theredbrain.rpgenchanting;
 
 import net.fabricmc.api.ClientModInitializer;
 
-public class ExampleModClient implements ClientModInitializer {
+public class RPGEnchantingClient implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		// This entrypoint is suitable for setting up client-specific logic, such as rendering.
