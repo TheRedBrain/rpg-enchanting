@@ -3,6 +3,7 @@
 	"package": "com.github.theredbrain.rpgenchanting.mixin",
 	"compatibilityLevel": "JAVA_21",
 	"mixins": [
+		"item.ItemStackMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1
