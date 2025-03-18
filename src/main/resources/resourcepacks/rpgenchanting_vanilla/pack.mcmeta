@@ -4,5 +4,8 @@
       "text": "RPG Enchanting - Vanilla\nRequires 'Patched' to work properly."
     },
     "pack_format": 48
+  },
+  "patched": {
+    "format_version": 1
   }
 }

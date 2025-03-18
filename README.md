@@ -1,9 +1,95 @@
-# Fabric Example Mod
+# RPG Enchanting
 
-## Setup
+## Enchantment Sets
 
-For setup instructions please see the [fabric documentation page](https://docs.fabricmc.net/develop/getting-started/setting-up-a-development-environment) that relates to the IDE that you are using.
+### Vanilla
 
-## License
+#### Prefix Enchantments
 
-This template is available under the CC0 license. Feel free to learn from it and incorporate it in your own projects.
+~~- Aqua Affinity~~
+- Bane Of Arthropods
+~~- Curse of Binding~~
+- Blast Protection
+- Breach
+~~- Channeling~~
+- Density
+~~- Depth Strider~~
+- Efficiency
+- Feather Falling
+~~- Fire Aspect~~
+- Fire Protection
+~~- Flame~~
+~~- Fortune~~
+~~- Frost Walker~~
+- Impaling
+~~- Infinity~~
+~~- Knockback~~
+~~- Looting~~
+~~- Loyalty~~
+~~- Luck of the Sea~~
+- Lure
+~~- Mending~~
+~~- Multi Shot~~
+~~- Piercing~~
+- Power
+- Projectile Protection
+- Protection
+~~- Punch~~
+- Quick Charge
+- Respiration
+~~- Riptide~~
+- Sharpness
+~~- Silk Touch~~
+- Smite
+~~- Soul Speed~~
+~~- Sweeping Edge~~
+~~- Swift Sneak~~
+~~- Thorns~~
+- Unbreaking
+~~- Curse of Vanishing~~
+~~- Wind Burst~~
+
+#### Suffix Enchantments
+
+- Aqua Affinity
+~~- Bane Of Arthropods~~
+- Curse of Binding
+~~- Blast Protection~~
+~~- Breach~~
+- Channeling
+~~- Density~~
+- Depth Strider
+~~- Efficiency~~
+~~- Feather Falling~~
+- Fire Aspect
+~~- Fire Protection~~
+- Flame
+- Fortune
+- Frost Walker
+~~- Impaling~~
+- Infinity
+- Knockback
+- Looting
+- Loyalty
+- Luck of the Sea
+~~- Lure~~
+- Mending
+- Multi Shot
+~~- Piercing~~
+~~- Power~~
+~~- Projectile Protection~~
+~~- Protection~~
+- Punch
+~~- Quick Charge~~
+~~- Respiration~~
+- Riptide
+~~- Sharpness~~
+- Silk Touch
+~~- Smite~~
+- Soul Speed
+- Sweeping Edge
+- Swift Sneak
+- Thorns
+~~- Unbreaking~~
+- Curse of Vanishing
+- Wind Burst
