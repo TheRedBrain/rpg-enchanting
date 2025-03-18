@@ -19,6 +19,7 @@ import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.registry.tag.EnchantmentTags;
 import net.minecraft.screen.PlayerScreenHandler;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
@@ -167,28 +168,32 @@ public class RPGEnchantmentScreenHandler extends ScreenHandler {
 						}
 					}
 				}
-				RPGEnchanting.LOGGER.info("existing_prefix_enchantment: " + this.existing_prefix_enchantment);
-				RPGEnchanting.LOGGER.info("existing_suffix_enchantment: " + this.existing_suffix_enchantment);
+//				RPGEnchanting.LOGGER.info("existing_prefix_enchantment: " + this.existing_prefix_enchantment);
+//				RPGEnchanting.LOGGER.info("existing_suffix_enchantment: " + this.existing_suffix_enchantment);
 
-				for (MutablePair<RegistryEntry.Reference<Enchantment>, Integer> entry : this.prefix_enchantments) {
-					if (entry.getLeft().value().isAcceptableItem(itemStack)) {
-						boolean bl = true;
-						if (this.existing_prefix_enchantment != null) {
-							bl = (entry.getLeft() != this.existing_prefix_enchantment.getLeft()) || (!Objects.equals(entry.getRight(), this.existing_prefix_enchantment.getRight()));
-						}
-						if (bl) {
-							this.current_prefix_enchantments.add(new MutablePair<>(entry.getLeft(), entry.getRight()));
+				if (this.existing_prefix_enchantment == null || !this.existing_prefix_enchantment.getLeft().isIn(EnchantmentTags.CURSE)) {
+					for (MutablePair<RegistryEntry.Reference<Enchantment>, Integer> entry : this.prefix_enchantments) {
+						if (entry.getLeft().value().isAcceptableItem(itemStack)) {
+							boolean bl = true;
+							if (this.existing_prefix_enchantment != null) {
+								bl = (entry.getLeft() != this.existing_prefix_enchantment.getLeft()) || (!Objects.equals(entry.getRight(), this.existing_prefix_enchantment.getRight()));
+							}
+							if (bl) {
+								this.current_prefix_enchantments.add(new MutablePair<>(entry.getLeft(), entry.getRight()));
+							}
 						}
 					}
 				}
-				for (MutablePair<RegistryEntry.Reference<Enchantment>, Integer> entry : this.suffix_enchantments) {
-					if (entry.getLeft().value().isAcceptableItem(itemStack)) {
-						boolean bl = true;
-						if (this.existing_suffix_enchantment != null) {
-							bl = (entry.getLeft() != this.existing_suffix_enchantment.getLeft()) || (!Objects.equals(entry.getRight(), this.existing_suffix_enchantment.getRight()));
-						}
-						if (bl) {
-							this.current_suffix_enchantments.add(new MutablePair<>(entry.getLeft(), entry.getRight()));
+				if (this.existing_suffix_enchantment == null || !this.existing_suffix_enchantment.getLeft().isIn(EnchantmentTags.CURSE)) {
+					for (MutablePair<RegistryEntry.Reference<Enchantment>, Integer> entry : this.suffix_enchantments) {
+						if (entry.getLeft().value().isAcceptableItem(itemStack)) {
+							boolean bl = true;
+							if (this.existing_suffix_enchantment != null) {
+								bl = (entry.getLeft() != this.existing_suffix_enchantment.getLeft()) || (!Objects.equals(entry.getRight(), this.existing_suffix_enchantment.getRight()));
+							}
+							if (bl) {
+								this.current_suffix_enchantments.add(new MutablePair<>(entry.getLeft(), entry.getRight()));
+							}
 						}
 					}
 				}
