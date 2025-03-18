@@ -30,6 +30,8 @@ public class ServerConfig extends Config {
 //	public ValidatedBoolean combine_advancement_provided_levels = new ValidatedBoolean(true);
 //	public ValidatedBoolean combine_block_provided_levels_for_duplicate_blocks = new ValidatedBoolean(true);
 //	public ValidatedBoolean combine_block_provided_levels_for_different_blocks = new ValidatedBoolean(true);
+	public ValidatedBoolean enable_alternative_item_name_for_enchanted_loot = new ValidatedBoolean(true);
+	public ValidatedBoolean hide_normal_enchantment_tooltip_for_enchanted_loot = new ValidatedBoolean(true);
 	public ValidatedBoolean enable_item_cost = new ValidatedBoolean(true);
 
 	public ValidatedList<UnlockedEnchantment> enchantments_unlocked_by_advancements = new ValidatedList<>(List.of(

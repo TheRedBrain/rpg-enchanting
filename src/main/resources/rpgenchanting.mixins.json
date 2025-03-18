@@ -1,11 +1,13 @@
 {
-	"required": true,
-	"package": "com.github.theredbrain.rpgenchanting.mixin",
-	"compatibilityLevel": "JAVA_21",
-	"mixins": [
-		"item.ItemStackMixin"
-	],
-	"injectors": {
-		"defaultRequire": 1
+  "required": true,
+  "package": "com.github.theredbrain.rpgenchanting.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "enchantment.EnchantmentHelperMixin",
+    "item.ItemStackMixin",
+    "loot.function.EnchantRandomlyLootFunctionMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
 	}
 }
