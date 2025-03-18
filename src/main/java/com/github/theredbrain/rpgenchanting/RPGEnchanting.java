@@ -14,6 +14,7 @@ import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.resource.ResourcePackActivationType;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
+import net.minecraft.block.Block;
 import net.minecraft.component.ComponentType;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.player.PlayerEntity;
@@ -35,6 +36,8 @@ public class RPGEnchanting implements ModInitializer {
 	public static final String MOD_ID = "rpgenchanting";
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 	public static ServerConfig SERVER_CONFIG;
+
+	public static TagKey<Block> ENCHANTING_PARTICLE_TARGETS = TagKey.of(RegistryKeys.BLOCK, identifier("enchanting_particle_targets"));
 
 	public static TagKey<Enchantment> PREFIX_ENCHANTMENTS = TagKey.of(RegistryKeys.ENCHANTMENT, identifier("prefix_enchantments"));
 	public static TagKey<Enchantment> SUFFIX_ENCHANTMENTS = TagKey.of(RegistryKeys.ENCHANTMENT, identifier("suffix_enchantments"));
