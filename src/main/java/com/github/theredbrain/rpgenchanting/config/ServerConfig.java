@@ -33,6 +33,7 @@ public class ServerConfig extends Config {
 	public ValidatedBoolean enable_alternative_item_name_for_enchanted_loot = new ValidatedBoolean(true);
 	public ValidatedBoolean hide_normal_enchantment_tooltip_for_enchanted_loot = new ValidatedBoolean(true);
 	public ValidatedBoolean enable_item_cost = new ValidatedBoolean(true);
+	public ValidatedBoolean enable_enchantment_unlocking_by_chiseled_bookshelves = new ValidatedBoolean(true);
 
 	public ValidatedList<UnlockedEnchantment> enchantments_unlocked_by_advancements = new ValidatedList<>(List.of(
 			new UnlockedEnchantment("minecraft:story/smelt_iron", "minecraft:efficiency", 1)

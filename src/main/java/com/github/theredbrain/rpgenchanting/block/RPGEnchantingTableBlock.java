@@ -6,8 +6,8 @@ import com.github.theredbrain.rpgenchanting.config.ServerConfig;
 import com.github.theredbrain.rpgenchanting.registry.EntityRegistry;
 import com.github.theredbrain.rpgenchanting.screen.RPGEnchantmentScreenHandler;
 import com.mojang.serialization.MapCodec;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
-import net.minecraft.advancement.Advancement;
 import net.minecraft.advancement.AdvancementEntry;
 import net.minecraft.advancement.PlacedAdvancement;
 import net.minecraft.block.AbstractBlock;
@@ -15,14 +15,19 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.BlockWithEntity;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.ShapeContext;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityTicker;
 import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.block.entity.ChiseledBookshelfBlockEntity;
+import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.ItemEnchantmentsComponent;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.ai.pathing.NavigationType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.item.ItemStack;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.RegistryKeys;
@@ -31,12 +36,10 @@ import net.minecraft.registry.tag.BlockTags;
 import net.minecraft.screen.NamedScreenHandlerFactory;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.ServerAdvancementLoader;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.Pair;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.random.Random;
@@ -121,48 +124,10 @@ public class RPGEnchantingTableBlock extends BlockWithEntity {
 		int posY = pos.getY();
 		int posZ = pos.getZ();
 
-//		// using sets so two blocks of the same type only count as one level
-//		Set<String> craftingTab1LevelProviders = new HashSet<>();
-//		Set<String> craftingTab2LevelProviders = new HashSet<>();
-//		Set<String> craftingTab3LevelProviders = new HashSet<>();
-//		Set<String> craftingTab4LevelProviders = new HashSet<>();
-//
-//		boolean isStorageTabProviderInReach = false;
-//		boolean isCraftingTab1ProviderInReach = false;
-//		boolean isCraftingTab2ProviderInReach = false;
-//		boolean isCraftingTab3ProviderInReach = false;
-//		boolean isCraftingTab4ProviderInReach = false;
-//		boolean isStorageArea0ProviderInReach = false;
-//		boolean isStorageArea1ProviderInReach = false;
-//		boolean isStorageArea2ProviderInReach = false;
-//		boolean isStorageArea3ProviderInReach = false;
-//		boolean isStorageArea4ProviderInReach = false;
-//		int[] tabLevels = new int[CRAFTING_TAB_AMOUNT];
-//		byte tabProvidersInReach = 0;
-//		byte storageProvidersInReach = 0;
-
 		ServerConfig serverConfig = RPGEnchanting.SERVER_CONFIG;
 		int rpg_enchanting_table_block_reach_radius = serverConfig.rpg_enchanting_table_block_reach_radius.get();
-		Map<String, HashSet<MutablePair<RegistryEntry.Reference<Enchantment>, Integer>>> advancementMap = new HashMap<>();
 		Map<Block, HashSet<MutablePair<RegistryEntry.Reference<Enchantment>, Integer>>> blockMap = new HashMap<>();
 
-		for (ServerConfig.UnlockedEnchantment unlockedEnchantment : serverConfig.enchantments_unlocked_by_advancements) {
-
-			PlacedAdvancement placedAdvancement = null;
-			if (world.getServer() != null) {
-				placedAdvancement = world.getServer().getAdvancementLoader().getManager().get(Identifier.of(unlockedEnchantment.identifier));
-			}
-//			Optional<RegistryEntry.Reference<Advancement>> optionalAdvancementReference = world.getRegistryManager().get(RegistryKeys.ADVANCEMENT).getEntry(Identifier.of(unlockedEnchantment.identifier));
-
-//			Optional<RegistryEntry.Reference<Block>> optionalBlock = Registries. .getEntry(Identifier.of(unlockedEnchantment.identifier));
-			Optional<RegistryEntry.Reference<Enchantment>> optionalEnchantmentReference = world.getRegistryManager().get(RegistryKeys.ENCHANTMENT).getEntry(Identifier.of(unlockedEnchantment.enchantment));
-
-			if (placedAdvancement != null && optionalEnchantmentReference.isPresent()) {
-				HashSet<MutablePair<RegistryEntry.Reference<Enchantment>, Integer>> arrayList = advancementMap.getOrDefault(unlockedEnchantment.identifier, new HashSet<>());
-				arrayList.add(new MutablePair<>(optionalEnchantmentReference.get(), unlockedEnchantment.level));
-				advancementMap.put(unlockedEnchantment.identifier, arrayList);
-			}
-		}
 		for (ServerConfig.UnlockedEnchantment unlockedEnchantment : serverConfig.enchantments_unlocked_by_blocks) {
 			RegistryEntry.Reference<Block> registryBlockEntry = null;
 			Optional<RegistryEntry.Reference<Block>> optionalBlock = Registries.BLOCK.getEntry(Identifier.of(unlockedEnchantment.identifier));
@@ -179,11 +144,13 @@ public class RPGEnchantingTableBlock extends BlockWithEntity {
 		HashSet<MutablePair<String, Integer>> prefix_enchantments = new HashSet<>();
 		HashSet<MutablePair<String, Integer>> suffix_enchantments = new HashSet<>();
 		BlockState blockState;
+		boolean checkChiseledBookShelves = serverConfig.enable_enchantment_unlocking_by_chiseled_bookshelves.get();
 		if (world != null) {
 			for (int i = -rpg_enchanting_table_block_reach_radius; i <= rpg_enchanting_table_block_reach_radius; i++) {
 				for (int j = -rpg_enchanting_table_block_reach_radius; j <= rpg_enchanting_table_block_reach_radius; j++) {
 					for (int k = -rpg_enchanting_table_block_reach_radius; k <= rpg_enchanting_table_block_reach_radius; k++) {
-						blockState = world.getBlockState(new BlockPos(posX + i, posY + j, posZ + k));
+						BlockPos blockPos = new BlockPos(posX + i, posY + j, posZ + k);
+						blockState = world.getBlockState(blockPos);
 
 						Block block = blockState.getBlock();
 						Set<MutablePair<RegistryEntry.Reference<Enchantment>, Integer>> set = blockMap.get(block);
@@ -198,46 +165,62 @@ public class RPGEnchantingTableBlock extends BlockWithEntity {
 							}
 							blockMap.remove(block);
 						}
-						if (blockMap.isEmpty()) {
+						if (checkChiseledBookShelves && blockState.isOf(Blocks.CHISELED_BOOKSHELF)) {
+							BlockEntity blockEntity = world.getBlockEntity(blockPos);
+							if (blockEntity instanceof ChiseledBookshelfBlockEntity chiseledBookshelfBlockEntity) {
+								for (int l = 0; l < 6; l++) {
+
+									ItemStack itemStack = chiseledBookshelfBlockEntity.getStack(l);
+									ItemEnchantmentsComponent itemEnchantmentsComponent = itemStack.get(DataComponentTypes.STORED_ENCHANTMENTS);
+									if (itemEnchantmentsComponent != null) {
+										for (Object2IntMap.Entry<RegistryEntry<Enchantment>> entry : itemEnchantmentsComponent.getEnchantmentEntries()) {
+											if (entry.getKey().isIn(RPGEnchanting.PREFIX_ENCHANTMENTS)) {
+												prefix_enchantments.add(new MutablePair<>(entry.getKey().getIdAsString(), entry.getIntValue()));
+											}
+											if (entry.getKey().isIn(RPGEnchanting.SUFFIX_ENCHANTMENTS)) {
+												suffix_enchantments.add(new MutablePair<>(entry.getKey().getIdAsString(), entry.getIntValue()));
+											}
+										}
+									}
+								}
+							}
+						}
+						if (blockMap.isEmpty() && !checkChiseledBookShelves) {
 							break;
 						}
 					}
-					if (blockMap.isEmpty()) {
+					if (blockMap.isEmpty() && !checkChiseledBookShelves) {
 						break;
 					}
 				}
-				if (blockMap.isEmpty()) {
+				if (blockMap.isEmpty() && !checkChiseledBookShelves) {
 					break;
 				}
 			}
 			MinecraftServer server = world.getServer();
 			if (player instanceof ServerPlayerEntity serverPlayerEntity && server != null) {
-				for (String advancementIdString : advancementMap.keySet()) {
-					PlacedAdvancement placedAdvancement = server.getAdvancementLoader().getManager().get(Identifier.of(advancementIdString));
+				for (ServerConfig.UnlockedEnchantment unlockedEnchantment : serverConfig.enchantments_unlocked_by_advancements) {
+					PlacedAdvancement placedAdvancement = server.getAdvancementLoader().getManager().get(Identifier.of(unlockedEnchantment.identifier));
 					if (placedAdvancement != null) {
 						AdvancementEntry advancementEntry = placedAdvancement.getAdvancementEntry();
 						if (serverPlayerEntity.getAdvancementTracker().getProgress(advancementEntry).isDone()) {
-							Set<MutablePair<RegistryEntry.Reference<Enchantment>, Integer>> set = advancementMap.get(advancementIdString);
-							if (set != null) {
-								for (MutablePair<RegistryEntry.Reference<Enchantment>, Integer> pair : set) {
-									if (pair.getLeft().isIn(RPGEnchanting.PREFIX_ENCHANTMENTS)) {
-										pair.getLeft().getIdAsString();
-
-										prefix_enchantments.add(new MutablePair<>(pair.getLeft().getIdAsString(), pair.getRight()));
-									}
-									if (pair.getLeft().isIn(RPGEnchanting.SUFFIX_ENCHANTMENTS)) {
-										suffix_enchantments.add(new MutablePair<>(pair.getLeft().getIdAsString(), pair.getRight()));
-									}
+							Optional<RegistryEntry.Reference<Enchantment>> optionalEnchantmentReference = world.getRegistryManager().get(RegistryKeys.ENCHANTMENT).getEntry(Identifier.of(unlockedEnchantment.enchantment));
+							if (optionalEnchantmentReference.isPresent()) {
+								RegistryEntry.Reference<Enchantment> enchantmentReference = optionalEnchantmentReference.get();
+								if (enchantmentReference.isIn(RPGEnchanting.PREFIX_ENCHANTMENTS)) {
+									prefix_enchantments.add(new MutablePair<>(enchantmentReference.getIdAsString(), unlockedEnchantment.level));
 								}
-								advancementMap.remove(advancementIdString);
+								if (enchantmentReference.isIn(RPGEnchanting.SUFFIX_ENCHANTMENTS)) {
+									suffix_enchantments.add(new MutablePair<>(enchantmentReference.getIdAsString(), unlockedEnchantment.level));
+								}
 							}
 						}
 					}
 				}
 			}
 		}
-		RPGEnchanting.LOGGER.info("prefix_enchantments: " + prefix_enchantments);
-		RPGEnchanting.LOGGER.info("suffix_enchantments: " + suffix_enchantments);
+//		RPGEnchanting.LOGGER.info("prefix_enchantments: " + prefix_enchantments);
+//		RPGEnchanting.LOGGER.info("suffix_enchantments: " + suffix_enchantments);
 
 //		if (state.isIn(Tags.PROVIDES_CRAFTING_TAB_1_LEVEL)) {
 //			craftingTab1LevelProviders.add(state.getBlock().getTranslationKey());
