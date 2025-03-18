@@ -31,6 +31,7 @@ import org.apache.commons.lang3.tuple.MutablePair;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
@@ -155,25 +156,40 @@ public class RPGEnchantmentScreenHandler extends ScreenHandler {
 						if (entry.getKey().isIn(RPGEnchanting.PREFIX_ENCHANTMENTS)) {
 							Optional<RegistryEntry.Reference<Enchantment>> optionalEnchantmentReference = this.world.getRegistryManager().get(RegistryKeys.ENCHANTMENT).getEntry(Identifier.of(entry.getKey().getIdAsString()));
 							if (optionalEnchantmentReference.isPresent()) {
-								existing_prefix_enchantment = new MutablePair<>(optionalEnchantmentReference.get(), entry.getIntValue());
+								this.existing_prefix_enchantment = new MutablePair<>(optionalEnchantmentReference.get(), entry.getIntValue());
 							}
 						}
 						if (entry.getKey().isIn(RPGEnchanting.SUFFIX_ENCHANTMENTS)) {
 							Optional<RegistryEntry.Reference<Enchantment>> optionalEnchantmentReference = this.world.getRegistryManager().get(RegistryKeys.ENCHANTMENT).getEntry(Identifier.of(entry.getKey().getIdAsString()));
 							if (optionalEnchantmentReference.isPresent()) {
-								existing_suffix_enchantment = new MutablePair<>(optionalEnchantmentReference.get(), entry.getIntValue());
+								this.existing_suffix_enchantment = new MutablePair<>(optionalEnchantmentReference.get(), entry.getIntValue());
 							}
 						}
 					}
 				}
+				RPGEnchanting.LOGGER.info("existing_prefix_enchantment: " + this.existing_prefix_enchantment);
+				RPGEnchanting.LOGGER.info("existing_suffix_enchantment: " + this.existing_suffix_enchantment);
+
 				for (MutablePair<RegistryEntry.Reference<Enchantment>, Integer> entry : this.prefix_enchantments) {
-					if (entry.getLeft().value().isAcceptableItem(itemStack) && entry != existing_prefix_enchantment) {
-						this.current_prefix_enchantments.add(new MutablePair<>(entry.getLeft(), entry.getRight()));
+					if (entry.getLeft().value().isAcceptableItem(itemStack)) {
+						boolean bl = true;
+						if (this.existing_prefix_enchantment != null) {
+							bl = (entry.getLeft() != this.existing_prefix_enchantment.getLeft()) || (!Objects.equals(entry.getRight(), this.existing_prefix_enchantment.getRight()));
+						}
+						if (bl) {
+							this.current_prefix_enchantments.add(new MutablePair<>(entry.getLeft(), entry.getRight()));
+						}
 					}
 				}
 				for (MutablePair<RegistryEntry.Reference<Enchantment>, Integer> entry : this.suffix_enchantments) {
-					if (entry.getLeft().value().isAcceptableItem(itemStack) && entry != existing_suffix_enchantment) {
-						this.current_suffix_enchantments.add(new MutablePair<>(entry.getLeft(), entry.getRight()));
+					if (entry.getLeft().value().isAcceptableItem(itemStack)) {
+						boolean bl = true;
+						if (this.existing_suffix_enchantment != null) {
+							bl = (entry.getLeft() != this.existing_suffix_enchantment.getLeft()) || (!Objects.equals(entry.getRight(), this.existing_suffix_enchantment.getRight()));
+						}
+						if (bl) {
+							this.current_suffix_enchantments.add(new MutablePair<>(entry.getLeft(), entry.getRight()));
+						}
 					}
 				}
 				// TODO check itemStack for existing enchants
@@ -247,7 +263,7 @@ public class RPGEnchantmentScreenHandler extends ScreenHandler {
 			itemStack.set(DataComponentTypes.ENCHANTMENTS, itemEnchantmentsComponentBuilder.build().withShowInTooltip(false));
 			itemStack.set(RPGEnchanting.SHOW_ENCHANTMENT_NAME_ADDITIONS, Unit.INSTANCE);
 //				}
-//				this.inventory.markDirty();
+			this.inventory.markDirty();
 		} else if (id >= first_threshold && id < first_threshold + this.current_suffix_enchantments.size()) {
 			MutablePair<RegistryEntry.Reference<Enchantment>, Integer> newEnchantment = this.current_suffix_enchantments.get(id);
 //				int i = 1; // TODO get item cost count, enchantment cost * multiplier + prev_enchantment cost * multiplier + additional_cost
@@ -260,7 +276,7 @@ public class RPGEnchantmentScreenHandler extends ScreenHandler {
 			itemStack.set(DataComponentTypes.ENCHANTMENTS, itemEnchantmentsComponentBuilder.build().withShowInTooltip(false));
 			itemStack.set(RPGEnchanting.SHOW_ENCHANTMENT_NAME_ADDITIONS, Unit.INSTANCE);
 //				}
-//				this.inventory.markDirty();
+			this.inventory.markDirty();
 //			} else if (id == -1) {
 //				this.currentPage.set(0);
 //			} else {

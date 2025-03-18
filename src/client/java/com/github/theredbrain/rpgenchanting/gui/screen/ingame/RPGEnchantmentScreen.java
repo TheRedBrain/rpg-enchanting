@@ -31,7 +31,7 @@ import java.util.Optional;
 
 @Environment(EnvType.CLIENT)
 public class RPGEnchantmentScreen extends HandledScreen<RPGEnchantmentScreenHandler> {
-	
+
 	private static final Identifier ENCHANTMENT_SLOT_DISABLED_TEXTURE = Identifier.ofVanilla("container/enchanting_table/enchantment_slot_disabled");
 	private static final Identifier ENCHANTMENT_SLOT_HIGHLIGHTED_TEXTURE = Identifier.ofVanilla("container/enchanting_table/enchantment_slot_highlighted");
 	private static final Identifier ENCHANTMENT_SLOT_TEXTURE = Identifier.ofVanilla("container/enchanting_table/enchantment_slot");
@@ -305,6 +305,21 @@ public class RPGEnchantmentScreen extends HandledScreen<RPGEnchantmentScreenHand
 				index++;
 			}
 		}
+
+		context.drawGuiTexture(
+				current_prefix_enchantments.size() > 4 ? SCROLLER_VERTICAL_6_7_TEXTURE : SCROLLER_VERTICAL_6_7_DISABLED_TEXTURE,
+				x + 119,
+				(int) (y + 59 + 59.0F * this.prefixEnchantmentsScrollAmount),
+				6,
+				7
+		);
+		context.drawGuiTexture(
+				current_suffix_enchantments.size() > 4 ? SCROLLER_VERTICAL_6_7_TEXTURE : SCROLLER_VERTICAL_6_7_DISABLED_TEXTURE,
+				x + 159,
+				(int) (y + 59 + 59.0F * this.suffixEnchantmentsScrollAmount),
+				6,
+				7
+		);
 	}
 
 	private void drawBook(DrawContext context, int x, int y, float delta) {
