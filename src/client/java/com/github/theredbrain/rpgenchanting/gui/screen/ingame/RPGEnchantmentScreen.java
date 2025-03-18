@@ -1,12 +1,12 @@
 package com.github.theredbrain.rpgenchanting.gui.screen.ingame;
 
+import com.github.theredbrain.rpgenchanting.RPGEnchanting;
+import com.github.theredbrain.rpgenchanting.RPGEnchantingClient;
 import com.github.theredbrain.rpgenchanting.screen.RPGEnchantmentScreenHandler;
-import com.google.common.collect.Lists;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.ingame.EnchantingPhrases;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.render.DiffuseLighting;
 import net.minecraft.client.render.OverlayTexture;
@@ -16,37 +16,29 @@ import net.minecraft.client.render.entity.model.EntityModelLayers;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.registry.RegistryKeys;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.screen.ScreenTexts;
 import net.minecraft.text.MutableText;
-import net.minecraft.text.StringVisitable;
 import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RotationAxis;
 import net.minecraft.util.math.random.Random;
+import org.apache.commons.lang3.tuple.MutablePair;
 
 import java.util.List;
 import java.util.Optional;
 
 @Environment(EnvType.CLIENT)
 public class RPGEnchantmentScreen extends HandledScreen<RPGEnchantmentScreenHandler> {
-	private static final Identifier[] LEVEL_TEXTURES = new Identifier[]{
-			Identifier.ofVanilla("container/enchanting_table/level_1"),
-			Identifier.ofVanilla("container/enchanting_table/level_2"),
-			Identifier.ofVanilla("container/enchanting_table/level_3")
-	};
-	private static final Identifier[] LEVEL_DISABLED_TEXTURES = new Identifier[]{
-			Identifier.ofVanilla("container/enchanting_table/level_1_disabled"),
-			Identifier.ofVanilla("container/enchanting_table/level_2_disabled"),
-			Identifier.ofVanilla("container/enchanting_table/level_3_disabled")
-	};
+	
 	private static final Identifier ENCHANTMENT_SLOT_DISABLED_TEXTURE = Identifier.ofVanilla("container/enchanting_table/enchantment_slot_disabled");
 	private static final Identifier ENCHANTMENT_SLOT_HIGHLIGHTED_TEXTURE = Identifier.ofVanilla("container/enchanting_table/enchantment_slot_highlighted");
 	private static final Identifier ENCHANTMENT_SLOT_TEXTURE = Identifier.ofVanilla("container/enchanting_table/enchantment_slot");
-	private static final Identifier TEXTURE = Identifier.ofVanilla("textures/gui/container/enchanting_table.png");
+	public static final Identifier SLOT_TEXTURE = Identifier.ofVanilla("textures/gui/sprites/container/slot.png");
+	private static final Identifier SCROLLER_VERTICAL_6_7_TEXTURE = RPGEnchanting.identifier("scroll_bar/scroller_vertical_6_7");
+	private static final Identifier SCROLLER_VERTICAL_6_7_DISABLED_TEXTURE = RPGEnchanting.identifier("scroll_bar/scroller_vertical_6_7_disabled");
+	private static final Identifier TEXTURE = RPGEnchanting.identifier("textures/gui/container/rpg_enchanting_table.png");
 	private static final Identifier BOOK_TEXTURE = Identifier.ofVanilla("textures/entity/enchanting_table_book.png");
 	private final Random random = Random.create();
 	private BookModel BOOK_MODEL;
@@ -58,15 +50,37 @@ public class RPGEnchantmentScreen extends HandledScreen<RPGEnchantmentScreenHand
 	public float nextPageTurningSpeed;
 	public float pageTurningSpeed;
 	private ItemStack stack = ItemStack.EMPTY;
+	private final int hotbarSize;
+	private final int inventorySize;
+	private int prefixEnchantmentsScrollPosition = 0;
+	private float prefixEnchantmentsScrollAmount = 0.0f;
+	private boolean prefixEnchantmentsMouseClicked = false;
+	private int suffixEnchantmentsScrollPosition = 0;
+	private float suffixEnchantmentsScrollAmount = 0.0f;
+	private boolean suffixEnchantmentsMouseClicked = false;
 
 	public RPGEnchantmentScreen(RPGEnchantmentScreenHandler handler, PlayerInventory inventory, Text title) {
 		super(handler, inventory, title);
+		this.hotbarSize = RPGEnchanting.getActiveHotbarSize(inventory.player);
+		this.inventorySize = RPGEnchanting.getActiveInventorySize(inventory.player);
 	}
 
 	@Override
 	protected void init() {
+		this.backgroundWidth = 284;
+		this.backgroundHeight = 233;
+
+		this.playerInventoryTitleX = 62;
+		this.playerInventoryTitleY = 139;
+
 		super.init();
+
 		this.BOOK_MODEL = new BookModel(this.client.getEntityModelLoader().getModelPart(EntityModelLayers.BOOK));
+
+		this.prefixEnchantmentsScrollPosition = 0;
+		this.prefixEnchantmentsScrollAmount = 0.0f;
+		this.suffixEnchantmentsScrollPosition = 0;
+		this.suffixEnchantmentsScrollAmount = 0.0f;
 	}
 
 	@Override
@@ -77,15 +91,45 @@ public class RPGEnchantmentScreen extends HandledScreen<RPGEnchantmentScreenHand
 
 	@Override
 	public boolean mouseClicked(double mouseX, double mouseY, int button) {
-		int i = (this.width - this.backgroundWidth) / 2;
-		int j = (this.height - this.backgroundHeight) / 2;
+		int i = this.x;
+		int j = this.y;
+		this.prefixEnchantmentsMouseClicked = false;
+		this.suffixEnchantmentsMouseClicked = false;
 
-		for (int k = 0; k < 3; k++) {
-			double d = mouseX - (double) (i + 60);
-			double e = mouseY - (double) (j + 14 + 19 * k);
-			if (d >= 0.0 && e >= 0.0 && d < 108.0 && e < 19.0 && this.handler.onButtonClick(this.client.player, k)) {
-				this.client.interactionManager.clickButton(this.handler.syncId, k);
-				return true;
+		if (this.client != null && this.client.interactionManager != null) {
+			int threshold = this.handler.current_prefix_enchantments.size();
+			for (int k = 0; k < Math.min(4, threshold); k++) {
+				double d = mouseX - (double) (i + 8);
+				double e = mouseY - (double) (j + 59 + 19 * k);
+				if (d >= 0.0 && e >= 0.0 && d < 108.0 && e < 19.0 && this.handler.onButtonClick(this.client.player, k + this.prefixEnchantmentsScrollPosition)) {
+					this.client.interactionManager.clickButton(this.handler.syncId, k + this.prefixEnchantmentsScrollPosition);
+					return true;
+				}
+			}
+
+			for (int k = 0; k < Math.min(4, this.handler.current_suffix_enchantments.size()); k++) {
+				double d = mouseX - (double) (i + 168);
+				double e = mouseY - (double) (j + 59 + 19 * k);
+				if (d >= 0.0 && e >= 0.0 && d < 108.0 && e < 19.0 && this.handler.onButtonClick(this.client.player, k + this.suffixEnchantmentsScrollPosition + threshold)) {
+					this.client.interactionManager.clickButton(this.handler.syncId, k + this.suffixEnchantmentsScrollPosition + threshold);
+					return true;
+				}
+			}
+
+		}
+
+		if (this.handler.current_prefix_enchantments.size() > 4) {
+			i = this.x + 119;
+			j = this.y + 59;
+			if (mouseX >= (double) i && mouseX < (double) (i + 6) && mouseY >= (double) j && mouseY < (double) (j + 76)) {
+				this.prefixEnchantmentsMouseClicked = true;
+			}
+		}
+		if (this.handler.current_suffix_enchantments.size() > 4) {
+			i = this.x + 159;
+			j = this.y + 59;
+			if (mouseX >= (double) i && mouseX < (double) (i + 6) && mouseY >= (double) j && mouseY < (double) (j + 76)) {
+				this.suffixEnchantmentsMouseClicked = true;
 			}
 		}
 
@@ -93,52 +137,172 @@ public class RPGEnchantmentScreen extends HandledScreen<RPGEnchantmentScreenHand
 	}
 
 	@Override
+	public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
+		if (this.handler.current_prefix_enchantments.size() > 4
+				&& this.prefixEnchantmentsMouseClicked) {
+			int i = this.handler.current_prefix_enchantments.size() - 4;
+			float f = (float) deltaY / (float) i;
+			this.prefixEnchantmentsScrollAmount = MathHelper.clamp(this.prefixEnchantmentsScrollAmount + f, 0.0f, 1.0f);
+			this.prefixEnchantmentsScrollPosition = (int) ((double) (this.prefixEnchantmentsScrollAmount * (float) i));
+		}
+		if (this.handler.current_suffix_enchantments.size() > 4
+				&& this.suffixEnchantmentsMouseClicked) {
+			int i = this.handler.current_suffix_enchantments.size() - 4;
+			float f = (float) deltaY / (float) i;
+			this.suffixEnchantmentsScrollAmount = MathHelper.clamp(this.suffixEnchantmentsScrollAmount + f, 0.0f, 1.0f);
+			this.suffixEnchantmentsScrollPosition = (int) ((double) (this.suffixEnchantmentsScrollAmount * (float) i));
+		}
+		return super.mouseDragged(mouseX, mouseY, button, deltaX, deltaY);
+	}
+
+	@Override
+	public boolean mouseScrolled(double mouseX, double mouseY, double horizontalAmount, double verticalAmount) {
+		if (this.handler.current_prefix_enchantments.size() > 4
+				&& mouseX >= (double) (this.x + 7) && mouseX <= (double) (this.x + 126)
+				&& mouseY >= (double) (this.y + 58) && mouseY <= (double) (this.y + 136)) {
+			int i = this.handler.current_prefix_enchantments.size() - 4;
+			float f = (float) verticalAmount / (float) i;
+			this.prefixEnchantmentsScrollAmount = MathHelper.clamp(this.prefixEnchantmentsScrollAmount - f, 0.0f, 1.0f);
+			this.prefixEnchantmentsScrollPosition = (int) ((double) (this.prefixEnchantmentsScrollAmount * (float) i));
+		}
+		if (this.handler.current_suffix_enchantments.size() > 4
+				&& mouseX >= (double) (this.x + 158) && mouseX <= (double) (this.x + 277)
+				&& mouseY >= (double) (this.y + 58) && mouseY <= (double) (this.y + 136)) {
+			int i = this.handler.current_suffix_enchantments.size() - 4;
+			float f = (float) verticalAmount / (float) i;
+			this.suffixEnchantmentsScrollAmount = MathHelper.clamp(this.suffixEnchantmentsScrollAmount - f, 0.0f, 1.0f);
+			this.suffixEnchantmentsScrollPosition = (int) ((double) (this.suffixEnchantmentsScrollAmount * (float) i));
+		}
+		return super.mouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount);
+	}
+
+	@Override
 	protected void drawBackground(DrawContext context, float delta, int mouseX, int mouseY) {
-		int i = (this.width - this.backgroundWidth) / 2;
-		int j = (this.height - this.backgroundHeight) / 2;
-		context.drawTexture(TEXTURE, i, j, 0, 0, this.backgroundWidth, this.backgroundHeight);
+		int i = this.x;
+		int j = this.y;
+		int k;
+		int m;
+		boolean showInactiveSlots = RPGEnchantingClient.CLIENT_CONFIG.show_inactive_slots.get();
+
+		context.drawTexture(TEXTURE, i, j, 0, 0, this.backgroundWidth, this.backgroundHeight, this.backgroundWidth, this.backgroundHeight);
+
+		if (RPGEnchanting.SERVER_CONFIG.enable_item_cost.get()) {
+			context.drawTexture(SLOT_TEXTURE, x + 133, y + 61, 0, 0, 18, 18, 18, 18);
+		}
+
+		for (k = 0; k < (showInactiveSlots ? 27 : Math.min(this.inventorySize, 27)); ++k) {
+			m = (k / 9);
+			context.drawTexture(SLOT_TEXTURE, x + 61 + (k - (m * 9)) * 18, y + 150 + (m * 18), 0, 0, 18, 18, 18, 18);
+		}
+		for (k = 0; k < (showInactiveSlots ? 9 : Math.min(this.hotbarSize, 9)); ++k) {
+			context.drawTexture(SLOT_TEXTURE, x + 61 + k * 18, y + 208, 0, 0, 18, 18, 18, 18);
+		}
+
 		this.drawBook(context, i, j, delta);
-		EnchantingPhrases.getInstance().setSeed((long) this.handler.getSeed());
-		int k = this.handler.getLapisCount();
-
-		for (int l = 0; l < 3; l++) {
-			int m = i + 60;
-			int n = m + 20;
-			int o = this.handler.enchantmentPower[l];
-			if (o == 0) {
-				RenderSystem.enableBlend();
-				context.drawGuiTexture(ENCHANTMENT_SLOT_DISABLED_TEXTURE, m, j + 14 + 19 * l, 108, 19);
-				RenderSystem.disableBlend();
+		MutablePair<RegistryEntry.Reference<Enchantment>, Integer> existing_prefix_enchantment = this.handler.existing_prefix_enchantment;
+		MutablePair<RegistryEntry.Reference<Enchantment>, Integer> existing_suffix_enchantment = this.handler.existing_suffix_enchantment;
+		List<MutablePair<RegistryEntry.Reference<Enchantment>, Integer>> current_prefix_enchantments = this.handler.current_prefix_enchantments;
+		List<MutablePair<RegistryEntry.Reference<Enchantment>, Integer>> current_suffix_enchantments = this.handler.current_suffix_enchantments;
+		if (existing_prefix_enchantment != null) {
+			int r = mouseX - (i + 8);
+			int s = mouseY - (j + 18);
+			int p = 106;
+			int q = 6839882;
+			Optional<RegistryKey<Enchantment>> optionalPrefixEnchantmentKey = existing_prefix_enchantment.getLeft().getKey();
+			MutableText prefixEnchantmentText = Text.empty();
+			if (optionalPrefixEnchantmentKey.isPresent()) {
+				prefixEnchantmentText = Text.translatable(RPGEnchanting.MOD_ID + "." + optionalPrefixEnchantmentKey.get().getValue().toTranslationKey() + "." + existing_prefix_enchantment.getRight() + ".prefix");
+			}
+			RenderSystem.enableBlend();
+			if (r >= 0 && s >= 0 && r < 108 && s < 19) {
+				context.drawGuiTexture(ENCHANTMENT_SLOT_HIGHLIGHTED_TEXTURE, i + 8, j + 18, 108, 19);
+				q = 16777088;
 			} else {
-				String string = o + "";
-				int p = 86 - this.textRenderer.getWidth(string);
-				StringVisitable stringVisitable = EnchantingPhrases.getInstance().generatePhrase(this.textRenderer, p);
+				context.drawGuiTexture(ENCHANTMENT_SLOT_TEXTURE, i + 8, j + 18, 108, 19);
+			}
+			RenderSystem.disableBlend();
+			context.drawTextWrapped(this.textRenderer, prefixEnchantmentText, i + 10, j + 23, p, q);
+		}
+		if (existing_suffix_enchantment != null) {
+			int r = mouseX - (i + 168);
+			int s = mouseY - (j + 18);
+			int p = 106;
+			int q = 6839882;
+			Optional<RegistryKey<Enchantment>> optionalSuffixEnchantmentKey = existing_suffix_enchantment.getLeft().getKey();
+			MutableText suffixEnchantmentText = Text.empty();
+			if (optionalSuffixEnchantmentKey.isPresent()) {
+				suffixEnchantmentText = Text.translatable(RPGEnchanting.MOD_ID + "." + optionalSuffixEnchantmentKey.get().getValue().toTranslationKey() + "." + existing_suffix_enchantment.getRight() + ".suffix");
+			}
+			RenderSystem.enableBlend();
+			if (r >= 0 && s >= 0 && r < 108 && s < 19) {
+				context.drawGuiTexture(ENCHANTMENT_SLOT_HIGHLIGHTED_TEXTURE, i + 168, j + 18, 108, 19);
+				q = 16777088;
+			} else {
+				context.drawGuiTexture(ENCHANTMENT_SLOT_TEXTURE, i + 168, j + 18, 108, 19);
+			}
+			RenderSystem.disableBlend();
+			context.drawTextWrapped(this.textRenderer, suffixEnchantmentText, i + 170, j + 23, p, q);
+		}
+		if (!current_prefix_enchantments.isEmpty()) {
+			if (existing_prefix_enchantment != null) {
+				context.drawText(this.textRenderer, Text.literal("Replace with..."), i + 10, j + 47, 4210752, false);
+			} else {
+				context.drawText(this.textRenderer, Text.literal("Add..."), i + 10, j + 47, 4210752, false);
+			}
+
+			int index = 0;
+			for (int l = this.prefixEnchantmentsScrollPosition; l < Math.min(this.prefixEnchantmentsScrollPosition + 4, current_prefix_enchantments.size()); l++) {
+				int r = mouseX - (i + 8);
+				int s = mouseY - (j + 59 + index * 19);
+				int p = 106;
 				int q = 6839882;
-				if ((k < l + 1 || this.client.player.experienceLevel < o) && !this.client.player.getAbilities().creativeMode) {
-					RenderSystem.enableBlend();
-					context.drawGuiTexture(ENCHANTMENT_SLOT_DISABLED_TEXTURE, m, j + 14 + 19 * l, 108, 19);
-					context.drawGuiTexture(LEVEL_DISABLED_TEXTURES[l], m + 1, j + 15 + 19 * l, 16, 16);
-					RenderSystem.disableBlend();
-					context.drawTextWrapped(this.textRenderer, stringVisitable, n, j + 16 + 19 * l, p, (q & 16711422) >> 1);
-					q = 4226832;
-				} else {
-					int r = mouseX - (i + 60);
-					int s = mouseY - (j + 14 + 19 * l);
-					RenderSystem.enableBlend();
-					if (r >= 0 && s >= 0 && r < 108 && s < 19) {
-						context.drawGuiTexture(ENCHANTMENT_SLOT_HIGHLIGHTED_TEXTURE, m, j + 14 + 19 * l, 108, 19);
-						q = 16777088;
-					} else {
-						context.drawGuiTexture(ENCHANTMENT_SLOT_TEXTURE, m, j + 14 + 19 * l, 108, 19);
-					}
-
-					context.drawGuiTexture(LEVEL_TEXTURES[l], m + 1, j + 15 + 19 * l, 16, 16);
-					RenderSystem.disableBlend();
-					context.drawTextWrapped(this.textRenderer, stringVisitable, n, j + 16 + 19 * l, p, q);
-					q = 8453920;
+				MutablePair<RegistryEntry.Reference<Enchantment>, Integer> entry = current_prefix_enchantments.get(l);
+				Optional<RegistryKey<Enchantment>> optionalRegistryKey = entry.getLeft().getKey();
+				MutableText text = Text.empty();
+				if (optionalRegistryKey.isPresent()) {
+					text = Text.translatable(RPGEnchanting.MOD_ID + "." + optionalRegistryKey.get().getValue().toTranslationKey() + "." + entry.getRight() + ".prefix");
 				}
+				RenderSystem.enableBlend();
+				if (r >= 0 && s >= 0 && r < 108 && s < 19) {
+					context.drawGuiTexture(ENCHANTMENT_SLOT_HIGHLIGHTED_TEXTURE, i + 8, j + 59 + index * 19, 108, 19);
+					q = 16777088;
+				} else {
+					context.drawGuiTexture(ENCHANTMENT_SLOT_TEXTURE, i + 8, j + 59 + index * 19, 108, 19);
+				}
+				RenderSystem.disableBlend();
+				context.drawTextWrapped(this.textRenderer, text, i + 10, j + 64 + index * 19, p, q);
+				index++;
+			}
+		}
+		if (!current_suffix_enchantments.isEmpty()) {
+			if (existing_suffix_enchantment != null) {
+				context.drawText(this.textRenderer, Text.literal("Replace with..."), i + 170, j + 47, 4210752, false);
+			} else {
+				context.drawText(this.textRenderer, Text.literal("Add..."), i + 170, j + 47, 4210752, false);
+			}
 
-				context.drawTextWithShadow(this.textRenderer, string, n + 86 - this.textRenderer.getWidth(string), j + 16 + 19 * l + 7, q);
+			int index = 0;
+			for (int l = this.suffixEnchantmentsScrollPosition; l < Math.min(this.suffixEnchantmentsScrollPosition + 4, current_suffix_enchantments.size()); l++) {
+				int r = mouseX - (i + 168);
+				int s = mouseY - (j + 59 + index * 19);
+				int p = 106;
+				int q = 6839882;
+				MutablePair<RegistryEntry.Reference<Enchantment>, Integer> entry = current_suffix_enchantments.get(l);
+				Optional<RegistryKey<Enchantment>> optionalRegistryKey = entry.getLeft().getKey();
+				MutableText text = Text.empty();
+				if (optionalRegistryKey.isPresent()) {
+					text = Text.translatable(RPGEnchanting.MOD_ID + "." + optionalRegistryKey.get().getValue().toTranslationKey() + "." + entry.getRight() + ".suffix");
+				}
+				RenderSystem.enableBlend();
+				if (r >= 0 && s >= 0 && r < 108 && s < 19) {
+					context.drawGuiTexture(ENCHANTMENT_SLOT_HIGHLIGHTED_TEXTURE, i + 168, j + 59 + index * 19, 108, 19);
+					q = 16777088;
+				} else {
+					context.drawGuiTexture(ENCHANTMENT_SLOT_TEXTURE, i + 168, j + 59 + index * 19, 108, 19);
+				}
+				RenderSystem.disableBlend();
+				context.drawTextWrapped(this.textRenderer, text, i + 170, j + 64 + index * 19, p, q);
+				index++;
 			}
 		}
 	}
@@ -148,7 +312,7 @@ public class RPGEnchantmentScreen extends HandledScreen<RPGEnchantmentScreenHand
 		float g = MathHelper.lerp(delta, this.pageAngle, this.nextPageAngle);
 		DiffuseLighting.method_34742();
 		context.getMatrices().push();
-		context.getMatrices().translate((float) x + 33.0F, (float) y + 31.0F, 100.0F);
+		context.getMatrices().translate((float) x + 142.0F, (float) y + 25.0F, 100.0F);
 		float h = 40.0F;
 		context.getMatrices().scale(-40.0F, 40.0F, 40.0F);
 		context.getMatrices().multiply(RotationAxis.POSITIVE_X.rotationDegrees(25.0F));
@@ -170,47 +334,52 @@ public class RPGEnchantmentScreen extends HandledScreen<RPGEnchantmentScreenHand
 	public void render(DrawContext context, int mouseX, int mouseY, float delta) {
 		super.render(context, mouseX, mouseY, delta);
 		this.drawMouseoverTooltip(context, mouseX, mouseY);
-		boolean bl = this.client.player.getAbilities().creativeMode;
-		int i = this.handler.getLapisCount();
+//		boolean bl = this.client.player.getAbilities().creativeMode;
+//		int i = this.handler.getLapisCount();
 
-		for (int j = 0; j < 3; j++) {
-			int k = this.handler.enchantmentPower[j];
-			Optional<RegistryEntry.Reference<Enchantment>> optional = this.client.world.getRegistryManager().get(RegistryKeys.ENCHANTMENT).getEntry(this.handler.enchantmentId[j]);
-			if (!optional.isEmpty()) {
-				int l = this.handler.enchantmentLevel[j];
-				int m = j + 1;
-				if (this.isPointWithinBounds(60, 14 + 19 * j, 108, 17, (double) mouseX, (double) mouseY) && k > 0 && l >= 0 && optional != null) {
-					List<Text> list = Lists.<Text>newArrayList();
-					list.add(Text.translatable("container.enchant.clue", new Object[]{Enchantment.getName((RegistryEntry) optional.get(), l)}).formatted(Formatting.WHITE));
-					if (!bl) {
-						list.add(ScreenTexts.EMPTY);
-						if (this.client.player.experienceLevel < k) {
-							list.add(Text.translatable("container.enchant.level.requirement", new Object[]{this.handler.enchantmentPower[j]}).formatted(Formatting.RED));
-						} else {
-							MutableText mutableText;
-							if (m == 1) {
-								mutableText = Text.translatable("container.enchant.lapis.one");
-							} else {
-								mutableText = Text.translatable("container.enchant.lapis.many", new Object[]{m});
-							}
-
-							list.add(mutableText.formatted(i >= m ? Formatting.GRAY : Formatting.RED));
-							MutableText mutableText2;
-							if (m == 1) {
-								mutableText2 = Text.translatable("container.enchant.level.one");
-							} else {
-								mutableText2 = Text.translatable("container.enchant.level.many", new Object[]{m});
-							}
-
-							list.add(mutableText2.formatted(Formatting.GRAY));
-						}
-					}
-
-					context.drawTooltip(this.textRenderer, list, mouseX, mouseY);
-					break;
-				}
-			}
-		}
+//		for (int j = 0; j < 3; j++) {
+////			int k = this.handler.enchantmentPower[j];
+//			int k = 5;//this.handler.enchantmentPower[j];
+////			Optional<RegistryEntry.Reference<Enchantment>> optional = this.client.world.getRegistryManager().get(RegistryKeys.ENCHANTMENT).getEntry(this.handler.enchantmentId[j]);
+//		MutablePair<RegistryEntry.Reference<Enchantment>, Integer> optionalExistingPrefix = this.handler.existing_prefix_enchantment;
+//		MutablePair<RegistryEntry.Reference<Enchantment>, Integer> optionalExistingSuffix = this.handler.existing_suffix_enchantment;
+//		if (optionalExistingPrefix != null) {
+////				int l = this.handler.enchantmentLevel[j];
+//				int l = 3;//this.handler.enchantmentLevel[j];
+//				int m = j + 1;
+//				if (this.isPointWithinBounds(60, 14 + 19 * j, 108, 17, (double) mouseX, (double) mouseY) && k > 0 && l >= 0 && optional != null) {
+//					List<Text> list = Lists.<Text>newArrayList();
+//					list.add(Text.translatable("container.enchant.clue", new Object[]{Enchantment.getName(optional.getLeft(), l)}).formatted(Formatting.WHITE));
+//					if (!bl) {
+//						list.add(ScreenTexts.EMPTY);
+//						if (this.client.player.experienceLevel < k) {
+////							list.add(Text.translatable("container.enchant.level.requirement", new Object[]{this.handler.enchantmentPower[j]}).formatted(Formatting.RED));
+//							list.add(Text.translatable("container.enchant.level.requirement", new Object[]{3}).formatted(Formatting.RED));
+//						} else {
+//							MutableText mutableText;
+//							if (m == 1) {
+//								mutableText = Text.translatable("container.enchant.lapis.one");
+//							} else {
+//								mutableText = Text.translatable("container.enchant.lapis.many", new Object[]{m});
+//							}
+//
+//							list.add(mutableText.formatted(i >= m ? Formatting.GRAY : Formatting.RED));
+//							MutableText mutableText2;
+//							if (m == 1) {
+//								mutableText2 = Text.translatable("container.enchant.level.one");
+//							} else {
+//								mutableText2 = Text.translatable("container.enchant.level.many", new Object[]{m});
+//							}
+//
+//							list.add(mutableText2.formatted(Formatting.GRAY));
+//						}
+//					}
+//
+//					context.drawTooltip(this.textRenderer, list, mouseX, mouseY);
+//					break;
+//				}
+//			}
+//		}
 	}
 
 	public void doTick() {
@@ -228,11 +397,12 @@ public class RPGEnchantmentScreen extends HandledScreen<RPGEnchantmentScreenHand
 		this.pageTurningSpeed = this.nextPageTurningSpeed;
 		boolean bl = false;
 
-		for (int i = 0; i < 3; i++) {
-			if (this.handler.enchantmentPower[i] != 0) {
-				bl = true;
-			}
-		}
+//		for (int i = 0; i < 3; i++) {
+//			if (this.handler.enchantmentPower[i] != 0) {
+//				bl = true;
+//			}
+//		}
+		bl = true;
 
 		if (bl) {
 			this.nextPageTurningSpeed += 0.2F;

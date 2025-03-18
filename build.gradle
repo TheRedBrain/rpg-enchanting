@@ -13,11 +13,21 @@ base {
 }
 
 repositories {
-	// Add repositories to retrieve artifacts from in here.
-	// You should only use this when depending on other mods because
-	// Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
-	// See https://docs.gradle.org/current/userguide/declaring_repositories.html
-	// for more information about repositories.
+	// Fzzy Config
+	maven {
+		name = "FzzyMaven"
+		url = "https://maven.fzzyhmstrs.me/"
+	}
+
+	// Slot Customization API
+	maven {
+		name = "Modrinth"
+		url = "https://api.modrinth.com/maven"
+		content {
+			includeGroup "maven.modrinth"
+		}
+	}
+
 }
 
 loom {
@@ -40,7 +50,16 @@ dependencies {
 
 	// Fabric API. This is technically optional, but you probably want it anyway.
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-	
+
+	// Fzzy Config
+	modImplementation"me.fzzyhmstrs:fzzy_config:${project.fzzy_config_version}"
+
+	// Slot Customization API
+	modImplementation "maven.modrinth:slot-customization-api:${project.slot_customization_api_version}"
+
+	// Inventory Size Attributes
+	modImplementation "maven.modrinth:inventory-size-attributes:${project.inventory_size_attributes_version}"
+
 }
 
 processResources {
@@ -98,6 +117,9 @@ if (project.hasProperty('release_type')) {
 
 			relations {
 				requiredDependency 'fabric-api'
+				requiredDependency 'fzzy-config'
+				requiredDependency 'slot-customization-api'
+				optionalDependency 'inventory-size-attributes'
 			}
 
 			mainArtifact(remapJar)
@@ -127,6 +149,9 @@ if (project.hasProperty('release_type')) {
 			// The scope can be `required`, `optional`, `incompatible`, or `embedded`
 			// The type can either be `project` or `version`
 			required.project 'fabric-api'
+			required.project 'fzzy-config'
+			required.project 'slot-customization-api'
+			optional.project 'inventory-size-attributes'
 		}
 	}
 

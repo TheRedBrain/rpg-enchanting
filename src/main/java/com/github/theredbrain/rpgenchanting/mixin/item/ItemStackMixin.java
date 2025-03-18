@@ -36,10 +36,10 @@ public class ItemStackMixin {
 					if (optional.isPresent()) {
 						Identifier id = optional.get().getValue();
 						if (enchantmentEntry.isIn(RPGEnchanting.PREFIX_ENCHANTMENTS)) {
-							prefixEnchantmentText = Text.translatable("rpg_enchanting." + id.toTranslationKey() + "." + itemEnchantmentsComponent.getLevel(enchantmentEntry) + ".prefix");
+							prefixEnchantmentText = Text.translatable(RPGEnchanting.MOD_ID + "." + id.toTranslationKey() + "." + itemEnchantmentsComponent.getLevel(enchantmentEntry) + ".prefix");
 						}
 						if (enchantmentEntry.isIn(RPGEnchanting.SUFFIX_ENCHANTMENTS)) {
-							suffixEnchantmentText = Text.translatable("rpg_enchanting." + id.toTranslationKey() + "." + itemEnchantmentsComponent.getLevel(enchantmentEntry) + ".suffix");
+							suffixEnchantmentText = Text.translatable(RPGEnchanting.MOD_ID + "." + id.toTranslationKey() + "." + itemEnchantmentsComponent.getLevel(enchantmentEntry) + ".suffix");
 						}
 					}
 				}

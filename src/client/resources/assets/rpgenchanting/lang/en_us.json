@@ -1,0 +1,18 @@
+{
+	"block.rpgenchanting.rpg_enchanting_table": "RPG Enchanting Table",
+
+	"gui.rpg_enchanting_table.title": "Enchant",
+
+	"resourcepack.rpgenchanting.rpgenchanting_vanilla.name": "RPG Enchanting - Vanilla",
+	"resourcepack.rpgenchanting.rpgenchanting_vanilla_resources.name": "RPG Enchanting - Vanilla - Resources",
+
+	"rpgenchanting.server": "Server Side Settings",
+
+	"rpgcrafting.server.rpg_enchanting_table_block_reach_radius": "RPG Enchanting Table eReach",
+	"rpgcrafting.server.rpg_enchanting_table_block_reach_radius.desc": "The radius in which the RPG Enchanting Table checks for enchantment unlocking blocks.",
+
+	"rpgenchanting.client": "Client Side Settings",
+
+	"rpgenchanting.client.show_inactive_slots": "Show Inactive Slots",
+	"rpgenchanting.client.show_inactive_slots.desc": "Inventory Size Attributes - Compat Setting"
+}
