@@ -42,7 +42,8 @@ public class RPGEnchanting implements ModInitializer {
 	public static TagKey<Enchantment> PREFIX_ENCHANTMENTS = TagKey.of(RegistryKeys.ENCHANTMENT, identifier("prefix_enchantments"));
 	public static TagKey<Enchantment> SUFFIX_ENCHANTMENTS = TagKey.of(RegistryKeys.ENCHANTMENT, identifier("suffix_enchantments"));
 
-	public static TagKey<Item> ENCHANTING_COST_ITEMS = TagKey.of(RegistryKeys.ITEM, identifier("enchanting_cost_items"));
+	public static TagKey<Item> ENCHANTING_PREFIX_COST_ITEMS = TagKey.of(RegistryKeys.ITEM, identifier("enchanting_prefix_cost_items"));
+	public static TagKey<Item> ENCHANTING_SUFFIX_COST_ITEMS = TagKey.of(RegistryKeys.ITEM, identifier("enchanting_suffix_cost_items"));
 
 	public static ComponentType<Unit> SHOW_ENCHANTMENT_NAME_ADDITIONS;
 

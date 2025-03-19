@@ -10,6 +10,7 @@ import me.fzzyhmstrs.fzzy_config.validation.collection.ValidatedStringMap;
 import me.fzzyhmstrs.fzzy_config.validation.misc.ValidatedAny;
 import me.fzzyhmstrs.fzzy_config.validation.misc.ValidatedBoolean;
 import me.fzzyhmstrs.fzzy_config.validation.misc.ValidatedString;
+import me.fzzyhmstrs.fzzy_config.validation.number.ValidatedDouble;
 import me.fzzyhmstrs.fzzy_config.validation.number.ValidatedInt;
 
 import java.util.HashMap;
@@ -22,6 +23,10 @@ public class ServerConfig extends Config {
 	}
 
 	public ValidatedInt rpg_enchanting_table_block_reach_radius = new ValidatedInt(3);
+	public ValidatedDouble new_enchantment_exp_cost_multiplier = new ValidatedDouble(1.0);
+	public ValidatedDouble old_enchantment_exp_cost_multiplier = new ValidatedDouble(1.0);
+	public ValidatedDouble new_enchantment_item_cost_multiplier = new ValidatedDouble(1.0);
+	public ValidatedDouble old_enchantment_item_cost_multiplier = new ValidatedDouble(1.0);
 //	public ValidatedInt default_hand_crafting_level = new ValidatedInt(0);
 //	public ValidatedBoolean show_locked_recipes_in_recipe_list = new ValidatedBoolean(true);
 //	public ValidatedBoolean show_locked_recipes_in_crafting_screens = new ValidatedBoolean(false);
@@ -32,7 +37,7 @@ public class ServerConfig extends Config {
 //	public ValidatedBoolean combine_block_provided_levels_for_different_blocks = new ValidatedBoolean(true);
 	public ValidatedBoolean enable_alternative_item_name_for_enchanted_loot = new ValidatedBoolean(true);
 	public ValidatedBoolean hide_normal_enchantment_tooltip_for_enchanted_loot = new ValidatedBoolean(true);
-	public ValidatedBoolean enable_item_cost = new ValidatedBoolean(true);
+//	public ValidatedBoolean enable_item_cost = new ValidatedBoolean(true);
 	public ValidatedBoolean enable_enchantment_unlocking_by_chiseled_bookshelves = new ValidatedBoolean(true);
 	public ValidatedBoolean enable_ambient_enchant_particles = new ValidatedBoolean(true);
 
