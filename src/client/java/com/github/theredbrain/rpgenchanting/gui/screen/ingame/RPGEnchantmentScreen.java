@@ -267,7 +267,7 @@ public class RPGEnchantmentScreen extends HandledScreen<RPGEnchantmentScreenHand
 				MutableText text = Text.empty();
 
 				int experience_cost_amount = this.handler.existing_enchantment_costs[0] + (int) Math.max(0, Math.floor(entry.getLeft().value().getMaxPower(entry.getRight()) * serverConfig.new_enchantment_exp_cost_multiplier.get()));
-				int item_cost_amount = this.handler.existing_enchantment_costs[1] + (int) Math.max(0, Math.floor(entry.getLeft().value().getAnvilCost() * serverConfig.new_enchantment_item_cost_multiplier.get()));
+				int item_cost_amount = this.handler.existing_enchantment_costs[1] + (int) Math.max(0, Math.floor(entry.getLeft().value().getAnvilCost() * entry.getRight()  * serverConfig.new_enchantment_item_cost_multiplier.get()));
 				boolean bl = (this.handler.player.experienceLevel < experience_cost_amount || this.handler.getPrefixItemCount() < item_cost_amount) && !this.handler.player.isInCreativeMode();
 
 				if (optionalRegistryKey.isPresent()) {
@@ -305,7 +305,7 @@ public class RPGEnchantmentScreen extends HandledScreen<RPGEnchantmentScreenHand
 				MutableText text = Text.empty();
 
 				int experience_cost_amount = this.handler.existing_enchantment_costs[2] + (int) Math.max(0, Math.floor(entry.getLeft().value().getMaxPower(entry.getRight()) * serverConfig.new_enchantment_exp_cost_multiplier.get()));
-				int item_cost_amount = this.handler.existing_enchantment_costs[3] + (int) Math.max(0, Math.floor(entry.getLeft().value().getAnvilCost() * serverConfig.new_enchantment_item_cost_multiplier.get()));
+				int item_cost_amount = this.handler.existing_enchantment_costs[3] + (int) Math.max(0, Math.floor(entry.getLeft().value().getAnvilCost() * entry.getRight()  * serverConfig.new_enchantment_item_cost_multiplier.get()));
 				boolean bl = (this.handler.player.experienceLevel < experience_cost_amount || this.handler.getPrefixItemCount() < item_cost_amount) && !this.handler.player.isInCreativeMode();
 
 				if (optionalRegistryKey.isPresent()) {
@@ -409,7 +409,7 @@ public class RPGEnchantmentScreen extends HandledScreen<RPGEnchantmentScreenHand
 					if (!bl) {
 						list.add(ScreenTexts.EMPTY);
 						int experience_cost_amount = this.handler.existing_enchantment_costs[0] + (int) Math.max(0, Math.floor(entry.getLeft().value().getMaxPower(entry.getRight()) * serverConfig.new_enchantment_exp_cost_multiplier.get()));
-						int item_cost_amount = this.handler.existing_enchantment_costs[1] + (int) Math.max(0, Math.floor(entry.getLeft().value().getAnvilCost() * serverConfig.new_enchantment_item_cost_multiplier.get()));
+						int item_cost_amount = this.handler.existing_enchantment_costs[1] + (int) Math.max(0, Math.floor(entry.getLeft().value().getAnvilCost() * entry.getRight()  * serverConfig.new_enchantment_item_cost_multiplier.get()));
 						MutableText mutableText;
 						if (item_cost_amount == 1) {
 							mutableText = Text.translatable("container.enchant.lapis.one");
@@ -446,7 +446,7 @@ public class RPGEnchantmentScreen extends HandledScreen<RPGEnchantmentScreenHand
 					if (!bl) {
 						list.add(ScreenTexts.EMPTY);
 						int experience_cost_amount = this.handler.existing_enchantment_costs[2] + (int) Math.max(0, Math.floor(entry.getLeft().value().getMaxPower(entry.getRight()) * serverConfig.new_enchantment_exp_cost_multiplier.get()));
-						int item_cost_amount = this.handler.existing_enchantment_costs[3] + (int) Math.max(0, Math.floor(entry.getLeft().value().getAnvilCost() * serverConfig.new_enchantment_item_cost_multiplier.get()));
+						int item_cost_amount = this.handler.existing_enchantment_costs[3] + (int) Math.max(0, Math.floor(entry.getLeft().value().getAnvilCost() * entry.getRight() * serverConfig.new_enchantment_item_cost_multiplier.get()));
 						MutableText mutableText;
 						if (item_cost_amount == 1) {
 							mutableText = Text.translatable("container.enchant.lapis.one");

@@ -148,7 +148,7 @@ public class RPGEnchantmentScreenHandler extends ScreenHandler {
 							if (optionalEnchantmentReference.isPresent()) {
 								this.existing_prefix_enchantment = new MutablePair<>(optionalEnchantmentReference.get(), entry.getIntValue());
 								this.existing_enchantment_costs[0] = (int) Math.max(0, Math.floor(optionalEnchantmentReference.get().value().getMinPower(entry.getIntValue()) * serverConfig.old_enchantment_exp_cost_multiplier.get()));
-								this.existing_enchantment_costs[1] = (int) Math.max(0, Math.floor(optionalEnchantmentReference.get().value().getAnvilCost() * serverConfig.old_enchantment_item_cost_multiplier.get()));
+								this.existing_enchantment_costs[1] = (int) Math.max(0, Math.floor(optionalEnchantmentReference.get().value().getAnvilCost() * entry.getIntValue() * serverConfig.old_enchantment_item_cost_multiplier.get()));
 							}
 						}
 						if (entry.getKey().isIn(RPGEnchanting.SUFFIX_ENCHANTMENTS)) {
@@ -156,7 +156,7 @@ public class RPGEnchantmentScreenHandler extends ScreenHandler {
 							if (optionalEnchantmentReference.isPresent()) {
 								this.existing_suffix_enchantment = new MutablePair<>(optionalEnchantmentReference.get(), entry.getIntValue());
 								this.existing_enchantment_costs[2] = (int) Math.max(0, Math.floor(optionalEnchantmentReference.get().value().getMinPower(entry.getIntValue()) * serverConfig.old_enchantment_exp_cost_multiplier.get()));
-								this.existing_enchantment_costs[3] = (int) Math.max(0, Math.floor(optionalEnchantmentReference.get().value().getAnvilCost() * serverConfig.old_enchantment_item_cost_multiplier.get()));
+								this.existing_enchantment_costs[3] = (int) Math.max(0, Math.floor(optionalEnchantmentReference.get().value().getAnvilCost() * entry.getIntValue()  * serverConfig.old_enchantment_item_cost_multiplier.get()));
 							}
 						}
 					}
@@ -204,12 +204,12 @@ public class RPGEnchantmentScreenHandler extends ScreenHandler {
 		if (id >= 0 && id < first_threshold) {
 			MutablePair<RegistryEntry.Reference<Enchantment>, Integer> newEnchantment = this.current_prefix_enchantments.get(id);
 
-			int item_cost_amount = this.existing_enchantment_costs[1] + (int) Math.max(0, Math.floor(newEnchantment.getLeft().value().getAnvilCost() * serverConfig.new_enchantment_item_cost_multiplier.get()));
-			if ((!itemStack2.isIn(RPGEnchanting.ENCHANTING_PREFIX_COST_ITEMS) || itemStack2.getCount() < item_cost_amount) && !player.isInCreativeMode()) {
-				return false;
-			}
 			int experience_cost_amount = this.existing_enchantment_costs[0] + (int) Math.max(0, Math.floor(newEnchantment.getLeft().value().getMaxPower(newEnchantment.getRight()) * serverConfig.new_enchantment_exp_cost_multiplier.get()));
 			if (player.experienceLevel < experience_cost_amount && !player.isInCreativeMode()) {
+				return false;
+			}
+			int item_cost_amount = this.existing_enchantment_costs[1] + (int) Math.max(0, Math.floor(newEnchantment.getLeft().value().getAnvilCost() * newEnchantment.getRight() * serverConfig.new_enchantment_item_cost_multiplier.get()));
+			if ((!itemStack2.isIn(RPGEnchanting.ENCHANTING_PREFIX_COST_ITEMS) || itemStack2.getCount() < item_cost_amount) && !player.isInCreativeMode()) {
 				return false;
 			}
 			player.applyEnchantmentCosts(itemStack, experience_cost_amount);
@@ -239,15 +239,12 @@ public class RPGEnchantmentScreenHandler extends ScreenHandler {
 		} else if (id >= first_threshold && id < first_threshold + this.current_suffix_enchantments.size()) {
 			MutablePair<RegistryEntry.Reference<Enchantment>, Integer> newEnchantment = this.current_suffix_enchantments.get(id - first_threshold);
 
-			int newEnchantmentExperienceCost = (int) Math.max(0, Math.floor(newEnchantment.getLeft().value().getMaxPower(newEnchantment.getRight()) * serverConfig.new_enchantment_exp_cost_multiplier.get()));
-			int newEnchantmentItemCost = (int) Math.max(0, Math.floor(newEnchantment.getLeft().value().getAnvilCost() * serverConfig.new_enchantment_item_cost_multiplier.get()));
-
-			int item_cost_amount = this.existing_enchantment_costs[1] + newEnchantmentItemCost;
-			if ((!itemStack2.isIn(RPGEnchanting.ENCHANTING_PREFIX_COST_ITEMS) || itemStack2.getCount() < item_cost_amount) && !player.isInCreativeMode()) {
+			int experience_cost_amount = this.existing_enchantment_costs[2] + (int) Math.max(0, Math.floor(newEnchantment.getLeft().value().getMaxPower(newEnchantment.getRight()) * serverConfig.new_enchantment_exp_cost_multiplier.get()));
+			if (player.experienceLevel < experience_cost_amount && !player.isInCreativeMode()) {
 				return false;
 			}
-			int experience_cost_amount = this.existing_enchantment_costs[0] + newEnchantmentExperienceCost;
-			if (player.experienceLevel < experience_cost_amount && !player.isInCreativeMode()) {
+			int item_cost_amount = this.existing_enchantment_costs[3] + (int) Math.max(0, Math.floor(newEnchantment.getLeft().value().getAnvilCost() * newEnchantment.getRight() * serverConfig.new_enchantment_item_cost_multiplier.get()));
+			if ((!itemStack2.isIn(RPGEnchanting.ENCHANTING_PREFIX_COST_ITEMS) || itemStack2.getCount() < item_cost_amount) && !player.isInCreativeMode()) {
 				return false;
 			}
 			player.applyEnchantmentCosts(itemStack, experience_cost_amount);
