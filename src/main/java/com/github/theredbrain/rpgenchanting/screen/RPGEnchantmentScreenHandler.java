@@ -18,6 +18,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;
+import net.minecraft.registry.Registries;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.registry.tag.EnchantmentTags;
@@ -43,7 +44,6 @@ import java.util.Optional;
 import java.util.Set;
 
 public class RPGEnchantmentScreenHandler extends ScreenHandler {
-	static final Identifier EMPTY_ITEM_COST_SLOT_TEXTURE = RPGEnchanting.identifier("item/empty_slot_item_cost");
 	private final Inventory inventory = new SimpleInventory(2) {
 		@Override
 		public void markDirty() {
@@ -80,12 +80,7 @@ public class RPGEnchantmentScreenHandler extends ScreenHandler {
 		this.addSlot(new Slot(this.inventory, 1, 134, 62) {
 			@Override
 			public boolean canInsert(ItemStack stack) {
-				return stack.isIn(RPGEnchanting.ENCHANTING_PREFIX_COST_ITEMS) || stack.isIn(RPGEnchanting.ENCHANTING_SUFFIX_COST_ITEMS);
-			}
-
-			@Override
-			public Pair<Identifier, Identifier> getBackgroundSprite() {
-				return Pair.of(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE, RPGEnchantmentScreenHandler.EMPTY_ITEM_COST_SLOT_TEXTURE);
+				return stack.isOf(Registries.ITEM.get(RPGEnchanting.SERVER_CONFIG.prefix_item_cost.get())) || stack.isOf(Registries.ITEM.get(RPGEnchanting.SERVER_CONFIG.suffix_item_cost.get()));
 			}
 		});
 
@@ -209,7 +204,7 @@ public class RPGEnchantmentScreenHandler extends ScreenHandler {
 				return false;
 			}
 			int item_cost_amount = this.existing_enchantment_costs[1] + (int) Math.max(0, Math.floor(newEnchantment.getLeft().value().getAnvilCost() * newEnchantment.getRight() * serverConfig.new_enchantment_item_cost_multiplier.get()));
-			if ((!itemStack2.isIn(RPGEnchanting.ENCHANTING_PREFIX_COST_ITEMS) || itemStack2.getCount() < item_cost_amount) && !player.isInCreativeMode()) {
+			if ((!itemStack2.isOf(Registries.ITEM.get(serverConfig.prefix_item_cost.get())) || itemStack2.getCount() < item_cost_amount) && !player.isInCreativeMode()) {
 				return false;
 			}
 			player.applyEnchantmentCosts(itemStack, experience_cost_amount);
@@ -244,7 +239,7 @@ public class RPGEnchantmentScreenHandler extends ScreenHandler {
 				return false;
 			}
 			int item_cost_amount = this.existing_enchantment_costs[3] + (int) Math.max(0, Math.floor(newEnchantment.getLeft().value().getAnvilCost() * newEnchantment.getRight() * serverConfig.new_enchantment_item_cost_multiplier.get()));
-			if ((!itemStack2.isIn(RPGEnchanting.ENCHANTING_PREFIX_COST_ITEMS) || itemStack2.getCount() < item_cost_amount) && !player.isInCreativeMode()) {
+			if ((!itemStack2.isOf(Registries.ITEM.get(serverConfig.suffix_item_cost.get())) || itemStack2.getCount() < item_cost_amount) && !player.isInCreativeMode()) {
 				return false;
 			}
 			player.applyEnchantmentCosts(itemStack, experience_cost_amount);
@@ -281,12 +276,12 @@ public class RPGEnchantmentScreenHandler extends ScreenHandler {
 
 	public int getPrefixItemCount() {
 		ItemStack itemStack = this.inventory.getStack(1);
-		return itemStack.isEmpty() || !itemStack.isIn(RPGEnchanting.ENCHANTING_PREFIX_COST_ITEMS) ? 0 : itemStack.getCount();
+		return itemStack.isEmpty() || !itemStack.isOf(Registries.ITEM.get(RPGEnchanting.SERVER_CONFIG.prefix_item_cost.get())) ? 0 : itemStack.getCount();
 	}
 
 	public int getSuffixItemCount() {
 		ItemStack itemStack = this.inventory.getStack(1);
-		return itemStack.isEmpty() || !itemStack.isIn(RPGEnchanting.ENCHANTING_SUFFIX_COST_ITEMS) ? 0 : itemStack.getCount();
+		return itemStack.isEmpty() || !itemStack.isOf(Registries.ITEM.get(RPGEnchanting.SERVER_CONFIG.suffix_item_cost.get())) ? 0 : itemStack.getCount();
 	}
 
 	@Override
@@ -315,7 +310,7 @@ public class RPGEnchantmentScreenHandler extends ScreenHandler {
 				if (!this.insertItem(itemStack2, 2, 38, true)) {
 					return ItemStack.EMPTY;
 				}
-			} else if (itemStack2.isOf(Items.LAPIS_LAZULI)) {
+			} else if (itemStack2.isOf(Registries.ITEM.get(RPGEnchanting.SERVER_CONFIG.prefix_item_cost.get())) || itemStack2.isOf(Registries.ITEM.get(RPGEnchanting.SERVER_CONFIG.suffix_item_cost.get()))) {
 				if (!this.insertItem(itemStack2, 1, 2, true)) {
 					return ItemStack.EMPTY;
 				}

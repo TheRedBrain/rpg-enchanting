@@ -45,7 +45,9 @@ When a Chiseled Bookshelf that stores Enchanted Books is found, every of those e
 
 Enchanting costs experience and items.
 
-The items can be defined for prefix and suffix enchantments separately.
+These items are defined in the server config.
+
+Both item and experience cost are higher when an existing enchantment is replaced.
 
 ## Compatibility with custom enchantments
 
@@ -89,6 +91,17 @@ This includes the following:
 > Using Patched is not a requirement, the exclusive_set can also be configured the normal way. Using "Patched" ensures compatibility with mods/data packs that modify vanilla enchantments
 
 The resource pack provides the localization for the item name additions.
+
+## Customization
+
+These features of RPG Enchanting can also be customized:
+- The RPG Enchanting Table spawns particles, exactly like the vanilla Enchanting Table. The blocks that trigger this behaviour are defined in the "rpgenchanting:enchanting_particle_targets" block tag.
+- The background sprite of the item cost slot cycles between two textures. These are identical by default, but they can be changed with a resource pack.
+- The item and experience cost for enchanting can be modified. The equations are as follows:
+
+> item_cost = old_enchantment.anvil_cost * old_enchantment.level * serverConfig.old_enchantment_item_cost_multiplier + new_enchantment.anvil_cost * new_enchantment.level * serverConfig.new_enchantment_item_cost_multiplier
+
+> experience_cost = old_enchantment.min_cost(depends on old_enchantment.level) * serverConfig.old_enchantment_experience_cost_multiplier + new_enchantment.max_cost(depends on new_enchantment.level) * serverConfig.new_enchantment_experience_cost_multiplier
 
 ## Technical details
 

@@ -3,15 +3,19 @@ package com.github.theredbrain.rpgenchanting.config;
 import com.github.theredbrain.rpgenchanting.RPGEnchanting;
 import me.fzzyhmstrs.fzzy_config.config.Config;
 import me.fzzyhmstrs.fzzy_config.entry.Entry;
+import me.fzzyhmstrs.fzzy_config.util.AllowableIdentifiers;
 import me.fzzyhmstrs.fzzy_config.util.Walkable;
 import me.fzzyhmstrs.fzzy_config.validation.collection.ValidatedList;
 import me.fzzyhmstrs.fzzy_config.validation.collection.ValidatedMap;
 import me.fzzyhmstrs.fzzy_config.validation.collection.ValidatedStringMap;
+import me.fzzyhmstrs.fzzy_config.validation.minecraft.ValidatedIdentifier;
 import me.fzzyhmstrs.fzzy_config.validation.misc.ValidatedAny;
 import me.fzzyhmstrs.fzzy_config.validation.misc.ValidatedBoolean;
 import me.fzzyhmstrs.fzzy_config.validation.misc.ValidatedString;
 import me.fzzyhmstrs.fzzy_config.validation.number.ValidatedDouble;
 import me.fzzyhmstrs.fzzy_config.validation.number.ValidatedInt;
+import net.minecraft.registry.Registries;
+import net.minecraft.util.Identifier;
 
 import java.util.HashMap;
 import java.util.List;
@@ -28,6 +32,8 @@ public class ServerConfig extends Config {
 	public ValidatedDouble new_enchantment_item_cost_multiplier = new ValidatedDouble(1.0);
 	public ValidatedDouble old_enchantment_item_cost_multiplier = new ValidatedDouble(1.0);
 
+	public ValidatedIdentifier prefix_item_cost = ValidatedIdentifier.ofRegistry(Identifier.of("minecraft:lapis_lazuli"), Registries.ITEM);
+	public ValidatedIdentifier suffix_item_cost = ValidatedIdentifier.ofRegistry(Identifier.of("minecraft:lapis_lazuli"), Registries.ITEM);
 	public ValidatedBoolean enable_alternative_item_name_for_enchanted_loot = new ValidatedBoolean(true);
 	public ValidatedBoolean hide_normal_enchantment_tooltip_for_enchanted_loot = new ValidatedBoolean(true);
 

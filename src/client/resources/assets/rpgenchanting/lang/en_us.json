@@ -2,6 +2,8 @@
 	"block.rpgenchanting.rpg_enchanting_table": "RPG Enchanting Table",
 
 	"gui.rpg_enchanting_table.title": "Enchant",
+	"gui.rpg_enchanting_table.add_enchantment": "Add...",
+	"gui.rpg_enchanting_table.replace_enchantment": "Replace with...",
 
 	"resourcepack.rpgenchanting.rpgenchanting_vanilla.name": "RPG Enchanting - Vanilla",
 	"resourcepack.rpgenchanting.rpgenchanting_vanilla_resources.name": "RPG Enchanting - Vanilla - Resources",

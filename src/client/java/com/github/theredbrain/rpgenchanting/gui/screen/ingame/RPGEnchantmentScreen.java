@@ -8,6 +8,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.screen.ingame.CyclingSlotIcon;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.render.DiffuseLighting;
 import net.minecraft.client.render.OverlayTexture;
@@ -17,6 +18,7 @@ import net.minecraft.client.render.entity.model.EntityModelLayers;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.registry.Registries;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.screen.ScreenTexts;
@@ -36,7 +38,6 @@ import java.util.Optional;
 @Environment(EnvType.CLIENT)
 public class RPGEnchantmentScreen extends HandledScreen<RPGEnchantmentScreenHandler> {
 
-	private static final Identifier ENCHANTMENT_SLOT_DISABLED_TEXTURE = Identifier.ofVanilla("container/enchanting_table/enchantment_slot_disabled");
 	private static final Identifier ENCHANTMENT_SLOT_HIGHLIGHTED_TEXTURE = Identifier.ofVanilla("container/enchanting_table/enchantment_slot_highlighted");
 	private static final Identifier ENCHANTMENT_SLOT_TEXTURE = Identifier.ofVanilla("container/enchanting_table/enchantment_slot");
 	public static final Identifier SLOT_TEXTURE = Identifier.ofVanilla("textures/gui/sprites/container/slot.png");
@@ -44,6 +45,14 @@ public class RPGEnchantmentScreen extends HandledScreen<RPGEnchantmentScreenHand
 	private static final Identifier SCROLLER_VERTICAL_6_7_DISABLED_TEXTURE = RPGEnchanting.identifier("scroll_bar/scroller_vertical_6_7_disabled");
 	private static final Identifier TEXTURE = RPGEnchanting.identifier("textures/gui/container/rpg_enchanting_table.png");
 	private static final Identifier BOOK_TEXTURE = Identifier.ofVanilla("textures/entity/enchanting_table_book.png");
+	private static final Identifier PREFIX_ITEM_COST_SLOT_TEXTURE = RPGEnchanting.identifier("item/prefix_slot_item_cost");
+	private static final Identifier SUFFIX_ITEM_COST_SLOT_TEXTURE = RPGEnchanting.identifier("item/suffix_slot_item_cost");
+	private static final List<Identifier> ITEM_COST_SLOT_TEXTURES = List.of(
+			PREFIX_ITEM_COST_SLOT_TEXTURE, SUFFIX_ITEM_COST_SLOT_TEXTURE
+	);
+	private static final Text ADD_ENCHANTMENT_TEXT = Text.translatable("gui.rpg_enchanting_table.add_enchantment");
+	private static final Text REPLACE_ENCHANTMENT_TEXT = Text.translatable("gui.rpg_enchanting_table.replace_enchantment");
+	private final CyclingSlotIcon itemCostSlotIcon = new CyclingSlotIcon(1);
 	private final Random random = Random.create();
 	private BookModel BOOK_MODEL;
 	public int ticks;
@@ -90,6 +99,7 @@ public class RPGEnchantmentScreen extends HandledScreen<RPGEnchantmentScreenHand
 	@Override
 	public void handledScreenTick() {
 		super.handledScreenTick();
+		this.itemCostSlotIcon.updateTexture(ITEM_COST_SLOT_TEXTURES);
 		this.doTick();
 	}
 
@@ -203,6 +213,8 @@ public class RPGEnchantmentScreen extends HandledScreen<RPGEnchantmentScreenHand
 			context.drawTexture(SLOT_TEXTURE, x + 61 + k * 18, y + 208, 0, 0, 18, 18, 18, 18);
 		}
 
+		this.itemCostSlotIcon.render(this.handler, context, delta, this.x, this.y);
+
 		this.drawBook(context, i, j, delta);
 
 		MutablePair<RegistryEntry.Reference<Enchantment>, Integer> existing_prefix_enchantment = this.handler.existing_prefix_enchantment;
@@ -251,9 +263,9 @@ public class RPGEnchantmentScreen extends HandledScreen<RPGEnchantmentScreenHand
 		}
 		if (!current_prefix_enchantments.isEmpty()) {
 			if (existing_prefix_enchantment != null) {
-				context.drawText(this.textRenderer, Text.literal("Replace with..."), i + 10, j + 47, 4210752, false);
+				context.drawText(this.textRenderer, REPLACE_ENCHANTMENT_TEXT, i + 10, j + 47, 4210752, false);
 			} else {
-				context.drawText(this.textRenderer, Text.literal("Add..."), i + 10, j + 47, 4210752, false);
+				context.drawText(this.textRenderer, ADD_ENCHANTMENT_TEXT, i + 10, j + 47, 4210752, false);
 			}
 
 			int index = 0;
@@ -289,9 +301,9 @@ public class RPGEnchantmentScreen extends HandledScreen<RPGEnchantmentScreenHand
 		}
 		if (!current_suffix_enchantments.isEmpty()) {
 			if (existing_suffix_enchantment != null) {
-				context.drawText(this.textRenderer, Text.literal("Replace with..."), i + 170, j + 47, 4210752, false);
+				context.drawText(this.textRenderer, REPLACE_ENCHANTMENT_TEXT, i + 170, j + 47, 4210752, false);
 			} else {
-				context.drawText(this.textRenderer, Text.literal("Add..."), i + 170, j + 47, 4210752, false);
+				context.drawText(this.textRenderer, ADD_ENCHANTMENT_TEXT, i + 170, j + 47, 4210752, false);
 			}
 
 			int index = 0;
@@ -306,7 +318,7 @@ public class RPGEnchantmentScreen extends HandledScreen<RPGEnchantmentScreenHand
 
 				int experience_cost_amount = this.handler.existing_enchantment_costs[2] + (int) Math.max(0, Math.floor(entry.getLeft().value().getMaxPower(entry.getRight()) * serverConfig.new_enchantment_exp_cost_multiplier.get()));
 				int item_cost_amount = this.handler.existing_enchantment_costs[3] + (int) Math.max(0, Math.floor(entry.getLeft().value().getAnvilCost() * entry.getRight()  * serverConfig.new_enchantment_item_cost_multiplier.get()));
-				boolean bl = (this.handler.player.experienceLevel < experience_cost_amount || this.handler.getPrefixItemCount() < item_cost_amount) && !this.handler.player.isInCreativeMode();
+				boolean bl = (this.handler.player.experienceLevel < experience_cost_amount || this.handler.getSuffixItemCount() < item_cost_amount) && !this.handler.player.isInCreativeMode();
 
 				if (optionalRegistryKey.isPresent()) {
 					text = Text.translatable(RPGEnchanting.MOD_ID + "." + optionalRegistryKey.get().getValue().toTranslationKey() + "." + entry.getRight() + ".suffix");
@@ -329,14 +341,14 @@ public class RPGEnchantmentScreen extends HandledScreen<RPGEnchantmentScreenHand
 		context.drawGuiTexture(
 				current_prefix_enchantments.size() > 4 ? SCROLLER_VERTICAL_6_7_TEXTURE : SCROLLER_VERTICAL_6_7_DISABLED_TEXTURE,
 				x + 119,
-				(int) (y + 59 + 59.0F * this.prefixEnchantmentsScrollAmount),
+				(int) (y + 59 + 69.0F * this.prefixEnchantmentsScrollAmount),
 				6,
 				7
 		);
 		context.drawGuiTexture(
 				current_suffix_enchantments.size() > 4 ? SCROLLER_VERTICAL_6_7_TEXTURE : SCROLLER_VERTICAL_6_7_DISABLED_TEXTURE,
 				x + 159,
-				(int) (y + 59 + 59.0F * this.suffixEnchantmentsScrollAmount),
+				(int) (y + 59 + 69.0F * this.suffixEnchantmentsScrollAmount),
 				6,
 				7
 		);
@@ -410,12 +422,8 @@ public class RPGEnchantmentScreen extends HandledScreen<RPGEnchantmentScreenHand
 						list.add(ScreenTexts.EMPTY);
 						int experience_cost_amount = this.handler.existing_enchantment_costs[0] + (int) Math.max(0, Math.floor(entry.getLeft().value().getMaxPower(entry.getRight()) * serverConfig.new_enchantment_exp_cost_multiplier.get()));
 						int item_cost_amount = this.handler.existing_enchantment_costs[1] + (int) Math.max(0, Math.floor(entry.getLeft().value().getAnvilCost() * entry.getRight()  * serverConfig.new_enchantment_item_cost_multiplier.get()));
-						MutableText mutableText;
-						if (item_cost_amount == 1) {
-							mutableText = Text.translatable("container.enchant.lapis.one");
-						} else {
-							mutableText = Text.translatable("container.enchant.lapis.many", new Object[]{item_cost_amount});
-						}
+
+						MutableText mutableText = Text.literal(item_cost_amount + " ").append(Registries.ITEM.get(RPGEnchanting.SERVER_CONFIG.prefix_item_cost.get()).asItem().getName());
 						list.add(mutableText.formatted(prefixItemCount >= item_cost_amount ? Formatting.GRAY : Formatting.RED));
 
 						MutableText mutableText2;
@@ -435,7 +443,7 @@ public class RPGEnchantmentScreen extends HandledScreen<RPGEnchantmentScreenHand
 		}
 		if (!current_suffix_enchantments.isEmpty()) {
 			int index = 0;
-			int prefixItemCount = this.handler.getPrefixItemCount();
+			int suffixItemCount = this.handler.getSuffixItemCount();
 			int experienceLevel = this.handler.player.experienceLevel;
 
 			for (int l = this.suffixEnchantmentsScrollPosition; l < Math.min(this.suffixEnchantmentsScrollPosition + 4, current_suffix_enchantments.size()); l++) {
@@ -447,13 +455,9 @@ public class RPGEnchantmentScreen extends HandledScreen<RPGEnchantmentScreenHand
 						list.add(ScreenTexts.EMPTY);
 						int experience_cost_amount = this.handler.existing_enchantment_costs[2] + (int) Math.max(0, Math.floor(entry.getLeft().value().getMaxPower(entry.getRight()) * serverConfig.new_enchantment_exp_cost_multiplier.get()));
 						int item_cost_amount = this.handler.existing_enchantment_costs[3] + (int) Math.max(0, Math.floor(entry.getLeft().value().getAnvilCost() * entry.getRight() * serverConfig.new_enchantment_item_cost_multiplier.get()));
-						MutableText mutableText;
-						if (item_cost_amount == 1) {
-							mutableText = Text.translatable("container.enchant.lapis.one");
-						} else {
-							mutableText = Text.translatable("container.enchant.lapis.many", new Object[]{item_cost_amount});
-						}
-						list.add(mutableText.formatted(prefixItemCount >= item_cost_amount ? Formatting.GRAY : Formatting.RED));
+
+						MutableText mutableText = Text.literal(item_cost_amount + " ").append(Registries.ITEM.get(RPGEnchanting.SERVER_CONFIG.suffix_item_cost.get()).asItem().getName());
+						list.add(mutableText.formatted(suffixItemCount >= item_cost_amount ? Formatting.GRAY : Formatting.RED));
 
 						MutableText mutableText2;
 						if (experience_cost_amount == 1) {
@@ -485,16 +489,8 @@ public class RPGEnchantmentScreen extends HandledScreen<RPGEnchantmentScreenHand
 		this.ticks++;
 		this.pageAngle = this.nextPageAngle;
 		this.pageTurningSpeed = this.nextPageTurningSpeed;
-		boolean bl = false;
 
-//		for (int i = 0; i < 3; i++) {
-//			if (this.handler.enchantmentPower[i] != 0) {
-//				bl = true;
-//			}
-//		}
-		bl = true;
-
-		if (bl) {
+		if (this.handler.existing_prefix_enchantment != null || this.handler.existing_suffix_enchantment != null) {
 			this.nextPageTurningSpeed += 0.2F;
 		} else {
 			this.nextPageTurningSpeed -= 0.2F;
