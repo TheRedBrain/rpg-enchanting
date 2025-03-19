@@ -232,12 +232,12 @@ public class RPGEnchantmentScreen extends HandledScreen<RPGEnchantmentScreenHand
 				prefixEnchantmentText = Text.translatable(RPGEnchanting.MOD_ID + "." + optionalPrefixEnchantmentKey.get().getValue().toTranslationKey() + "." + existing_prefix_enchantment.getRight() + ".prefix");
 			}
 			RenderSystem.enableBlend();
-			if (r >= 0 && s >= 0 && r < 108 && s < 19) {
-				context.drawGuiTexture(ENCHANTMENT_SLOT_HIGHLIGHTED_TEXTURE, i + 8, j + 18, 108, 19);
-				q = 16777088;
-			} else {
+//			if (r >= 0 && s >= 0 && r < 108 && s < 19) {
+//				context.drawGuiTexture(ENCHANTMENT_SLOT_HIGHLIGHTED_TEXTURE, i + 8, j + 18, 108, 19);
+//				q = 16777088;
+//			} else {
 				context.drawGuiTexture(ENCHANTMENT_SLOT_TEXTURE, i + 8, j + 18, 108, 19);
-			}
+//			}
 			RenderSystem.disableBlend();
 			context.drawTextWrapped(this.textRenderer, prefixEnchantmentText, i + 10, j + 23, p, q);
 		}
@@ -252,12 +252,12 @@ public class RPGEnchantmentScreen extends HandledScreen<RPGEnchantmentScreenHand
 				suffixEnchantmentText = Text.translatable(RPGEnchanting.MOD_ID + "." + optionalSuffixEnchantmentKey.get().getValue().toTranslationKey() + "." + existing_suffix_enchantment.getRight() + ".suffix");
 			}
 			RenderSystem.enableBlend();
-			if (r >= 0 && s >= 0 && r < 108 && s < 19) {
-				context.drawGuiTexture(ENCHANTMENT_SLOT_HIGHLIGHTED_TEXTURE, i + 168, j + 18, 108, 19);
-				q = 16777088;
-			} else {
+//			if (r >= 0 && s >= 0 && r < 108 && s < 19) {
+//				context.drawGuiTexture(ENCHANTMENT_SLOT_HIGHLIGHTED_TEXTURE, i + 168, j + 18, 108, 19);
+//				q = 16777088;
+//			} else {
 				context.drawGuiTexture(ENCHANTMENT_SLOT_TEXTURE, i + 168, j + 18, 108, 19);
-			}
+//			}
 			RenderSystem.disableBlend();
 			context.drawTextWrapped(this.textRenderer, suffixEnchantmentText, i + 170, j + 23, p, q);
 		}
