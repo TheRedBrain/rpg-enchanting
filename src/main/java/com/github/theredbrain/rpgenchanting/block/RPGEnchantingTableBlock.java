@@ -226,7 +226,7 @@ public class RPGEnchantingTableBlock extends BlockWithEntity {
 		return new ExtendedScreenHandlerFactory<>() {
 			@Override
 			public RPGEnchantmentScreenHandler.RPGEnchanterBlockData getScreenOpeningData(ServerPlayerEntity player) {
-				return new RPGEnchantmentScreenHandler.RPGEnchanterBlockData(prefix_enchantments, suffix_enchantments);
+				return new RPGEnchantmentScreenHandler.RPGEnchanterBlockData(pos, prefix_enchantments, suffix_enchantments);
 			}
 
 			@Override
@@ -237,7 +237,7 @@ public class RPGEnchantingTableBlock extends BlockWithEntity {
 			@Nullable
 			@Override
 			public ScreenHandler createMenu(int syncId, PlayerInventory playerInventory, PlayerEntity player) {
-				return new RPGEnchantmentScreenHandler(syncId, playerInventory, prefix_enchantments, suffix_enchantments);
+				return new RPGEnchantmentScreenHandler(syncId, playerInventory, pos, prefix_enchantments, suffix_enchantments);
 			}
 		};
 	}

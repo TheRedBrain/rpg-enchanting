@@ -1,11 +1,13 @@
 package com.github.theredbrain.rpgenchanting.screen;
 
 import com.github.theredbrain.rpgenchanting.RPGEnchanting;
+import com.github.theredbrain.rpgenchanting.config.ServerConfig;
 import com.github.theredbrain.rpgenchanting.registry.ItemComponentRegistry;
 import com.github.theredbrain.rpgenchanting.registry.ScreenHandlerTypesRegistry;
 import com.github.theredbrain.slotcustomizationapi.api.SlotCustomization;
 import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import net.minecraft.advancement.criterion.Criteria;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.ItemEnchantmentsComponent;
 import net.minecraft.enchantment.Enchantment;
@@ -23,9 +25,14 @@ import net.minecraft.registry.tag.EnchantmentTags;
 import net.minecraft.screen.PlayerScreenHandler;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvents;
+import net.minecraft.stat.Stats;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Unit;
 import net.minecraft.util.Util;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.apache.commons.lang3.tuple.MutablePair;
 
@@ -61,14 +68,16 @@ public class RPGEnchantmentScreenHandler extends ScreenHandler {
 	public MutablePair<RegistryEntry.Reference<Enchantment>, Integer> existing_prefix_enchantment = null;
 	public MutablePair<RegistryEntry.Reference<Enchantment>, Integer> existing_suffix_enchantment = null;
 	private final World world;
+	private final BlockPos blockPos;
 
 	public RPGEnchantmentScreenHandler(int syncId, PlayerInventory playerInventory, RPGEnchanterBlockData data) {
-		this(syncId, playerInventory, data.prefix_enchantments, data.suffix_enchantments);
+		this(syncId, playerInventory, data.blockPos, data.prefix_enchantments, data.suffix_enchantments);
 	}
 
-	public RPGEnchantmentScreenHandler(int syncId, PlayerInventory playerInventory, Set<MutablePair<String, Integer>> prefix_enchantments, Set<MutablePair<String, Integer>> suffix_enchantments) {
+	public RPGEnchantmentScreenHandler(int syncId, PlayerInventory playerInventory, BlockPos blockPos, Set<MutablePair<String, Integer>> prefix_enchantments, Set<MutablePair<String, Integer>> suffix_enchantments) {
 		super(ScreenHandlerTypesRegistry.RPG_ENCHANTMENT_SCREEN_HANDLER, syncId);
 		this.world = playerInventory.player.getWorld();
+		this.blockPos = blockPos;
 		this.addSlot(new Slot(this.inventory, 0, 134, 40) {
 			@Override
 			public int getMaxItemCount() {
@@ -267,8 +276,15 @@ public class RPGEnchantmentScreenHandler extends ScreenHandler {
 			itemEnchantmentsComponentBuilder.add(newEnchantment.getLeft(), newEnchantment.getRight());
 			itemStack.set(DataComponentTypes.ENCHANTMENTS, itemEnchantmentsComponentBuilder.build().withShowInTooltip(false));
 			itemStack.set(RPGEnchanting.SHOW_ENCHANTMENT_NAME_ADDITIONS, Unit.INSTANCE);
-//				}
+
+			player.incrementStat(Stats.ENCHANT_ITEM);
+//			if (player instanceof ServerPlayerEntity) {
+//				Criteria.ENCHANTED_ITEM.trigger((ServerPlayerEntity)player, itemStack, i);
+//			}
+
 			this.inventory.markDirty();
+			this.onContentChanged(this.inventory);
+			world.playSound(null, this.blockPos, SoundEvents.BLOCK_ENCHANTMENT_TABLE_USE, SoundCategory.BLOCKS, 1.0F, world.random.nextFloat() * 0.1F + 0.9F);
 		} else if (id >= first_threshold && id < first_threshold + this.current_suffix_enchantments.size()) {
 			MutablePair<RegistryEntry.Reference<Enchantment>, Integer> newEnchantment = this.current_suffix_enchantments.get(id);
 //				int i = 1; // TODO get item cost count, enchantment cost * multiplier + prev_enchantment cost * multiplier + additional_cost
@@ -280,13 +296,15 @@ public class RPGEnchantmentScreenHandler extends ScreenHandler {
 			itemEnchantmentsComponentBuilder.add(newEnchantment.getLeft(), newEnchantment.getRight());
 			itemStack.set(DataComponentTypes.ENCHANTMENTS, itemEnchantmentsComponentBuilder.build().withShowInTooltip(false));
 			itemStack.set(RPGEnchanting.SHOW_ENCHANTMENT_NAME_ADDITIONS, Unit.INSTANCE);
-//				}
-			this.inventory.markDirty();
-//			} else if (id == -1) {
-//				this.currentPage.set(0);
-//			} else {
-//				return false;
+
+			player.incrementStat(Stats.ENCHANT_ITEM);
+//			if (player instanceof ServerPlayerEntity) {
+//				Criteria.ENCHANTED_ITEM.trigger((ServerPlayerEntity)player, itemStack, i);
 //			}
+
+			this.inventory.markDirty();
+			this.onContentChanged(this.inventory);
+			world.playSound(null, this.blockPos, SoundEvents.BLOCK_ENCHANTMENT_TABLE_USE, SoundCategory.BLOCKS, 1.0F, world.random.nextFloat() * 0.1F + 0.9F);
 		} else {
 			Util.error(player.getName() + " pressed invalid button id: " + id);
 			return false;
@@ -426,6 +444,7 @@ public class RPGEnchantmentScreenHandler extends ScreenHandler {
 	}
 
 	public record RPGEnchanterBlockData(
+			BlockPos blockPos,
 			Set<MutablePair<String, Integer>> prefix_enchantments,
 			Set<MutablePair<String, Integer>> suffix_enchantments
 	) {
@@ -434,12 +453,14 @@ public class RPGEnchantmentScreenHandler extends ScreenHandler {
 
 		public RPGEnchanterBlockData(RegistryByteBuf registryByteBuf) {
 			this(
+					registryByteBuf.readBlockPos(),
 					registryByteBuf.readCollection(HashSet::new, RPGEnchanting.MUTABLE_PAIR_STRING_INTEGER),
 					registryByteBuf.readCollection(HashSet::new, RPGEnchanting.MUTABLE_PAIR_STRING_INTEGER)
 			);
 		}
 
 		private void write(RegistryByteBuf registryByteBuf) {
+			registryByteBuf.writeBlockPos(blockPos);
 			registryByteBuf.writeCollection(this.prefix_enchantments, RPGEnchanting.MUTABLE_PAIR_STRING_INTEGER);
 			registryByteBuf.writeCollection(this.suffix_enchantments, RPGEnchanting.MUTABLE_PAIR_STRING_INTEGER);
 		}
