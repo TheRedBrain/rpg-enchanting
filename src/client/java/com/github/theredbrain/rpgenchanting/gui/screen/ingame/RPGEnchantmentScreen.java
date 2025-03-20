@@ -95,12 +95,15 @@ public class RPGEnchantmentScreen extends HandledScreen<RPGEnchantmentScreenHand
 		this.prefixEnchantmentsScrollAmount = 0.0f;
 		this.suffixEnchantmentsScrollPosition = 0;
 		this.suffixEnchantmentsScrollAmount = 0.0f;
+		this.itemCostSlotIcon.updateTexture(ITEM_COST_SLOT_TEXTURES);
 	}
 
 	@Override
 	public void handledScreenTick() {
 		super.handledScreenTick();
-		this.itemCostSlotIcon.updateTexture(ITEM_COST_SLOT_TEXTURES);
+		if (RPGEnchantingClient.CLIENT_CONFIG.enable_texture_cycling_for_item_cost_slot.get()) {
+			this.itemCostSlotIcon.updateTexture(ITEM_COST_SLOT_TEXTURES);
+		}
 		this.doTick();
 	}
 
