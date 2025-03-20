@@ -2,22 +2,16 @@ package com.github.theredbrain.rpgenchanting.config;
 
 import com.github.theredbrain.rpgenchanting.RPGEnchanting;
 import me.fzzyhmstrs.fzzy_config.config.Config;
-import me.fzzyhmstrs.fzzy_config.entry.Entry;
-import me.fzzyhmstrs.fzzy_config.util.AllowableIdentifiers;
 import me.fzzyhmstrs.fzzy_config.util.Walkable;
 import me.fzzyhmstrs.fzzy_config.validation.collection.ValidatedList;
-import me.fzzyhmstrs.fzzy_config.validation.collection.ValidatedMap;
-import me.fzzyhmstrs.fzzy_config.validation.collection.ValidatedStringMap;
 import me.fzzyhmstrs.fzzy_config.validation.minecraft.ValidatedIdentifier;
 import me.fzzyhmstrs.fzzy_config.validation.misc.ValidatedAny;
 import me.fzzyhmstrs.fzzy_config.validation.misc.ValidatedBoolean;
-import me.fzzyhmstrs.fzzy_config.validation.misc.ValidatedString;
 import me.fzzyhmstrs.fzzy_config.validation.number.ValidatedDouble;
 import me.fzzyhmstrs.fzzy_config.validation.number.ValidatedInt;
 import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
 
-import java.util.HashMap;
 import java.util.List;
 
 public class ServerConfig extends Config {

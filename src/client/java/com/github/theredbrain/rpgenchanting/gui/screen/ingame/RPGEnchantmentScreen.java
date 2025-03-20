@@ -226,44 +226,28 @@ public class RPGEnchantmentScreen extends HandledScreen<RPGEnchantmentScreenHand
 		List<MutablePair<RegistryEntry.Reference<Enchantment>, Integer>> current_prefix_enchantments = this.handler.current_prefix_enchantments;
 		List<MutablePair<RegistryEntry.Reference<Enchantment>, Integer>> current_suffix_enchantments = this.handler.current_suffix_enchantments;
 		if (existing_prefix_enchantment != null) {
-			int r = mouseX - (i + 8);
-			int s = mouseY - (j + 18);
-			int p = 106;
-			int q = 6839882;
 			Optional<RegistryKey<Enchantment>> optionalPrefixEnchantmentKey = existing_prefix_enchantment.getLeft().getKey();
 			MutableText prefixEnchantmentText = Text.empty();
 			if (optionalPrefixEnchantmentKey.isPresent()) {
 				prefixEnchantmentText = Text.translatable(RPGEnchanting.MOD_ID + "." + optionalPrefixEnchantmentKey.get().getValue().toTranslationKey() + "." + existing_prefix_enchantment.getRight() + ".prefix");
 			}
 			RenderSystem.enableBlend();
-//			if (r >= 0 && s >= 0 && r < 108 && s < 19) {
-//				context.drawGuiTexture(ENCHANTMENT_SLOT_HIGHLIGHTED_TEXTURE, i + 8, j + 18, 108, 19);
-//				q = 16777088;
-//			} else {
-				context.drawGuiTexture(ENCHANTMENT_SLOT_TEXTURE, i + 8, j + 18, 108, 19);
-//			}
+			context.drawGuiTexture(ENCHANTMENT_SLOT_TEXTURE, i + 8, j + 18, 108, 19);
 			RenderSystem.disableBlend();
-			context.drawTextWrapped(this.textRenderer, prefixEnchantmentText, i + 10, j + 23, p, q);
+
+			context.drawTextWrapped(this.textRenderer, prefixEnchantmentText, i + 10, j + 23, 106, 6839882);
 		}
 		if (existing_suffix_enchantment != null) {
-			int r = mouseX - (i + 168);
-			int s = mouseY - (j + 18);
-			int p = 106;
-			int q = 6839882;
 			Optional<RegistryKey<Enchantment>> optionalSuffixEnchantmentKey = existing_suffix_enchantment.getLeft().getKey();
 			MutableText suffixEnchantmentText = Text.empty();
 			if (optionalSuffixEnchantmentKey.isPresent()) {
 				suffixEnchantmentText = Text.translatable(RPGEnchanting.MOD_ID + "." + optionalSuffixEnchantmentKey.get().getValue().toTranslationKey() + "." + existing_suffix_enchantment.getRight() + ".suffix");
 			}
 			RenderSystem.enableBlend();
-//			if (r >= 0 && s >= 0 && r < 108 && s < 19) {
-//				context.drawGuiTexture(ENCHANTMENT_SLOT_HIGHLIGHTED_TEXTURE, i + 168, j + 18, 108, 19);
-//				q = 16777088;
-//			} else {
-				context.drawGuiTexture(ENCHANTMENT_SLOT_TEXTURE, i + 168, j + 18, 108, 19);
-//			}
+			context.drawGuiTexture(ENCHANTMENT_SLOT_TEXTURE, i + 168, j + 18, 108, 19);
 			RenderSystem.disableBlend();
-			context.drawTextWrapped(this.textRenderer, suffixEnchantmentText, i + 170, j + 23, p, q);
+
+			context.drawTextWrapped(this.textRenderer, suffixEnchantmentText, i + 170, j + 23, 106, 6839882);
 		}
 		if (!current_prefix_enchantments.isEmpty()) {
 			if (existing_prefix_enchantment != null) {
@@ -283,7 +267,7 @@ public class RPGEnchantmentScreen extends HandledScreen<RPGEnchantmentScreenHand
 				MutableText text = Text.empty();
 
 				int experience_cost_amount = this.handler.existing_enchantment_costs[0] + (int) Math.max(0, Math.floor(entry.getLeft().value().getMaxPower(entry.getRight()) * serverConfig.new_enchantment_exp_cost_multiplier.get()));
-				int item_cost_amount = this.handler.existing_enchantment_costs[1] + (int) Math.max(0, Math.floor(entry.getLeft().value().getAnvilCost() * entry.getRight()  * serverConfig.new_enchantment_item_cost_multiplier.get()));
+				int item_cost_amount = this.handler.existing_enchantment_costs[1] + (int) Math.max(0, Math.floor(entry.getLeft().value().getAnvilCost() * entry.getRight() * serverConfig.new_enchantment_item_cost_multiplier.get()));
 				boolean bl = (this.handler.player.experienceLevel < experience_cost_amount || this.handler.getPrefixItemCount() < item_cost_amount) && !this.handler.player.isInCreativeMode();
 
 				if (optionalRegistryKey.isPresent()) {
@@ -321,7 +305,7 @@ public class RPGEnchantmentScreen extends HandledScreen<RPGEnchantmentScreenHand
 				MutableText text = Text.empty();
 
 				int experience_cost_amount = this.handler.existing_enchantment_costs[2] + (int) Math.max(0, Math.floor(entry.getLeft().value().getMaxPower(entry.getRight()) * serverConfig.new_enchantment_exp_cost_multiplier.get()));
-				int item_cost_amount = this.handler.existing_enchantment_costs[3] + (int) Math.max(0, Math.floor(entry.getLeft().value().getAnvilCost() * entry.getRight()  * serverConfig.new_enchantment_item_cost_multiplier.get()));
+				int item_cost_amount = this.handler.existing_enchantment_costs[3] + (int) Math.max(0, Math.floor(entry.getLeft().value().getAnvilCost() * entry.getRight() * serverConfig.new_enchantment_item_cost_multiplier.get()));
 				boolean bl = (this.handler.player.experienceLevel < experience_cost_amount || this.handler.getSuffixItemCount() < item_cost_amount) && !this.handler.player.isInCreativeMode();
 
 				if (optionalRegistryKey.isPresent()) {
@@ -438,7 +422,7 @@ public class RPGEnchantmentScreen extends HandledScreen<RPGEnchantmentScreenHand
 					if (!bl) {
 						list.add(ScreenTexts.EMPTY);
 						int experience_cost_amount = this.handler.existing_enchantment_costs[0] + (int) Math.max(0, Math.floor(entry.getLeft().value().getMaxPower(entry.getRight()) * serverConfig.new_enchantment_exp_cost_multiplier.get()));
-						int item_cost_amount = this.handler.existing_enchantment_costs[1] + (int) Math.max(0, Math.floor(entry.getLeft().value().getAnvilCost() * entry.getRight()  * serverConfig.new_enchantment_item_cost_multiplier.get()));
+						int item_cost_amount = this.handler.existing_enchantment_costs[1] + (int) Math.max(0, Math.floor(entry.getLeft().value().getAnvilCost() * entry.getRight() * serverConfig.new_enchantment_item_cost_multiplier.get()));
 
 						if (item_cost_amount > 0) {
 							MutableText mutableText = Text.literal(item_cost_amount + " ").append(Registries.ITEM.get(RPGEnchanting.SERVER_CONFIG.prefix_item_cost.get()).asItem().getName());

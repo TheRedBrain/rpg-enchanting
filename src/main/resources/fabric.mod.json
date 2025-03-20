@@ -1,42 +1,42 @@
 {
-	"schemaVersion": 1,
-	"id": "rpgenchanting",
-	"version": "${version}",
-	"name": "RPG Enchanting",
-	"description": "An alternative approach to the enchanting system.",
-	"authors": [
-		"TheRedBrain"
-	],
-	"contact": {
-		"sources": "https://github.com/TheRedBrain/rpg-enchanting"
-	},
-	"license": "MIT",
-	"icon": "assets/rpgenchanting/icon.png",
-	"environment": "*",
-	"entrypoints": {
-		"main": [
-			"com.github.theredbrain.rpgenchanting.RPGEnchanting"
-		],
-		"client": [
-			"com.github.theredbrain.rpgenchanting.RPGEnchantingClient"
-		]
-	},
-	"mixins": [
-		"rpgenchanting.mixins.json",
-		{
-			"config": "rpgenchanting.client.mixins.json",
-			"environment": "client"
-		}
-	],
-	"depends": {
-		"minecraft": "${minecraft_version}",
-		"fabricloader": ">=${loader_version}",
-		"fabric-api": "*",
-		"fzzy_config": ">=${fzzy_config_version}",
-		"slotcustomizationapi": ">=${slot_customization_api_version}"
-	},
-	"suggests": {
-		"enchdesc": "*",
-		"patched": "*"
-	}
+  "schemaVersion": 1,
+  "id": "rpgenchanting",
+  "version": "${version}",
+  "name": "RPG Enchanting",
+  "description": "An alternative approach to the enchanting system.",
+  "authors": [
+    "TheRedBrain"
+  ],
+  "contact": {
+    "sources": "https://github.com/TheRedBrain/rpg-enchanting"
+  },
+  "license": "MIT",
+  "icon": "assets/rpgenchanting/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "com.github.theredbrain.rpgenchanting.RPGEnchanting"
+    ],
+    "client": [
+      "com.github.theredbrain.rpgenchanting.RPGEnchantingClient"
+    ]
+  },
+  "mixins": [
+    "rpgenchanting.mixins.json",
+    {
+      "config": "rpgenchanting.client.mixins.json",
+      "environment": "client"
+    }
+  ],
+  "depends": {
+    "minecraft": "${minecraft_version}",
+    "fabricloader": ">=${loader_version}",
+    "fabric-api": "*",
+    "fzzy_config": ">=${fzzy_config_version}",
+    "slotcustomizationapi": ">=${slot_customization_api_version}"
+  },
+  "suggests": {
+    "enchdesc": "*",
+    "patched": "*"
+  }
 }

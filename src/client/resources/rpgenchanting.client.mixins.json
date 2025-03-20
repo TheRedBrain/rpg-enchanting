@@ -1,10 +1,10 @@
 {
-	"required": true,
-	"package": "com.github.theredbrain.rpgenchanting.mixin.client",
-	"compatibilityLevel": "JAVA_21",
-	"client": [
-	],
-	"injectors": {
-		"defaultRequire": 1
-	}
+  "required": true,
+  "package": "com.github.theredbrain.rpgenchanting.mixin.client",
+  "compatibilityLevel": "JAVA_21",
+  "client": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
 }
