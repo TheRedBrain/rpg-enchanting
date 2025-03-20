@@ -8,6 +8,9 @@
 	"resourcepack.rpgenchanting.rpgenchanting_vanilla.name": "RPG Enchanting - Vanilla",
 	"resourcepack.rpgenchanting.rpgenchanting_vanilla_resources.name": "RPG Enchanting - Vanilla - Resources",
 
+	"resourcepack.rpgenchanting.rpgenchanting_rpg_series.name": "RPG Enchanting - RPG Series",
+	"resourcepack.rpgenchanting.rpgenchanting_rpg_series_resources.name": "RPG Enchanting - RPG Series - Resources",
+
 	"rpgenchanting.server": "Server Side Settings",
 
 	"rpgcrafting.server.rpg_enchanting_table_block_reach_radius": "RPG Enchanting Table eReach",

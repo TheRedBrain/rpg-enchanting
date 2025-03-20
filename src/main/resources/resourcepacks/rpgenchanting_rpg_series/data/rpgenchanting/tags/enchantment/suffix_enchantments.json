@@ -1,0 +1,28 @@
+{
+  "values": [
+    {
+      "id": "spell_engine:spell_infinity",
+      "required": false
+    },
+    {
+      "id": "spell_power:critical_chance",
+      "required": false
+    },
+    {
+      "id": "spell_power:critical_damage",
+      "required": false
+    },
+    {
+      "id": "spell_power:energize",
+      "required": false
+    },
+    {
+      "id": "spell_power:soulfrost",
+      "required": false
+    },
+    {
+      "id": "spell_power:sunfire",
+      "required": false
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "values": [
+    {
+      "id": "spell_power:haste",
+      "required": false
+    },
+    {
+      "id": "spell_power:magic_protection",
+      "required": false
+    },
+    {
+      "id": "spell_power:spell_power",
+      "required": false
+    }
+  ]
+}
