@@ -1,0 +1,32 @@
+{
+  "values": [
+    {
+      "id": "more_rpg_classes:elemental",
+      "required": false
+    },
+    {
+      "id": "witcher_rpg:aard_intensity",
+      "required": false
+    },
+    {
+      "id": "witcher_rpg:axii_intensity",
+      "required": false
+    },
+    {
+      "id": "witcher_rpg:igni_intensity",
+      "required": false
+    },
+    {
+      "id": "witcher_rpg:quen_intensity",
+      "required": false
+    },
+    {
+      "id": "witcher_rpg:sign_intensity",
+      "required": false
+    },
+    {
+      "id": "witcher_rpg:yrden_intensity",
+      "required": false
+    }
+  ]
+}
