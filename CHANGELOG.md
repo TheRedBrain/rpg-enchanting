@@ -1,3 +1,10 @@
+# 1.1.0
+
+- added optional compatibility with 'Enchantment Descriptions'
+- added compatibility data/resource packs for the 'RPG Series' mods by Daedelus
+- added compatibility data/resource packs for the 'More RPG Series' mods by Fichte
+- several small fixes
+
 # 1.0.0
 
 First release.

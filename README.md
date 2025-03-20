@@ -79,24 +79,28 @@ E.g. if the "minecraft:efficiency" enchantment is in the "prefix" tag, the local
 
 ### Built-in data and resource packs
 
-RPG Enchanting comes with a data pack that brings compatibility for all vanilla enchantments.
+RPG Enchanting comes with several data/resource packs that bring compatibility for vanilla Minecraft and several mods.
 
-The mod Patched is required for full functionality.
+- The RPG Series mods by Daedelus
+- The More RPG Series mods by Fichte
 
-This includes the following:
+The mod [Patched](https://github.com/EnderTurret/PatchedMod) is required for full functionality.
+
+These packs include the following:
 
 - adding all enchantments to one of these enchantment tags
 - each enchantment has a corresponding patch file, that sets the "exclusive_set" to either "#rpgenchanting:prefix_enchantments" or "#rpgenchanting:suffix_enchantments".
 
 > Using Patched is not a requirement, the exclusive_set can also be configured the normal way. Using "Patched" ensures compatibility with mods/data packs that modify vanilla enchantments
 
-The resource pack provides the localization for the item name additions.
+The resource packs provide the localization for the item name additions.
 
 ## Customization
 
 These features of RPG Enchanting can also be customized:
 - The RPG Enchanting Table spawns particles, exactly like the vanilla Enchanting Table. The blocks that trigger this behaviour are defined in the "rpgenchanting:enchanting_particle_targets" block tag.
-- The background sprite of the item cost slot cycles between two textures. These are identical by default, but they can be changed with a resource pack.
+- The background sprite of the item cost slot can optionally cycle between two textures. This can be enabled in the client config. The textures are identical by default, but they can be changed with a resource pack.
+- The enchantment tooltips can optionally display a description of the enchantment. This can be enabled in the client config. Installing the mod [Enchantment Descriptions](https://github.com/Darkhax-Minecraft/Enchantment-Descriptions) is recommended.
 - The item and experience cost for enchanting can be modified. The equations are as follows:
 
 > item_cost = old_enchantment.anvil_cost * old_enchantment.level * serverConfig.old_enchantment_item_cost_multiplier + new_enchantment.anvil_cost * new_enchantment.level * serverConfig.new_enchantment_item_cost_multiplier
