@@ -10,6 +10,7 @@ public class ClientConfig extends Config {
 		super(RPGEnchanting.identifier("client"));
 	}
 
+	public ValidatedBoolean show_enchantment_descriptions = new ValidatedBoolean(false);
 	public ValidatedBoolean show_inactive_slots = new ValidatedBoolean(false);
 
 }

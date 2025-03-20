@@ -2,6 +2,7 @@ package com.github.theredbrain.rpgenchanting.gui.screen.ingame;
 
 import com.github.theredbrain.rpgenchanting.RPGEnchanting;
 import com.github.theredbrain.rpgenchanting.RPGEnchantingClient;
+import com.github.theredbrain.rpgenchanting.config.ClientConfig;
 import com.github.theredbrain.rpgenchanting.config.ServerConfig;
 import com.github.theredbrain.rpgenchanting.screen.RPGEnchantmentScreenHandler;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -386,6 +387,7 @@ public class RPGEnchantmentScreen extends HandledScreen<RPGEnchantmentScreenHand
 		int k;
 		int m;
 		boolean bl = this.handler.player.isInCreativeMode();
+		ClientConfig clientConfig = RPGEnchantingClient.CLIENT_CONFIG;
 		ServerConfig serverConfig = RPGEnchanting.SERVER_CONFIG;
 
 		MutablePair<RegistryEntry.Reference<Enchantment>, Integer> existing_prefix_enchantment = this.handler.existing_prefix_enchantment;
@@ -396,6 +398,10 @@ public class RPGEnchantmentScreen extends HandledScreen<RPGEnchantmentScreenHand
 			if (this.isPointWithinBounds(8, 18, 108, 19, mouseX, mouseY)) {
 				List<Text> list = new ArrayList<>();
 				list.add(Enchantment.getName(existing_prefix_enchantment.getLeft(), existing_prefix_enchantment.getRight()));
+				Optional<RegistryKey<Enchantment>> optionalRegistryKey = existing_prefix_enchantment.getLeft().getKey();
+				if (optionalRegistryKey.isPresent() && clientConfig.show_enchantment_descriptions.get()) {
+					list.add(Text.translatable("enchantment." + optionalRegistryKey.get().getValue().toTranslationKey() + ".desc").formatted(Formatting.GRAY));
+				}
 				context.drawTooltip(this.textRenderer, list, mouseX, mouseY);
 				return;
 			}
@@ -404,6 +410,10 @@ public class RPGEnchantmentScreen extends HandledScreen<RPGEnchantmentScreenHand
 			if (this.isPointWithinBounds(168, 18, 108, 19, mouseX, mouseY)) {
 				List<Text> list = new ArrayList<>();
 				list.add(Enchantment.getName(existing_suffix_enchantment.getLeft(), existing_suffix_enchantment.getRight()));
+				Optional<RegistryKey<Enchantment>> optionalRegistryKey = existing_suffix_enchantment.getLeft().getKey();
+				if (optionalRegistryKey.isPresent() && clientConfig.show_enchantment_descriptions.get()) {
+					list.add(Text.translatable("enchantment." + optionalRegistryKey.get().getValue().toTranslationKey() + ".desc").formatted(Formatting.GRAY));
+				}
 				context.drawTooltip(this.textRenderer, list, mouseX, mouseY);
 				return;
 			}
@@ -418,21 +428,29 @@ public class RPGEnchantmentScreen extends HandledScreen<RPGEnchantmentScreenHand
 					MutablePair<RegistryEntry.Reference<Enchantment>, Integer> entry = current_prefix_enchantments.get(l);
 					List<Text> list = new ArrayList<>();
 					list.add(Enchantment.getName(entry.getLeft(), entry.getRight()));
+					Optional<RegistryKey<Enchantment>> optionalRegistryKey = entry.getLeft().getKey();
+					if (optionalRegistryKey.isPresent() && clientConfig.show_enchantment_descriptions.get()) {
+						list.add(Text.translatable("enchantment." + optionalRegistryKey.get().getValue().toTranslationKey() + ".desc").formatted(Formatting.GRAY));
+					}
 					if (!bl) {
 						list.add(ScreenTexts.EMPTY);
 						int experience_cost_amount = this.handler.existing_enchantment_costs[0] + (int) Math.max(0, Math.floor(entry.getLeft().value().getMaxPower(entry.getRight()) * serverConfig.new_enchantment_exp_cost_multiplier.get()));
 						int item_cost_amount = this.handler.existing_enchantment_costs[1] + (int) Math.max(0, Math.floor(entry.getLeft().value().getAnvilCost() * entry.getRight()  * serverConfig.new_enchantment_item_cost_multiplier.get()));
 
-						MutableText mutableText = Text.literal(item_cost_amount + " ").append(Registries.ITEM.get(RPGEnchanting.SERVER_CONFIG.prefix_item_cost.get()).asItem().getName());
-						list.add(mutableText.formatted(prefixItemCount >= item_cost_amount ? Formatting.GRAY : Formatting.RED));
-
-						MutableText mutableText2;
-						if (experience_cost_amount == 1) {
-							mutableText2 = Text.translatable("container.enchant.level.one");
-						} else {
-							mutableText2 = Text.translatable("container.enchant.level.many", new Object[]{experience_cost_amount});
+						if (item_cost_amount > 0) {
+							MutableText mutableText = Text.literal(item_cost_amount + " ").append(Registries.ITEM.get(RPGEnchanting.SERVER_CONFIG.prefix_item_cost.get()).asItem().getName());
+							list.add(mutableText.formatted(prefixItemCount >= item_cost_amount ? Formatting.GRAY : Formatting.RED));
 						}
-						list.add(mutableText2.formatted(experienceLevel >= experience_cost_amount ? Formatting.GRAY : Formatting.RED));
+
+						if (experience_cost_amount > 0) {
+							MutableText mutableText2;
+							if (experience_cost_amount == 1) {
+								mutableText2 = Text.translatable("container.enchant.level.one");
+							} else {
+								mutableText2 = Text.translatable("container.enchant.level.many", new Object[]{experience_cost_amount});
+							}
+							list.add(mutableText2.formatted(experienceLevel >= experience_cost_amount ? Formatting.GRAY : Formatting.RED));
+						}
 					}
 
 					context.drawTooltip(this.textRenderer, list, mouseX, mouseY);
@@ -451,21 +469,29 @@ public class RPGEnchantmentScreen extends HandledScreen<RPGEnchantmentScreenHand
 					MutablePair<RegistryEntry.Reference<Enchantment>, Integer> entry = current_suffix_enchantments.get(l);
 					List<Text> list = new ArrayList<>();
 					list.add(Enchantment.getName(entry.getLeft(), entry.getRight()));
+					Optional<RegistryKey<Enchantment>> optionalRegistryKey = entry.getLeft().getKey();
+					if (optionalRegistryKey.isPresent() && clientConfig.show_enchantment_descriptions.get()) {
+						list.add(Text.translatable("enchantment." + optionalRegistryKey.get().getValue().toTranslationKey() + ".desc").formatted(Formatting.GRAY));
+					}
 					if (!bl) {
 						list.add(ScreenTexts.EMPTY);
 						int experience_cost_amount = this.handler.existing_enchantment_costs[2] + (int) Math.max(0, Math.floor(entry.getLeft().value().getMaxPower(entry.getRight()) * serverConfig.new_enchantment_exp_cost_multiplier.get()));
 						int item_cost_amount = this.handler.existing_enchantment_costs[3] + (int) Math.max(0, Math.floor(entry.getLeft().value().getAnvilCost() * entry.getRight() * serverConfig.new_enchantment_item_cost_multiplier.get()));
 
-						MutableText mutableText = Text.literal(item_cost_amount + " ").append(Registries.ITEM.get(RPGEnchanting.SERVER_CONFIG.suffix_item_cost.get()).asItem().getName());
-						list.add(mutableText.formatted(suffixItemCount >= item_cost_amount ? Formatting.GRAY : Formatting.RED));
-
-						MutableText mutableText2;
-						if (experience_cost_amount == 1) {
-							mutableText2 = Text.translatable("container.enchant.level.one");
-						} else {
-							mutableText2 = Text.translatable("container.enchant.level.many", new Object[]{experience_cost_amount});
+						if (item_cost_amount > 0) {
+							MutableText mutableText = Text.literal(item_cost_amount + " ").append(Registries.ITEM.get(RPGEnchanting.SERVER_CONFIG.suffix_item_cost.get()).asItem().getName());
+							list.add(mutableText.formatted(suffixItemCount >= item_cost_amount ? Formatting.GRAY : Formatting.RED));
 						}
-						list.add(mutableText2.formatted(experienceLevel >= experience_cost_amount ? Formatting.GRAY : Formatting.RED));
+
+						if (experience_cost_amount > 0) {
+							MutableText mutableText2;
+							if (experience_cost_amount == 1) {
+								mutableText2 = Text.translatable("container.enchant.level.one");
+							} else {
+								mutableText2 = Text.translatable("container.enchant.level.many", new Object[]{experience_cost_amount});
+							}
+							list.add(mutableText2.formatted(experienceLevel >= experience_cost_amount ? Formatting.GRAY : Formatting.RED));
+						}
 					}
 
 					context.drawTooltip(this.textRenderer, list, mouseX, mouseY);

@@ -36,6 +36,7 @@
 		"slotcustomizationapi": ">=${slot_customization_api_version}"
 	},
 	"suggests": {
+		"enchdesc": "*",
 		"patched": "*"
 	}
 }
