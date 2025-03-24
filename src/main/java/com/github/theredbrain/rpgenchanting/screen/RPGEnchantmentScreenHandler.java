@@ -8,6 +8,7 @@ import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import net.minecraft.advancement.criterion.Criteria;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.ItemEnchantmentsComponent;
+import net.minecraft.component.type.ProfileComponent;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -212,6 +213,9 @@ public class RPGEnchantmentScreenHandler extends ScreenHandler {
 			itemEnchantmentsComponentBuilder.add(newEnchantment.getLeft(), newEnchantment.getRight());
 			itemStack.set(DataComponentTypes.ENCHANTMENTS, itemEnchantmentsComponentBuilder.build().withShowInTooltip(false));
 			itemStack.set(RPGEnchanting.SHOW_ENCHANTMENT_NAME_ADDITIONS, Unit.INSTANCE);
+			if (serverConfig.enable_enchanted_by_player_component_application.get()) {
+				itemStack.set(RPGEnchanting.PLAYER_ENCHANTED, new ProfileComponent(player.getGameProfile()));
+			}
 
 			itemStack2.decrementUnlessCreative(item_cost_amount, player);
 			if (itemStack2.isEmpty()) {
@@ -248,6 +252,9 @@ public class RPGEnchantmentScreenHandler extends ScreenHandler {
 			itemEnchantmentsComponentBuilder.add(newEnchantment.getLeft(), newEnchantment.getRight());
 			itemStack.set(DataComponentTypes.ENCHANTMENTS, itemEnchantmentsComponentBuilder.build().withShowInTooltip(false));
 			itemStack.set(RPGEnchanting.SHOW_ENCHANTMENT_NAME_ADDITIONS, Unit.INSTANCE);
+			if (serverConfig.enable_enchanted_by_player_component_application.get()) {
+				itemStack.set(RPGEnchanting.PLAYER_ENCHANTED, new ProfileComponent(player.getGameProfile()));
+			}
 
 			itemStack2.decrementUnlessCreative(item_cost_amount, player);
 			if (itemStack2.isEmpty()) {

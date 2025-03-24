@@ -16,6 +16,7 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 import net.minecraft.block.Block;
 import net.minecraft.component.ComponentType;
+import net.minecraft.component.type.ProfileComponent;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.codec.PacketCodec;
@@ -42,6 +43,7 @@ public class RPGEnchanting implements ModInitializer {
 	public static TagKey<Enchantment> SUFFIX_ENCHANTMENTS = TagKey.of(RegistryKeys.ENCHANTMENT, identifier("suffix_enchantments"));
 
 	public static ComponentType<Unit> SHOW_ENCHANTMENT_NAME_ADDITIONS;
+	public static ComponentType<ProfileComponent> PLAYER_ENCHANTED;
 
 	public static final boolean isInventorySizeAttributesLoaded = FabricLoader.getInstance().isModLoaded("inventorysizeattributes");
 

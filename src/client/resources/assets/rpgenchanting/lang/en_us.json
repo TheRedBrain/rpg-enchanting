@@ -1,6 +1,8 @@
 {
 	"block.rpgenchanting.rpg_enchanting_table": "RPG Enchanting Table",
 
+	"item.additional_tooltip.player_relation.enchanted_by": "Enchanted by %s",
+
 	"gui.rpg_enchanting_table.title": "Enchant",
 	"gui.rpg_enchanting_table.add_enchantment": "Add...",
 	"gui.rpg_enchanting_table.replace_enchantment": "Replace with...",
