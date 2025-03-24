@@ -16,6 +16,7 @@ import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.BlockWithEntity;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.ChiseledBookshelfBlock;
 import net.minecraft.block.ShapeContext;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityTicker;
@@ -168,7 +169,7 @@ public class RPGEnchantingTableBlock extends BlockWithEntity {
 							}
 							blockMap.remove(block);
 						}
-						if (checkChiseledBookShelves && blockState.isOf(Blocks.CHISELED_BOOKSHELF)) {
+						if (checkChiseledBookShelves && blockState.getBlock() instanceof ChiseledBookshelfBlock) {
 							BlockEntity blockEntity = world.getBlockEntity(blockPos);
 							if (blockEntity instanceof ChiseledBookshelfBlockEntity chiseledBookshelfBlockEntity) {
 								for (int l = 0; l < 6; l++) {
