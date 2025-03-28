@@ -3,7 +3,7 @@
       "op": "test",
       "type": "patched:mod_loaded",
       "value": "spell_engine"
-    }
+    },
     {
       "op": "add",
       "path": "/exclusive_set",

@@ -3,7 +3,7 @@
       "op": "test",
       "type": "patched:mod_loaded",
       "value": "spell_power"
-    }
+    },
     {
       "op": "add",
       "path": "/exclusive_set",

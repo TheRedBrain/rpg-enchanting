@@ -3,7 +3,7 @@
       "op": "test",
       "type": "patched:mod_loaded",
       "value": "more_rpg_classes"
-    }
+    },
     {
       "op": "add",
       "path": "/exclusive_set",

@@ -3,7 +3,7 @@
       "op": "test",
       "type": "patched:mod_loaded",
       "value": "witcher_rpg"
-    }
+    },
     {
       "op": "add",
       "path": "/exclusive_set",
