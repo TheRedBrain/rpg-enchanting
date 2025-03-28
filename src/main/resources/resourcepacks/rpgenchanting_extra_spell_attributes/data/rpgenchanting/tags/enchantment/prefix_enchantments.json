@@ -1,0 +1,20 @@
+{
+  "values": [
+	{
+      "id": "extraspellattributes:suppression",
+      "required": false
+    },
+    {
+      "id": "extraspellattributes:warding",
+      "required": false
+    },
+   {
+      "id": "extraspellattributes:fortified",
+      "required": false
+    },
+	   {
+      "id": "extraspellattributes:aureate",
+      "required": false
+    }
+  ]
+}

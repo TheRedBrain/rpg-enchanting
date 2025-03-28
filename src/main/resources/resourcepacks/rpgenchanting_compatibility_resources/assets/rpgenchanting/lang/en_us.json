@@ -1,4 +1,59 @@
 {
+	"rpgenchanting.extraspellattributes.aureate.1.prefix": "Absorbing %s",
+	"rpgenchanting.extraspellattributes.aureate.2.prefix": "Inspiring %s",
+	"rpgenchanting.extraspellattributes.aureate.3.prefix": "Briliant %s",
+	"rpgenchanting.extraspellattributes.aureate.4.prefix": "Aureate %s",
+	"rpgenchanting.extraspellattributes.aureate.5.prefix": "Resplendent %s",
+
+	"rpgenchanting.extraspellattributes.defiance.1.suffix": "%s of Indifference",
+	"rpgenchanting.extraspellattributes.defiance.2.suffix": "%s of Defiance",
+	"rpgenchanting.extraspellattributes.defiance.3.suffix": "%s of Valiance",
+	"rpgenchanting.extraspellattributes.defiance.4.suffix": "%s of the Hero",
+	"rpgenchanting.extraspellattributes.defiance.5.suffix": "%s of Nanomachines",
+
+	"rpgenchanting.extraspellattributes.enduring.1.suffix": "%s of Enduring",
+	"rpgenchanting.extraspellattributes.enduring.2.suffix": "%s of Resilience",
+	"rpgenchanting.extraspellattributes.enduring.3.suffix": "%s of Tenacity",
+	"rpgenchanting.extraspellattributes.enduring.4.suffix": "%s of Perseverance",
+	"rpgenchanting.extraspellattributes.enduring.5.suffix": "%s of Higher Purpose",
+
+	"rpgenchanting.extraspellattributes.fortified.1.prefix": "Unstoppable %s",
+	"rpgenchanting.extraspellattributes.fortified.2.prefix": "Untiring %s",
+	"rpgenchanting.extraspellattributes.fortified.3.prefix": "Unflinching %s",
+	"rpgenchanting.extraspellattributes.fortified.4.prefix": "Unrelenting %s",
+	"rpgenchanting.extraspellattributes.fortified.5.prefix": "Unyielding %s",
+
+	"rpgenchanting.extraspellattributes.glancingblow.1.suffix": "%s of Glancing Blows",
+	"rpgenchanting.extraspellattributes.glancingblow.2.suffix": "%s of Eluding",
+	"rpgenchanting.extraspellattributes.glancingblow.3.suffix": "%s of Evading",
+	"rpgenchanting.extraspellattributes.glancingblow.4.suffix": "%s of the Mistwalker",
+	"rpgenchanting.extraspellattributes.glancingblow.5.suffix": "%s of Afterimages",
+
+	"rpgenchanting.extraspellattributes.recoup.1.suffix": "%s of Reinvigorating",
+	"rpgenchanting.extraspellattributes.recoup.2.suffix": "%s of Battle Rouse",
+	"rpgenchanting.extraspellattributes.recoup.3.suffix": "%s of Revitalization",
+	"rpgenchanting.extraspellattributes.recoup.4.suffix": "%s of Determination",
+	"rpgenchanting.extraspellattributes.recoup.5.suffix": "%s of Valhalla",
+
+	"rpgenchanting.extraspellattributes.spellbreak.1.suffix": "%s of Spellbreaking",
+	"rpgenchanting.extraspellattributes.spellbreak.2.suffix": "%s of Barriers",
+	"rpgenchanting.extraspellattributes.spellbreak.3.suffix": "%s of Nullifying",
+	"rpgenchanting.extraspellattributes.spellbreak.4.suffix": "%s of the Magus",
+	"rpgenchanting.extraspellattributes.spellbreak.5.suffix": "%s of the Nonbeliever",
+
+	"rpgenchanting.extraspellattributes.suppression.1.prefix": "Suppressing %s",
+	"rpgenchanting.extraspellattributes.suppression.2.prefix": "Apathetic %s",
+	"rpgenchanting.extraspellattributes.suppression.3.prefix": "Stoic %s",
+	"rpgenchanting.extraspellattributes.suppression.4.prefix": "Agnostic %s",
+	"rpgenchanting.extraspellattributes.suppression.5.prefix": "Serene %s",
+
+	"rpgenchanting.extraspellattributes.warding.1.prefix": "Warded %s",
+	"rpgenchanting.extraspellattributes.warding.2.prefix": "Runed %s",
+	"rpgenchanting.extraspellattributes.warding.3.prefix": "Blessed %s",
+	"rpgenchanting.extraspellattributes.warding.4.prefix": "Divine %s",
+	"rpgenchanting.extraspellattributes.warding.5.prefix": "Exalted %s",
+
+
 	"rpgenchanting.minecraft.aqua_affinity.1.suffix": "%s of Aqua Affinity",
 
 	"rpgenchanting.minecraft.bane_of_arthropods.1.prefix": "Arthropods Bane %s",
@@ -300,7 +355,7 @@
 	"rpgenchanting.witcher_rpg.sign_intensity.3.suffix": "%s of Sign Intensity (3) ",
 	"rpgenchanting.witcher_rpg.sign_intensity.4.suffix": "%s of Sign Intensity (4) ",
 	"rpgenchanting.witcher_rpg.sign_intensity.5.suffix": "%s of Sign Intensity (5) ",
-	
+
 	"rpgenchanting.witcher_rpg.yrden_intensity.1.suffix": "%s of Yrden Intensity",
 	"rpgenchanting.witcher_rpg.yrden_intensity.2.suffix": "%s of Yrden Intensity (2) ",
 	"rpgenchanting.witcher_rpg.yrden_intensity.3.suffix": "%s of Yrden Intensity (3) ",

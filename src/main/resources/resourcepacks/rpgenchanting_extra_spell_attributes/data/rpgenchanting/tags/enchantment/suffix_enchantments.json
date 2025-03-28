@@ -1,0 +1,24 @@
+{
+  "values": [
+	  {
+      "id": "extraspellattributes:enduring",
+      "required": false
+    },
+	  {
+      "id": "extraspellattributes:glancingblow",
+      "required": false
+    },
+	  {
+      "id": "extraspellattributes:recoup",
+      "required": false
+    },
+	  {
+      "id": "extraspellattributes:spellbreak",
+      "required": false
+    },
+	  {
+      "id": "extraspellattributes:defiance",
+      "required": false
+    }
+  ]
+}
