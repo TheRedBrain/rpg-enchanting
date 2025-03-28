@@ -201,7 +201,6 @@ public class RPGEnchantmentScreen extends HandledScreen<RPGEnchantmentScreenHand
 		int k;
 		int m;
 		ServerConfig serverConfig = RPGEnchanting.SERVER_CONFIG;
-		boolean showInactiveSlots = RPGEnchantingClient.CLIENT_CONFIG.show_inactive_slots.get();
 
 		context.drawTexture(TEXTURE, i, j, 0, 0, this.backgroundWidth, this.backgroundHeight, this.backgroundWidth, this.backgroundHeight);
 
@@ -209,6 +208,7 @@ public class RPGEnchantmentScreen extends HandledScreen<RPGEnchantmentScreenHand
 			context.drawTexture(SLOT_TEXTURE, x + 133, y + 61, 0, 0, 18, 18, 18, 18);
 		}
 
+		boolean showInactiveSlots = RPGEnchantingClient.showInactiveInventorySlots();
 		for (k = 0; k < (showInactiveSlots ? 27 : Math.min(this.inventorySize, 27)); ++k) {
 			m = (k / 9);
 			context.drawTexture(SLOT_TEXTURE, x + 61 + (k - (m * 9)) * 18, y + 150 + (m * 18), 0, 0, 18, 18, 18, 18);

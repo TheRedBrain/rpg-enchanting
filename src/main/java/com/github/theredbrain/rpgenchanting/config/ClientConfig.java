@@ -12,7 +12,6 @@ public class ClientConfig extends Config {
 	}
 
 	public ValidatedBoolean show_enchantment_descriptions = new ValidatedBoolean(false);
-	public ValidatedBoolean show_inactive_slots = new ValidatedBoolean(false);
 	public ValidatedBoolean enable_texture_cycling_for_item_cost_slot = new ValidatedBoolean(false);
 
 	public ValidatedBoolean show_item_tooltip_enchanted_by_player_name = new ValidatedBoolean(true);

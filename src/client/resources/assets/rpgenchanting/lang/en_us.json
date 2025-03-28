@@ -23,6 +23,10 @@
 
 	"rpgenchanting.client": "Client Side Settings",
 
-	"rpgenchanting.client.show_inactive_slots": "Show Inactive Slots",
-	"rpgenchanting.client.show_inactive_slots.desc": "Inventory Size Attributes - Compat Setting"
+	"rpgenchanting.client.show_enchantment_descriptions": "Show Enchantment Descriptions",
+	"rpgenchanting.client.enable_texture_cycling_for_item_cost_slot": "Enable Slot Texture Cycling",
+
+	"rpgenchanting.client.show_item_tooltip_enchanted_by_player_name": "Show 'Enchanted by ...' Item Tooltip",
+	"rpgenchanting.client.item_tooltip_enchanted_by_player_name_formatting_string": "'Enchanted by ...' Tooltip Formatting",
+	"rpgenchanting.client.item_tooltip_enchanted_by_player_name_formatting_string.desc": "Defines which formatting is applied to the player name.\nValid characters:\n\n0: Black, 1: Dark Blue, 2: Dark Green\n3: Dark Aqua, 4: Dark Red, 5: Dark Purple\n6: Gold, 7: Gray, 8: Dark Gray\n9: Blue, a: Green, b: Aqua\nc: Red, d: Light Purple, e: Yellow\nf: White, k: Obfuscated, l: Bold\nm: Strikethrough, n: Underline, o: Italic\nr: Reset"
 }
