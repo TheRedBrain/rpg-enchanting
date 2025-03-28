@@ -1,3 +1,14 @@
+# 1.2.0
+
+- added compatibility for 'Dungeons and Taverns' by NovaWostra
+- added compatibility for 'Extra RPG Attributes' by Forg (Thanks @ Forg for the contribution)
+- added an optional "Enchanted by player_name" line to item tooltips
+- most modded chiseled bookshelves are now getting checked for enchanted books by the RPG Enchanting Table
+- merged compatibility resource packs into one
+- compatibility data packs are now enabled by default
+- pre/suffix strings can now wrap around the item name (suffix strings are processed first)
+- fixed missing translation for some enchantments (Thanks @ Not A Noob for the contribution)
+
 # 1.1.0
 
 - added optional compatibility with 'Enchantment Descriptions'

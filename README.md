@@ -16,6 +16,8 @@ E.g. an Iron Pickaxe enchanted with Efficiency and Fortune is called "Efficient 
 
 (Items can still be renamed, these changes only affect the default name)
 
+The RPG Enchanting Table adds a "Enchanted by player_name" line to items it enchants. This is purely cosmetic and it can be disabled in the config (both in the client config and in the server config).
+
 ## RPG Enchanting Table
 
 This new block allows the player to enchant items in a more controlled way. The table will replace exiting enchantments of the same group (prefix or suffix).
@@ -81,6 +83,8 @@ E.g. if the "minecraft:efficiency" enchantment is in the "prefix" tag, the local
 
 RPG Enchanting comes with several data/resource packs that bring compatibility for vanilla Minecraft and several mods.
 
+- "Dungeons and Taverns" by NovaWostra
+- "Extra RPG Attributes" by Forg
 - The RPG Series mods by Daedelus
 - The More RPG Series mods by Fichte
 
@@ -91,7 +95,7 @@ These packs include the following:
 - adding all enchantments to one of these enchantment tags
 - each enchantment has a corresponding patch file, that sets the "exclusive_set" to either "#rpgenchanting:prefix_enchantments" or "#rpgenchanting:suffix_enchantments".
 
-> Using Patched is not a requirement, the exclusive_set can also be configured the normal way. Using "Patched" ensures compatibility with mods/data packs that modify vanilla enchantments
+> Using Patched is not a requirement, the exclusive_set can also be configured the normal way. Using "Patched" ensures compatibility with mods/data packs that modify enchantments
 
 The resource packs provide the localization for the item name additions.
 
@@ -109,11 +113,17 @@ These features of RPG Enchanting can also be customized:
 
 ## Technical details
 
-### Data component
+### Data components
 
 RPG Enchanting adds the "rpgenchanting:show_enchantment_name_additions" data component. When this component is present on an itemStack, the item name is modified with enchantment pre/suffixes.
 
 The RPG Enchanting Table automatically adds this component to items that it enchants.
+
+RPG Enchanting adds the "rpgenchanting:player_enchanted" data component. It saves a player profile and displays the player name in the item tooltip.
+
+The RPG Enchanting Table automatically adds this component to items that it enchants. This can be disabled for every player in the server config.
+
+The tooltip addition can also be disabled in the client config. This will only affect that client.
 
 ### Additional modifications
 
