@@ -80,6 +80,7 @@ public class RPGEnchanting implements ModInitializer {
 		ScreenHandlerTypesRegistry.init();
 		Optional<ModContainer> modContainer = FabricLoader.getInstance().getModContainer(MOD_ID);
 		if (modContainer.isPresent()) {
+			ResourceManagerHelper.registerBuiltinResourcePack(identifier("rpgenchanting_dungeons_and_taverns"), modContainer.get(), Text.translatable("resourcepack.rpgenchanting.rpgenchanting_dungeons_and_taverns.name"), ResourcePackActivationType.NORMAL);
 			ResourceManagerHelper.registerBuiltinResourcePack(identifier("rpgenchanting_more_rpg_series"), modContainer.get(), Text.translatable("resourcepack.rpgenchanting.rpgenchanting_more_rpg_series.name"), ResourcePackActivationType.NORMAL);
 			ResourceManagerHelper.registerBuiltinResourcePack(identifier("rpgenchanting_more_rpg_series_resources"), modContainer.get(), Text.translatable("resourcepack.rpgenchanting.rpgenchanting_more_rpg_series_resources.name"), ResourcePackActivationType.NORMAL);
 			ResourceManagerHelper.registerBuiltinResourcePack(identifier("rpgenchanting_rpg_series"), modContainer.get(), Text.translatable("resourcepack.rpgenchanting.rpgenchanting_rpg_series.name"), ResourcePackActivationType.NORMAL);

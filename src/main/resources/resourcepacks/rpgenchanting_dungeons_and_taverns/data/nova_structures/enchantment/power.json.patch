@@ -1,0 +1,12 @@
+[
+    {
+      "op": "test",
+      "type": "patched:pack_enabled",
+      "value": ["file/Dungeons and Taverns", "file/Dungeons and Taverns.zip", "mod/Dungeons and Taverns"]
+    },
+    {
+      "op": "add",
+      "path": "/exclusive_set",
+      "value": "#rpgenchanting:prefix_enchantments"
+    }
+]
