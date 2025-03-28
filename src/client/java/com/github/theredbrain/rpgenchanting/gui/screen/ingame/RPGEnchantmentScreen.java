@@ -229,7 +229,7 @@ public class RPGEnchantmentScreen extends HandledScreen<RPGEnchantmentScreenHand
 			Optional<RegistryKey<Enchantment>> optionalPrefixEnchantmentKey = existing_prefix_enchantment.getLeft().getKey();
 			MutableText prefixEnchantmentText = Text.empty();
 			if (optionalPrefixEnchantmentKey.isPresent()) {
-				prefixEnchantmentText = Text.translatable(RPGEnchanting.MOD_ID + "." + optionalPrefixEnchantmentKey.get().getValue().toTranslationKey() + "." + existing_prefix_enchantment.getRight() + ".prefix");
+				prefixEnchantmentText = Text.translatable(RPGEnchanting.MOD_ID + "." + optionalPrefixEnchantmentKey.get().getValue().toTranslationKey() + "." + existing_prefix_enchantment.getRight() + ".prefix", Text.translatable("gui.rpg_enchanting_table.placeholder"));
 			}
 			RenderSystem.enableBlend();
 			context.drawGuiTexture(ENCHANTMENT_SLOT_TEXTURE, i + 8, j + 18, 108, 19);
@@ -241,7 +241,7 @@ public class RPGEnchantmentScreen extends HandledScreen<RPGEnchantmentScreenHand
 			Optional<RegistryKey<Enchantment>> optionalSuffixEnchantmentKey = existing_suffix_enchantment.getLeft().getKey();
 			MutableText suffixEnchantmentText = Text.empty();
 			if (optionalSuffixEnchantmentKey.isPresent()) {
-				suffixEnchantmentText = Text.translatable(RPGEnchanting.MOD_ID + "." + optionalSuffixEnchantmentKey.get().getValue().toTranslationKey() + "." + existing_suffix_enchantment.getRight() + ".suffix");
+				suffixEnchantmentText = Text.translatable(RPGEnchanting.MOD_ID + "." + optionalSuffixEnchantmentKey.get().getValue().toTranslationKey() + "." + existing_suffix_enchantment.getRight() + ".suffix", Text.translatable("gui.rpg_enchanting_table.placeholder"));
 			}
 			RenderSystem.enableBlend();
 			context.drawGuiTexture(ENCHANTMENT_SLOT_TEXTURE, i + 168, j + 18, 108, 19);
@@ -271,7 +271,7 @@ public class RPGEnchantmentScreen extends HandledScreen<RPGEnchantmentScreenHand
 				boolean bl = (this.handler.player.experienceLevel < experience_cost_amount || this.handler.getPrefixItemCount() < item_cost_amount) && !this.handler.player.isInCreativeMode();
 
 				if (optionalRegistryKey.isPresent()) {
-					text = Text.translatable(RPGEnchanting.MOD_ID + "." + optionalRegistryKey.get().getValue().toTranslationKey() + "." + entry.getRight() + ".prefix");
+					text = Text.translatable(RPGEnchanting.MOD_ID + "." + optionalRegistryKey.get().getValue().toTranslationKey() + "." + entry.getRight() + ".prefix", Text.translatable("gui.rpg_enchanting_table.placeholder"));
 				}
 				RenderSystem.enableBlend();
 				if (bl) {
@@ -309,7 +309,7 @@ public class RPGEnchantmentScreen extends HandledScreen<RPGEnchantmentScreenHand
 				boolean bl = (this.handler.player.experienceLevel < experience_cost_amount || this.handler.getSuffixItemCount() < item_cost_amount) && !this.handler.player.isInCreativeMode();
 
 				if (optionalRegistryKey.isPresent()) {
-					text = Text.translatable(RPGEnchanting.MOD_ID + "." + optionalRegistryKey.get().getValue().toTranslationKey() + "." + entry.getRight() + ".suffix");
+					text = Text.translatable(RPGEnchanting.MOD_ID + "." + optionalRegistryKey.get().getValue().toTranslationKey() + "." + entry.getRight() + ".suffix", Text.translatable("gui.rpg_enchanting_table.placeholder"));
 				}
 				RenderSystem.enableBlend();
 				if (bl) {

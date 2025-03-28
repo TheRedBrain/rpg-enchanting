@@ -6,6 +6,7 @@
 	"gui.rpg_enchanting_table.title": "Enchant",
 	"gui.rpg_enchanting_table.add_enchantment": "Add...",
 	"gui.rpg_enchanting_table.replace_enchantment": "Replace with...",
+	"gui.rpg_enchanting_table.placeholder": "...",
 
 	"resourcepack.rpgenchanting.rpgenchanting_dungeons_and_taverns.name": "RPG Enchanting - Dungeons and Taverns",
 	"resourcepack.rpgenchanting.rpgenchanting_more_rpg_series.name": "RPG Enchanting - More RPG Series",

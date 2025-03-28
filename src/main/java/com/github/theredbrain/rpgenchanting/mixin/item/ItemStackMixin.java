@@ -28,27 +28,33 @@ public class ItemStackMixin {
 	private Object rpgenchanting$wrap_getName(ItemStack instance, ComponentType<?> componentType, Operation<Object> original) {
 		if (instance.contains(RPGEnchanting.SHOW_ENCHANTMENT_NAME_ADDITIONS)) {
 			ItemEnchantmentsComponent itemEnchantmentsComponent = instance.get(DataComponentTypes.ENCHANTMENTS);
-			MutableText prefixEnchantmentText = Text.empty();
-			MutableText suffixEnchantmentText = Text.empty();
+			String prefixEnchantmentString = "";
+			String suffixEnchantmentString = "";
 			if (itemEnchantmentsComponent != null) {
 				for (RegistryEntry<Enchantment> enchantmentEntry : itemEnchantmentsComponent.getEnchantments()) {
 					Optional<RegistryKey<Enchantment>> optional = enchantmentEntry.getKey();
 					if (optional.isPresent()) {
 						Identifier id = optional.get().getValue();
 						if (enchantmentEntry.isIn(RPGEnchanting.PREFIX_ENCHANTMENTS)) {
-							prefixEnchantmentText = Text.translatable(RPGEnchanting.MOD_ID + "." + id.toTranslationKey() + "." + itemEnchantmentsComponent.getLevel(enchantmentEntry) + ".prefix");
+							prefixEnchantmentString = RPGEnchanting.MOD_ID + "." + id.toTranslationKey() + "." + itemEnchantmentsComponent.getLevel(enchantmentEntry) + ".prefix";
 						}
 						if (enchantmentEntry.isIn(RPGEnchanting.SUFFIX_ENCHANTMENTS)) {
-							suffixEnchantmentText = Text.translatable(RPGEnchanting.MOD_ID + "." + id.toTranslationKey() + "." + itemEnchantmentsComponent.getLevel(enchantmentEntry) + ".suffix");
+							suffixEnchantmentString = RPGEnchanting.MOD_ID + "." + id.toTranslationKey() + "." + itemEnchantmentsComponent.getLevel(enchantmentEntry) + ".suffix";
 						}
 					}
 				}
 			}
-			Text nameText = instance.get(DataComponentTypes.ITEM_NAME);
-			if (nameText == null) {
-				nameText = instance.getItem().getName(instance);
+			Text text = instance.get(DataComponentTypes.ITEM_NAME);
+			if (text == null) {
+				text = instance.getItem().getName(instance);
 			}
-			return prefixEnchantmentText.append(nameText).append(suffixEnchantmentText);
+			if (!suffixEnchantmentString.isEmpty()) {
+				text = Text.translatable(suffixEnchantmentString, text);
+			}
+			if (!prefixEnchantmentString.isEmpty()) {
+				text = Text.translatable(prefixEnchantmentString, text);
+			}
+			return text;
 		} else {
 			return original.call(instance, componentType);
 		}
