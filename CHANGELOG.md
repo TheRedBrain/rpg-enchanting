@@ -1,3 +1,9 @@
+# 1.3.0
+
+- the vanilla Enchanting Table recipe now instead results in one RPG Enchanting Table
+- added loot table for RPG Enchanting Table
+- added RPG Enchanting Table to "minecraft:mineable:pickaxe" block tag
+
 # 1.2.0
 
 - added compatibility for 'Dungeons and Taverns' by NovaWostra

@@ -23,6 +23,8 @@ The RPG Enchanting Table adds a "Enchanted by player_name" line to items it ench
 This new block allows the player to enchant items in a more controlled way. The table will replace exiting enchantments of the same group (prefix or suffix).
 Only unlocked enchantments are available for the player to choose from.
 
+The RPG Enchanting Table can be crafted with the same recipe as the vanilla Enchanting Table (replacing it). It has the same properties when interacting with the world (emits light, mineable faster with a pickaxe, etc)
+
 ### Unlocking enchantments
 
 Enchantments can be unlocked by three different methods.
