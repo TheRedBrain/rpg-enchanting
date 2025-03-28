@@ -1,128 +1,170 @@
 {
 	"rpgenchanting.minecraft.aqua_affinity.1.suffix": "%s of Aqua Affinity",
+
 	"rpgenchanting.minecraft.bane_of_arthropods.1.prefix": "Arthropods Bane %s",
 	"rpgenchanting.minecraft.bane_of_arthropods.2.prefix": "Arthropods Bane (2) %s",
 	"rpgenchanting.minecraft.bane_of_arthropods.3.prefix": "Arthropods Bane (3) %s",
 	"rpgenchanting.minecraft.bane_of_arthropods.4.prefix": "Arthropods Bane (4) %s",
 	"rpgenchanting.minecraft.bane_of_arthropods.5.prefix": "Arthropods Bane (5) %s",
+
 	"rpgenchanting.minecraft.binding_curse.1.suffix": "%s §4of Binding",
+
 	"rpgenchanting.minecraft.blast_protection.1.prefix": "Blast Proof %s",
 	"rpgenchanting.minecraft.blast_protection.2.prefix": "Blast Proof (2) %s",
 	"rpgenchanting.minecraft.blast_protection.3.prefix": "Blast Proof (3) %s",
 	"rpgenchanting.minecraft.blast_protection.4.prefix": "Blast Proof (4) %s",
+
 	"rpgenchanting.minecraft.breach.1.prefix": "Breaching %s",
 	"rpgenchanting.minecraft.breach.2.prefix": "Breaching (2) %s",
 	"rpgenchanting.minecraft.breach.3.prefix": "Breaching (3) %s",
 	"rpgenchanting.minecraft.breach.4.prefix": "Breaching (4) %s",
+
 	"rpgenchanting.minecraft.channeling.1.suffix": "%s of Channeling",
+
 	"rpgenchanting.minecraft.density.1.prefix": "Dense %s",
 	"rpgenchanting.minecraft.density.2.prefix": "Dense (2) %s",
 	"rpgenchanting.minecraft.density.3.prefix": "Dense (3) %s",
 	"rpgenchanting.minecraft.density.4.prefix": "Dense (4) %s",
 	"rpgenchanting.minecraft.density.5.prefix": "Dense (5) %s",
+
 	"rpgenchanting.minecraft.depth_strider.1.suffix": "%s of Depth Strider",
 	"rpgenchanting.minecraft.depth_strider.2.suffix": "%s of Depth Strider (2)",
 	"rpgenchanting.minecraft.depth_strider.3.suffix": "%s of Depth Strider (3)",
+
 	"rpgenchanting.minecraft.efficiency.1.prefix": "Efficient %s",
 	"rpgenchanting.minecraft.efficiency.2.prefix": "Efficient (2) %s",
 	"rpgenchanting.minecraft.efficiency.3.prefix": "Efficient (3) %s",
 	"rpgenchanting.minecraft.efficiency.4.prefix": "Efficient (4) %s",
 	"rpgenchanting.minecraft.efficiency.5.prefix": "Efficient (5) %s",
+
 	"rpgenchanting.minecraft.feather_falling.1.prefix": "Feather Falling %s",
 	"rpgenchanting.minecraft.feather_falling.2.prefix": "Feather Falling (2) %s",
 	"rpgenchanting.minecraft.feather_falling.3.prefix": "Feather Falling (3) %s",
 	"rpgenchanting.minecraft.feather_falling.4.prefix": "Feather Falling (4) %s",
+
 	"rpgenchanting.minecraft.fire_aspect.1.suffix": "%s of Fire",
 	"rpgenchanting.minecraft.fire_aspect.2.suffix": "%s of Fire (2)",
+
 	"rpgenchanting.minecraft.fire_protection.1.prefix": "Fire Proof %s",
 	"rpgenchanting.minecraft.fire_protection.2.prefix": "Fire Proof (2) %s",
 	"rpgenchanting.minecraft.fire_protection.3.prefix": "Fire Proof (3) %s",
 	"rpgenchanting.minecraft.fire_protection.4.prefix": "Fire Proof (4) %s",
+
 	"rpgenchanting.minecraft.flame.1.suffix": "%s of Fire",
+
 	"rpgenchanting.minecraft.fortune.1.suffix": "%s of Fortune",
 	"rpgenchanting.minecraft.fortune.2.suffix": "%s of Fortune (2)",
 	"rpgenchanting.minecraft.fortune.3.suffix": "%s of Fortune (3)",
+
 	"rpgenchanting.minecraft.frost_walker.1.suffix": "%s of Frost Walking",
 	"rpgenchanting.minecraft.frost_walker.2.suffix": "%s of Frost Walking (2)",
+
 	"rpgenchanting.minecraft.impaling.1.prefix": "Impaling %s",
 	"rpgenchanting.minecraft.impaling.2.prefix": "Impaling (2) %s",
 	"rpgenchanting.minecraft.impaling.3.prefix": "Impaling (3) %s",
 	"rpgenchanting.minecraft.impaling.4.prefix": "Impaling (4) %s",
 	"rpgenchanting.minecraft.impaling.5.prefix": "Impaling (5) %s",
+
 	"rpgenchanting.minecraft.infinity.1.suffix": "%s of Infinity",
+
 	"rpgenchanting.minecraft.knockback.1.suffix": "%s of Knockback",
 	"rpgenchanting.minecraft.knockback.2.suffix": "%s of Knockback (2)",
+
 	"rpgenchanting.minecraft.looting.1.suffix": "%s of Looting",
 	"rpgenchanting.minecraft.looting.2.suffix": "%s of Looting (2)",
 	"rpgenchanting.minecraft.looting.3.suffix": "%s of Looting (3)",
+
 	"rpgenchanting.minecraft.loyalty.1.suffix": "%s of Loyalty",
 	"rpgenchanting.minecraft.loyalty.2.suffix": "%s of Loyalty (2)",
 	"rpgenchanting.minecraft.loyalty.3.suffix": "%s of Loyalty (3)",
+
 	"rpgenchanting.minecraft.luck_of_the_sea.1.suffix": "%s of Sea Luck",
 	"rpgenchanting.minecraft.luck_of_the_sea.2.suffix": "%s of Sea Luck (2)",
 	"rpgenchanting.minecraft.luck_of_the_sea.3.suffix": "%s of Sea Luck (3)",
+
 	"rpgenchanting.minecraft.lure.1.prefix": "Luring %s",
 	"rpgenchanting.minecraft.lure.2.prefix": "Luring (2) %s",
 	"rpgenchanting.minecraft.lure.3.prefix": "Luring (3) %s",
+
 	"rpgenchanting.minecraft.mending.1.suffix": "%s of Mending",
+
 	"rpgenchanting.minecraft.multishot.1.suffix": "%s of Multishot",
+
 	"rpgenchanting.minecraft.piercing.1.suffix": "%s of Piercing",
 	"rpgenchanting.minecraft.piercing.2.suffix": "%s of Piercing (2)",
 	"rpgenchanting.minecraft.piercing.3.suffix": "%s of Piercing (3)",
+
 	"rpgenchanting.minecraft.power.1.prefix": "Powerful %s",
 	"rpgenchanting.minecraft.power.2.prefix": "Powerful (2) %s",
 	"rpgenchanting.minecraft.power.3.prefix": "Powerful (3) %s",
 	"rpgenchanting.minecraft.power.4.prefix": "Powerful (4) %s",
 	"rpgenchanting.minecraft.power.5.prefix": "Powerful (5) %s",
+
 	"rpgenchanting.minecraft.projectile_protection.1.prefix": "Projectile Proof %s",
 	"rpgenchanting.minecraft.projectile_protection.2.prefix": "Projectile Proof (2) %s",
 	"rpgenchanting.minecraft.projectile_protection.3.prefix": "Projectile Proof (3) %s",
 	"rpgenchanting.minecraft.projectile_protection.4.prefix": "Projectile Proof (4) %s",
+
 	"rpgenchanting.minecraft.protection.1.prefix": "Protective %s",
 	"rpgenchanting.minecraft.protection.2.prefix": "Protective (2) %s",
 	"rpgenchanting.minecraft.protection.3.prefix": "Protective (3) %s",
 	"rpgenchanting.minecraft.protection.4.prefix": "Protective (4) %s",
+
 	"rpgenchanting.minecraft.punch.1.suffix": "%s of Punching",
 	"rpgenchanting.minecraft.punch.2.suffix": "%s of Punching (2)",
+
 	"rpgenchanting.minecraft.quick_charge.1.prefix": "Quick Charging %s",
 	"rpgenchanting.minecraft.quick_charge.2.prefix": "Quick Charging (2) %s",
 	"rpgenchanting.minecraft.quick_charge.3.prefix": "Quick Charging (3) %s",
+
 	"rpgenchanting.minecraft.respiration.1.prefix": "Respiring %s",
 	"rpgenchanting.minecraft.respiration.2.prefix": "Respiring (2) %s",
 	"rpgenchanting.minecraft.respiration.3.prefix": "Respiring (3) %s",
+
 	"rpgenchanting.minecraft.riptide.1.suffix": "%s of Riptide",
 	"rpgenchanting.minecraft.riptide.2.suffix": "%s of Riptide (2)",
 	"rpgenchanting.minecraft.riptide.3.suffix": "%s of Riptide (3)",
+
 	"rpgenchanting.minecraft.sharpness.1.prefix": "Sharp %s",
 	"rpgenchanting.minecraft.sharpness.2.prefix": "Sharp (2) %s",
 	"rpgenchanting.minecraft.sharpness.3.prefix": "Sharp (3) %s",
 	"rpgenchanting.minecraft.sharpness.4.prefix": "Sharp (4) %s",
 	"rpgenchanting.minecraft.sharpness.5.prefix": "Sharp (5) %s",
+
 	"rpgenchanting.minecraft.silk_touch.1.suffix": "%s of Silk Touch",
+
 	"rpgenchanting.minecraft.smite.1.prefix": "Smiting %s",
 	"rpgenchanting.minecraft.smite.2.prefix": "Smiting (2) %s",
 	"rpgenchanting.minecraft.smite.3.prefix": "Smiting (3) %s",
 	"rpgenchanting.minecraft.smite.4.prefix": "Smiting (4) %s",
 	"rpgenchanting.minecraft.smite.5.prefix": "Smiting (5) %s",
+
 	"rpgenchanting.minecraft.soul_speed.1.suffix": "%s of Soul Speed",
 	"rpgenchanting.minecraft.soul_speed.2.suffix": "%s of Soul Speed (2)",
 	"rpgenchanting.minecraft.soul_speed.3.suffix": "%s of Soul Speed (3)",
+
 	"rpgenchanting.minecraft.sweeping_edge.1.suffix": "%s of Sweeping",
 	"rpgenchanting.minecraft.sweeping_edge.2.suffix": "%s of Sweeping (2)",
 	"rpgenchanting.minecraft.sweeping_edge.3.suffix": "%s of Sweeping (3)",
+
 	"rpgenchanting.minecraft.swift_sneak.1.suffix": "%s of Swift Sneaking",
 	"rpgenchanting.minecraft.swift_sneak.2.suffix": "%s of Swift Sneaking (2)",
 	"rpgenchanting.minecraft.swift_sneak.3.suffix": "%s of Swift Sneaking (3)",
+
 	"rpgenchanting.minecraft.thorns.1.suffix": "%s of Thorns",
 	"rpgenchanting.minecraft.thorns.2.suffix": "%s of Thorns (2)",
 	"rpgenchanting.minecraft.thorns.3.suffix": "%s of Thorns (3)",
+
 	"rpgenchanting.minecraft.unbreaking.1.prefix": "Unbreaking %s",
 	"rpgenchanting.minecraft.unbreaking.2.prefix": "Unbreaking (2) %s",
 	"rpgenchanting.minecraft.unbreaking.3.prefix": "Unbreaking (3) %s",
+
 	"rpgenchanting.minecraft.vanishing_curse.1.suffix": "%s §4of Vanishing",
+
 	"rpgenchanting.minecraft.wind_burst.1.suffix": "%s of Wind Burst",
 	"rpgenchanting.minecraft.wind_burst.2.suffix": "%s of Wind Burst (2)",
 	"rpgenchanting.minecraft.wind_burst.3.suffix": "%s of Wind Burst (3)",
+
 
 	"rpgenchanting.more_rpg_classes.elemental.1.suffix": "%s of Elemental Mastery",
 	"rpgenchanting.more_rpg_classes.elemental.2.suffix": "%s of Elemental Mastery (2) ",
@@ -130,107 +172,135 @@
 	"rpgenchanting.more_rpg_classes.elemental.4.suffix": "%s of Elemental Mastery (4) ",
 	"rpgenchanting.more_rpg_classes.elemental.5.suffix": "%s of Elemental Mastery (5) ",
 
+
 	"rpgenchanting.nova_structures.antidote.1.prefix": "Antidotal %s",
+
 	"rpgenchanting.nova_structures.conductivity_curse.1.suffix": "%s §4of Conductivity",
+
 	"rpgenchanting.nova_structures.ghasted.1.suffix": "%s of Ghasting",
 	"rpgenchanting.nova_structures.ghasted.2.suffix": "%s of Ghasting (2)",
 	"rpgenchanting.nova_structures.ghasted.3.suffix": "%s of Ghasting (3)",
+
 	"rpgenchanting.nova_structures.gravity.1.suffix": "%s of Gravity",
 	"rpgenchanting.nova_structures.gravity.2.suffix": "%s of Gravity (2)",
 	"rpgenchanting.nova_structures.gravity.3.suffix": "%s of Gravity (3)",
+
 	"rpgenchanting.nova_structures.illagers_bane.1.prefix": "Illagers Bane %s",
 	"rpgenchanting.nova_structures.illagers_bane.2.prefix": "Illagers Bane (2) %s",
 	"rpgenchanting.nova_structures.illagers_bane.3.prefix": "Illagers Bane (3) %s",
 	"rpgenchanting.nova_structures.illagers_bane.4.prefix": "Illagers Bane (4) %s",
 	"rpgenchanting.nova_structures.illagers_bane.5.prefix": "Illagers Bane (5) %s",
+
 	"rpgenchanting.nova_structures.multishot.1.suffix": "%s of Tri-Shots",
+
 	"rpgenchanting.nova_structures.outreach.1.suffix": "%s of Outreach",
 	"rpgenchanting.nova_structures.outreach.2.suffix": "%s of Outreach (2)",
 	"rpgenchanting.nova_structures.outreach.3.suffix": "%s of Outreach (3)",
 	"rpgenchanting.nova_structures.outreach.4.suffix": "%s of Outreach (4)",
+
 	"rpgenchanting.nova_structures.photosynthesis.1.suffix": "%s of Photosynthesis",
+
 	"rpgenchanting.nova_structures.piercing.1.suffix": "%s of Blowthrough",
 	"rpgenchanting.nova_structures.piercing.2.suffix": "%s of Blowthrough (2)",
 	"rpgenchanting.nova_structures.piercing.3.suffix": "%s of Blowthrough (3)",
 	"rpgenchanting.nova_structures.piercing.4.suffix": "%s of Blowthrough (4)",
+
 	"rpgenchanting.nova_structures.power.1.prefix": "Mighty %s",
 	"rpgenchanting.nova_structures.power.2.prefix": "Mighty (2) %s",
 	"rpgenchanting.nova_structures.power.3.prefix": "Mighty (3) %s",
 	"rpgenchanting.nova_structures.power.4.prefix": "Mighty (4) %s",
 	"rpgenchanting.nova_structures.power.5.prefix": "Mighty (5) %s",
+
 	"rpgenchanting.nova_structures.traveler.1.suffix": "%s of the Traveler",
 	"rpgenchanting.nova_structures.traveler.2.suffix": "%s of the Traveler (2)",
 	"rpgenchanting.nova_structures.traveler.3.suffix": "%s of the Traveler (3)",
+
 	"rpgenchanting.nova_structures.wax_wings.1.prefix": "Wax Winged %s",
+
 	"rpgenchanting.nova_structures.wither_coated.1.suffix": "%s of Withering",
 
+
 	"rpgenchanting.spell_engine.spell_infinity.1.suffix": "%s of Infinite Spells",
+
 
 	"rpgenchanting.spell_power.critical_chance.1.suffix": "%s of Volatile Spells",
 	"rpgenchanting.spell_power.critical_chance.2.suffix": "%s of Volatile Spells (2) ",
 	"rpgenchanting.spell_power.critical_chance.3.suffix": "%s of Volatile Spells (3) ",
 	"rpgenchanting.spell_power.critical_chance.4.suffix": "%s of Volatile Spells (4) ",
 	"rpgenchanting.spell_power.critical_chance.5.suffix": "%s of Volatile Spells (5) ",
+
 	"rpgenchanting.spell_power.critical_damage.1.suffix": "%s of Amplified Spells",
 	"rpgenchanting.spell_power.critical_damage.2.suffix": "%s of Amplified Spells (2) ",
 	"rpgenchanting.spell_power.critical_damage.3.suffix": "%s of Amplified Spells (3) ",
 	"rpgenchanting.spell_power.critical_damage.4.suffix": "%s of Amplified Spells (4) ",
 	"rpgenchanting.spell_power.critical_damage.5.suffix": "%s of Amplified Spells (5) ",
+
 	"rpgenchanting.spell_power.energize.1.suffix": "%s of Energy",
 	"rpgenchanting.spell_power.energize.2.suffix": "%s of Energy (2) ",
 	"rpgenchanting.spell_power.energize.3.suffix": "%s of Energy (3) ",
 	"rpgenchanting.spell_power.energize.4.suffix": "%s of Energy (4) ",
 	"rpgenchanting.spell_power.energize.5.suffix": "%s of Energy (5) ",
+
 	"rpgenchanting.spell_power.haste.1.prefix": "Hasty %s",
 	"rpgenchanting.spell_power.haste.2.prefix": "Hasty (2) %s",
 	"rpgenchanting.spell_power.haste.3.prefix": "Hasty (3) %s",
 	"rpgenchanting.spell_power.haste.4.prefix": "Hasty (4) %s",
 	"rpgenchanting.spell_power.haste.5.prefix": "Hasty (5) %s",
+
 	"rpgenchanting.spell_power.magic_protection.1.prefix": "Magic Proof %s",
 	"rpgenchanting.spell_power.magic_protection.2.prefix": "Magic Proof (2) %s",
 	"rpgenchanting.spell_power.magic_protection.3.prefix": "Magic Proof (3) %s",
 	"rpgenchanting.spell_power.magic_protection.4.prefix": "Magic Proof (4) %s",
+
 	"rpgenchanting.spell_power.soulfrost.1.suffix": "%s of Soulfrost",
 	"rpgenchanting.spell_power.soulfrost.2.suffix": "%s of Soulfrost (2) ",
 	"rpgenchanting.spell_power.soulfrost.3.suffix": "%s of Soulfrost (3) ",
 	"rpgenchanting.spell_power.soulfrost.4.suffix": "%s of Soulfrost (4) ",
 	"rpgenchanting.spell_power.soulfrost.5.suffix": "%s of Soulfrost (5) ",
+
 	"rpgenchanting.spell_power.spell_power.1.prefix": "Powerful %s",
 	"rpgenchanting.spell_power.spell_power.2.prefix": "Powerful (2) %s",
 	"rpgenchanting.spell_power.spell_power.3.prefix": "Powerful (3) %s",
 	"rpgenchanting.spell_power.spell_power.4.prefix": "Powerful (4) %s",
 	"rpgenchanting.spell_power.spell_power.5.prefix": "Powerful (5) %s",
+
 	"rpgenchanting.spell_power.sunfire.1.suffix": "%s of Sunfire",
 	"rpgenchanting.spell_power.sunfire.2.suffix": "%s of Sunfire (2) ",
 	"rpgenchanting.spell_power.sunfire.3.suffix": "%s of Sunfire (3) ",
 	"rpgenchanting.spell_power.sunfire.4.suffix": "%s of Sunfire (4) ",
 	"rpgenchanting.spell_power.sunfire.5.suffix": "%s of Sunfire (5) ",
 
+
 	"rpgenchanting.witcher_rpg.aard_intensity.1.suffix": "%s of Aard Intensity",
 	"rpgenchanting.witcher_rpg.aard_intensity.2.suffix": "%s of Aard Intensity (2) ",
 	"rpgenchanting.witcher_rpg.aard_intensity.3.suffix": "%s of Aard Intensity (3) ",
 	"rpgenchanting.witcher_rpg.aard_intensity.4.suffix": "%s of Aard Intensity (4) ",
 	"rpgenchanting.witcher_rpg.aard_intensity.5.suffix": "%s of Aard Intensity (5) ",
+
 	"rpgenchanting.witcher_rpg.axii_intensity.1.suffix": "%s of Axii Intensity",
 	"rpgenchanting.witcher_rpg.axii_intensity.2.suffix": "%s of Axii Intensity (2) ",
 	"rpgenchanting.witcher_rpg.axii_intensity.3.suffix": "%s of Axii Intensity (3) ",
 	"rpgenchanting.witcher_rpg.axii_intensity.4.suffix": "%s of Axii Intensity (4) ",
 	"rpgenchanting.witcher_rpg.axii_intensity.5.suffix": "%s of Axii Intensity (5) ",
+
 	"rpgenchanting.witcher_rpg.igni_intensity.1.suffix": "%s of Igni Intensity",
 	"rpgenchanting.witcher_rpg.igni_intensity.2.suffix": "%s of Igni Intensity (2) ",
 	"rpgenchanting.witcher_rpg.igni_intensity.3.suffix": "%s of Igni Intensity (3) ",
 	"rpgenchanting.witcher_rpg.igni_intensity.4.suffix": "%s of Igni Intensity (4) ",
 	"rpgenchanting.witcher_rpg.igni_intensity.5.suffix": "%s of Igni Intensity (5) ",
+
 	"rpgenchanting.witcher_rpg.quen_intensity.1.suffix": "%s of Quen Intensity",
 	"rpgenchanting.witcher_rpg.quen_intensity.2.suffix": "%s of Quen Intensity (2) ",
 	"rpgenchanting.witcher_rpg.quen_intensity.3.suffix": "%s of Quen Intensity (3) ",
 	"rpgenchanting.witcher_rpg.quen_intensity.4.suffix": "%s of Quen Intensity (4) ",
 	"rpgenchanting.witcher_rpg.quen_intensity.5.suffix": "%s of Quen Intensity (5) ",
+
 	"rpgenchanting.witcher_rpg.sign_intensity.1.suffix": "%s of Sign Intensity",
 	"rpgenchanting.witcher_rpg.sign_intensity.2.suffix": "%s of Sign Intensity (2) ",
 	"rpgenchanting.witcher_rpg.sign_intensity.3.suffix": "%s of Sign Intensity (3) ",
 	"rpgenchanting.witcher_rpg.sign_intensity.4.suffix": "%s of Sign Intensity (4) ",
 	"rpgenchanting.witcher_rpg.sign_intensity.5.suffix": "%s of Sign Intensity (5) ",
+	
 	"rpgenchanting.witcher_rpg.yrden_intensity.1.suffix": "%s of Yrden Intensity",
 	"rpgenchanting.witcher_rpg.yrden_intensity.2.suffix": "%s of Yrden Intensity (2) ",
 	"rpgenchanting.witcher_rpg.yrden_intensity.3.suffix": "%s of Yrden Intensity (3) ",
