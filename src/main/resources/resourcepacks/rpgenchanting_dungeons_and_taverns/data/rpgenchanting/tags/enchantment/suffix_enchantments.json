@@ -1,13 +1,40 @@
 {
   "values": [
-    "nova_structures:conductivity_curse",
-    "nova_structures:ghasted",
-    "nova_structures:gravity",
-    "nova_structures:multishot",
-    "nova_structures:outreach",
-    "nova_structures:photosynthesis",
-    "nova_structures:piercing",
-    "nova_structures:traveler",
-    "nova_structures:wither_coated"
+    {
+      "id": "nova_structures:conductivity_curse",
+      "required": false
+    },
+    {
+      "id": "nova_structures:ghasted",
+      "required": false
+    },
+    {
+      "id": "nova_structures:gravity",
+      "required": false
+    },
+    {
+      "id": "nova_structures:multishot",
+      "required": false
+    },
+    {
+      "id": "nova_structures:outreach",
+      "required": false
+    },
+    {
+      "id": "nova_structures:photosynthesis",
+      "required": false
+    },
+    {
+      "id": "nova_structures:piercing",
+      "required": false
+    },
+    {
+      "id": "nova_structures:traveler",
+      "required": false
+    },
+    {
+      "id": "nova_structures:wither_coated",
+      "required": false
+    }
   ]
 }

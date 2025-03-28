@@ -1,29 +1,104 @@
 {
   "values": [
-    "minecraft:aqua_affinity",
-    "minecraft:binding_curse",
-    "minecraft:channeling",
-    "minecraft:depth_strider",
-    "minecraft:fire_aspect",
-    "minecraft:flame",
-    "minecraft:fortune",
-    "minecraft:frost_walker",
-    "minecraft:infinity",
-    "minecraft:knockback",
-    "minecraft:looting",
-    "minecraft:loyalty",
-    "minecraft:luck_of_the_sea",
-    "minecraft:mending",
-    "minecraft:multishot",
-    "minecraft:piercing",
-    "minecraft:punch",
-    "minecraft:riptide",
-    "minecraft:silk_touch",
-    "minecraft:soul_speed",
-    "minecraft:sweeping_edge",
-    "minecraft:swift_sneak",
-    "minecraft:thorns",
-    "minecraft:vanishing_curse",
-    "minecraft:wind_burst"
+    {
+      "id": "minecraft:aqua_affinity",
+      "required": false
+    },
+    {
+      "id": "minecraft:binding_curse",
+      "required": false
+    },
+    {
+      "id": "minecraft:channeling",
+      "required": false
+    },
+    {
+      "id": "minecraft:depth_strider",
+      "required": false
+    },
+    {
+      "id": "minecraft:fire_aspect",
+      "required": false
+    },
+    {
+      "id": "minecraft:flame",
+      "required": false
+    },
+    {
+      "id": "minecraft:fortune",
+      "required": false
+    },
+    {
+      "id": "minecraft:frost_walker",
+      "required": false
+    },
+    {
+      "id": "minecraft:infinity",
+      "required": false
+    },
+    {
+      "id": "minecraft:knockback",
+      "required": false
+    },
+    {
+      "id": "minecraft:looting",
+      "required": false
+    },
+    {
+      "id": "minecraft:loyalty",
+      "required": false
+    },
+    {
+      "id": "minecraft:luck_of_the_sea",
+      "required": false
+    },
+    {
+      "id": "minecraft:mending",
+      "required": false
+    },
+    {
+      "id": "minecraft:multishot",
+      "required": false
+    },
+    {
+      "id": "minecraft:piercing",
+      "required": false
+    },
+    {
+      "id": "minecraft:punch",
+      "required": false
+    },
+    {
+      "id": "minecraft:riptide",
+      "required": false
+    },
+    {
+      "id": "minecraft:silk_touch",
+      "required": false
+    },
+    {
+      "id": "minecraft:soul_speed",
+      "required": false
+    },
+    {
+      "id": "minecraft:sweeping_edge",
+      "required": false
+    },
+    {
+      "id": "minecraft:swift_sneak",
+      "required": false
+    },
+    {
+      "id": "minecraft:thorns",
+      "required": false
+    },
+    {
+      "id": "minecraft:vanishing_curse",
+      "required": false
+    },
+    {
+      "id": "minecraft:wind_burst",
+      "required": false
+    }
   ]
 }

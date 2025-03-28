@@ -1,21 +1,72 @@
 {
   "values": [
-    "minecraft:bane_of_arthropods",
-    "minecraft:blast_protection",
-    "minecraft:breach",
-    "minecraft:density",
-    "minecraft:efficiency",
-    "minecraft:feather_falling",
-    "minecraft:fire_protection",
-    "minecraft:impaling",
-    "minecraft:lure",
-    "minecraft:power",
-    "minecraft:projectile_protection",
-    "minecraft:protection",
-    "minecraft:quick_charge",
-    "minecraft:respiration",
-    "minecraft:sharpness",
-    "minecraft:smite",
-    "minecraft:unbreaking"
+    {
+      "id": "minecraft:bane_of_arthropods",
+      "required": false
+    },
+    {
+      "id": "minecraft:blast_protection",
+      "required": false
+    },
+    {
+      "id": "minecraft:breach",
+      "required": false
+    },
+    {
+      "id": "minecraft:density",
+      "required": false
+    },
+    {
+      "id": "minecraft:efficiency",
+      "required": false
+    },
+    {
+      "id": "minecraft:feather_falling",
+      "required": false
+    },
+    {
+      "id": "minecraft:fire_protection",
+      "required": false
+    },
+    {
+      "id": "minecraft:impaling",
+      "required": false
+    },
+    {
+      "id": "minecraft:lure",
+      "required": false
+    },
+    {
+      "id": "minecraft:power",
+      "required": false
+    },
+    {
+      "id": "minecraft:projectile_protection",
+      "required": false
+    },
+    {
+      "id": "minecraft:protection",
+      "required": false
+    },
+    {
+      "id": "minecraft:quick_charge",
+      "required": false
+    },
+    {
+      "id": "minecraft:respiration",
+      "required": false
+    },
+    {
+      "id": "minecraft:sharpness",
+      "required": false
+    },
+    {
+      "id": "minecraft:smite",
+      "required": false
+    },
+    {
+      "id": "minecraft:unbreaking",
+      "required": false
+    }
   ]
 }

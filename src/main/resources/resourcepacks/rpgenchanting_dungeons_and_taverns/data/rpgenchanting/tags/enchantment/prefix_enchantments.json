@@ -1,8 +1,20 @@
 {
   "values": [
-    "nova_structures:antidote",
-    "nova_structures:illagers_bane",
-    "nova_structures:power",
-    "nova_structures:wax_wings"
+    {
+      "id": "nova_structures:antidote",
+      "required": false
+    },
+    {
+      "id": "nova_structures:illagers_bane",
+      "required": false
+    },
+    {
+      "id": "nova_structures:power",
+      "required": false
+    },
+    {
+      "id": "nova_structures:wax_wings",
+      "required": false
+    }
   ]
 }
