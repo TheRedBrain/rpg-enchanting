@@ -91,4 +91,9 @@ public class RPGEnchanting implements ModInitializer {
 	public static Identifier identifier(String path) {
 		return Identifier.of(MOD_ID, path);
 	}
+
+	public static void info(String message) {
+		LOGGER.info("[" + MOD_ID + "] [info]: " + message);
+	}
+
 }
