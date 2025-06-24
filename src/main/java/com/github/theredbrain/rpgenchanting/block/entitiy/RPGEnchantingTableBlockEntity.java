@@ -108,7 +108,7 @@ public class RPGEnchantingTableBlockEntity extends BlockEntity implements Nameab
 	}
 
 	public Text getName() {
-		return (Text) (this.customName != null ? this.customName : Text.translatable("container.enchant"));
+		return (Text) (this.customName != null ? this.customName : Text.translatable("gui.rpg_enchanting_table.title"));
 	}
 
 	public void setCustomName(@Nullable Text customName) {

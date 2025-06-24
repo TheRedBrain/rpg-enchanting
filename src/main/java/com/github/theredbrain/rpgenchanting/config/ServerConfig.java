@@ -1,12 +1,14 @@
 package com.github.theredbrain.rpgenchanting.config;
 
 import com.github.theredbrain.rpgenchanting.RPGEnchanting;
+import com.github.theredbrain.rpgenchanting.block.RPGEnchantingTableBlock;
 import me.fzzyhmstrs.fzzy_config.config.Config;
 import me.fzzyhmstrs.fzzy_config.util.Walkable;
 import me.fzzyhmstrs.fzzy_config.validation.collection.ValidatedList;
 import me.fzzyhmstrs.fzzy_config.validation.minecraft.ValidatedIdentifier;
 import me.fzzyhmstrs.fzzy_config.validation.misc.ValidatedAny;
 import me.fzzyhmstrs.fzzy_config.validation.misc.ValidatedBoolean;
+import me.fzzyhmstrs.fzzy_config.validation.misc.ValidatedEnum;
 import me.fzzyhmstrs.fzzy_config.validation.number.ValidatedDouble;
 import me.fzzyhmstrs.fzzy_config.validation.number.ValidatedInt;
 import net.minecraft.registry.Registries;
@@ -32,6 +34,9 @@ public class ServerConfig extends Config {
 	public ValidatedBoolean hide_normal_enchantment_tooltip_for_enchanted_loot = new ValidatedBoolean(true);
 
 	public ValidatedBoolean enable_enchantment_unlocking_by_chiseled_bookshelves = new ValidatedBoolean(true);
+	public ValidatedEnum<RPGEnchantingTableBlock.EnchantingMode> default_enchanting_mode = new ValidatedEnum<>(RPGEnchantingTableBlock.EnchantingMode.ADDITION);
+	public ValidatedEnum<RPGEnchantingTableBlock.BookCost> default_book_cost = new ValidatedEnum<>(RPGEnchantingTableBlock.BookCost.KEEP);
+	public ValidatedIdentifier enchanted_book_replacement = ValidatedIdentifier.ofRegistry(Identifier.of("book"), Registries.ITEM);
 	public ValidatedBoolean enable_ambient_enchant_particles = new ValidatedBoolean(true);
 
 	public ValidatedBoolean enable_enchanted_by_player_component_application = new ValidatedBoolean(true);
