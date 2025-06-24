@@ -81,6 +81,38 @@ E.g. if the "minecraft:efficiency" enchantment is in the "prefix" tag, the local
 - "rpgenchanting.minecraft.efficiency.4.prefix"
 - "rpgenchanting.minecraft.efficiency.5.prefix"
 
+### Display Order
+
+The pre- and suffix enchantment names are "wrapped" around the item name, the suffix is processed first.
+
+**What does this mean?**
+
+The final item name is a combination of the "item name additions" of both enchantment and the original item name.
+
+E.g. "Efficient Iron Pickaxe of Fortune"
+
+However, instead of "prefix_name + item_name + suffix_name", the order is much more customizable.
+
+The translations for the "item name additions" have to contain `"%s"`. This marks the position of the "wrapped" string.
+
+As mentioned earlier, the suffix is processed first. This means that the wrapped object is:
+- the item name for suffix strings
+- the item name (possibly wrapped by the suffix string) for prefix strings
+
+This feature is useful when playing in languages with alternative sentence structures.
+
+#### Example
+
+The translation for the "Fortune" enchantment could be changed from `"%s of Fortune"` to `"Fortunate %s of Fortune"`.
+
+A with Fortune enchanted iron pickaxe would now be named: "Fortunate Iron Pickaxe of Fortune".
+
+#### Example 2
+
+Taking the modified Fortune translation, but adding an Efficiency enchantment (with the default translation).
+
+The name for the iron pickaxe is now: "Efficient Fortunate Iron Pickaxe of Fortune".
+
 ### Built-in data and resource packs
 
 RPG Enchanting comes with several data/resource packs that bring compatibility for vanilla Minecraft and several mods.
