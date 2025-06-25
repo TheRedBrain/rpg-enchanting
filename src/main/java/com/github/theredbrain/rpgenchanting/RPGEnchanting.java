@@ -6,6 +6,7 @@ import com.github.theredbrain.rpgenchanting.registry.BlockRegistry;
 import com.github.theredbrain.rpgenchanting.registry.EntityRegistry;
 import com.github.theredbrain.rpgenchanting.registry.ItemComponentRegistry;
 import com.github.theredbrain.rpgenchanting.registry.ScreenHandlerTypesRegistry;
+import com.github.theredbrain.rpgenchanting.registry.ServerPacketRegistry;
 import io.netty.buffer.ByteBuf;
 import me.fzzyhmstrs.fzzy_config.api.ConfigApiJava;
 import me.fzzyhmstrs.fzzy_config.api.RegisterType;
@@ -78,6 +79,8 @@ public class RPGEnchanting implements ModInitializer {
 		EntityRegistry.init();
 		ItemComponentRegistry.init();
 		ScreenHandlerTypesRegistry.init();
+		ServerPacketRegistry.init();
+
 		Optional<ModContainer> modContainer = FabricLoader.getInstance().getModContainer(MOD_ID);
 		if (modContainer.isPresent()) {
 			ResourceManagerHelper.registerBuiltinResourcePack(identifier("rpgenchanting_dungeons_and_taverns"), modContainer.get(), Text.translatable("resourcepack.rpgenchanting.rpgenchanting_dungeons_and_taverns.name"), ResourcePackActivationType.DEFAULT_ENABLED);

@@ -1,20 +1,46 @@
 package com.github.theredbrain.rpgenchanting.block.entitiy;
 
+import com.github.theredbrain.rpgenchanting.RPGEnchanting;
+import com.github.theredbrain.rpgenchanting.block.RPGEnchantingTableBlock;
+import com.github.theredbrain.rpgenchanting.config.ServerConfig;
 import com.github.theredbrain.rpgenchanting.registry.EntityRegistry;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import me.fzzyhmstrs.fzzy_config.validation.collection.ValidatedList;
+import net.minecraft.advancement.AdvancementEntry;
+import net.minecraft.advancement.PlacedAdvancement;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.ChiseledBookshelfBlock;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.entity.ChiseledBookshelfBlockEntity;
 import net.minecraft.component.ComponentMap;
 import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.ItemEnchantmentsComponent;
+import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.RegistryWrapper;
+import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.Nameable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
+import org.apache.commons.lang3.tuple.MutablePair;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 
 public class RPGEnchantingTableBlockEntity extends BlockEntity implements Nameable {
 	public int ticks;
@@ -33,6 +59,219 @@ public class RPGEnchantingTableBlockEntity extends BlockEntity implements Nameab
 
 	public RPGEnchantingTableBlockEntity(BlockPos pos, BlockState state) {
 		super(EntityRegistry.RPG_ENCHANTING_TABLE, pos, state);
+	}
+
+	public HashSet<MutablePair<String, Integer>> getAdvancementEnchantments(PlayerEntity playerEntity) {
+		HashSet<MutablePair<String, Integer>> advancement_enchantments = new HashSet<>();
+
+		if (this.world != null) {
+
+			MinecraftServer server = world.getServer();
+			ValidatedList<ServerConfig.UnlockedEnchantment> enchantments_unlocked_by_advancements = RPGEnchanting.SERVER_CONFIG.enchantments_unlocked_by_advancements;
+
+			if (enchantments_unlocked_by_advancements.isEmpty()) {
+				return advancement_enchantments;
+			}
+
+			if (playerEntity instanceof ServerPlayerEntity serverPlayerEntity && server != null) {
+				for (ServerConfig.UnlockedEnchantment unlockedEnchantment : enchantments_unlocked_by_advancements) {
+					PlacedAdvancement placedAdvancement = server.getAdvancementLoader().getManager().get(Identifier.of(unlockedEnchantment.identifier));
+					if (placedAdvancement != null) {
+						AdvancementEntry advancementEntry = placedAdvancement.getAdvancementEntry();
+						if (serverPlayerEntity.getAdvancementTracker().getProgress(advancementEntry).isDone()) {
+							Optional<RegistryEntry.Reference<Enchantment>> optionalEnchantmentReference = world.getRegistryManager().get(RegistryKeys.ENCHANTMENT).getEntry(Identifier.of(unlockedEnchantment.enchantment));
+							if (optionalEnchantmentReference.isPresent()) {
+								advancement_enchantments.add(new MutablePair<>(optionalEnchantmentReference.get().getIdAsString(), unlockedEnchantment.level));
+							}
+						}
+					}
+				}
+			}
+		}
+		return advancement_enchantments;
+	}
+
+	public HashSet<MutablePair<String, Integer>> getBlockEnchantments() {
+		HashSet<MutablePair<String, Integer>> block_enchantments = new HashSet<>();
+		ServerConfig serverConfig = RPGEnchanting.SERVER_CONFIG;
+		ValidatedList<ServerConfig.UnlockedEnchantment> enchantments_unlocked_by_blocks = serverConfig.enchantments_unlocked_by_blocks;
+
+		if (enchantments_unlocked_by_blocks.isEmpty()) {
+			return block_enchantments;
+		}
+		int rpg_enchanting_table_block_reach_radius = serverConfig.rpg_enchanting_table_block_reach_radius.get();
+		Map<Block, HashSet<MutablePair<RegistryEntry.Reference<Enchantment>, Integer>>> blockMap = new HashMap<>();
+		for (ServerConfig.UnlockedEnchantment unlockedEnchantment : enchantments_unlocked_by_blocks) {
+			RegistryEntry.Reference<Block> registryBlockEntry = null;
+			Optional<RegistryEntry.Reference<Block>> optionalBlock = Registries.BLOCK.getEntry(Identifier.of(unlockedEnchantment.identifier));
+
+			if (optionalBlock.isPresent()) {
+				registryBlockEntry = optionalBlock.get();
+			}
+			Optional<RegistryEntry.Reference<Enchantment>> optionalEnchantmentReference = world.getRegistryManager().get(RegistryKeys.ENCHANTMENT).getEntry(Identifier.of(unlockedEnchantment.enchantment));
+
+			if (registryBlockEntry != null && optionalEnchantmentReference.isPresent()) {
+				HashSet<MutablePair<RegistryEntry.Reference<Enchantment>, Integer>> arrayList = blockMap.getOrDefault(registryBlockEntry.value(), new HashSet<>());
+				arrayList.add(new MutablePair<>(optionalEnchantmentReference.get(), unlockedEnchantment.level));
+				blockMap.put(registryBlockEntry.value(), arrayList);
+			}
+		}
+		if (blockMap.isEmpty()) {
+			return block_enchantments;
+		}
+		BlockState blockState;
+		int posX = this.pos.getX();
+		int posY = this.pos.getY();
+		int posZ = this.pos.getZ();
+		for (int i = -rpg_enchanting_table_block_reach_radius; i <= rpg_enchanting_table_block_reach_radius; i++) {
+			for (int j = -rpg_enchanting_table_block_reach_radius; j <= rpg_enchanting_table_block_reach_radius; j++) {
+				for (int k = -rpg_enchanting_table_block_reach_radius; k <= rpg_enchanting_table_block_reach_radius; k++) {
+					BlockPos blockPos = new BlockPos(posX + i, posY + j, posZ + k);
+					blockState = world.getBlockState(blockPos);
+					Block block = blockState.getBlock();
+					Set<MutablePair<RegistryEntry.Reference<Enchantment>, Integer>> set = blockMap.get(block);
+
+					if (set != null) {
+						for (MutablePair<RegistryEntry.Reference<Enchantment>, Integer> pair : set) {
+							block_enchantments.add(new MutablePair<>(pair.getLeft().getIdAsString(), pair.getRight()));
+						}
+						blockMap.remove(block);
+					}
+					if (blockMap.isEmpty()) {
+						break;
+					}
+				}
+				if (blockMap.isEmpty()) {
+					break;
+				}
+			}
+			if (blockMap.isEmpty()) {
+				break;
+			}
+		}
+		return block_enchantments;
+	}
+
+	public HashSet<MutablePair<String, Integer>> getBookEnchantments() {
+		HashSet<MutablePair<String, Integer>> book_enchantments = new HashSet<>();
+		ServerConfig serverConfig = RPGEnchanting.SERVER_CONFIG;
+
+		if (!serverConfig.enable_enchantment_unlocking_by_chiseled_bookshelves.get()) {
+			return book_enchantments;
+		}
+		int posX = pos.getX();
+		int posY = pos.getY();
+		int posZ = pos.getZ();
+		int rpg_enchanting_table_block_reach_radius = serverConfig.rpg_enchanting_table_block_reach_radius.get();
+		BlockState blockState;
+
+		for (int i = -rpg_enchanting_table_block_reach_radius; i <= rpg_enchanting_table_block_reach_radius; i++) {
+			for (int j = -rpg_enchanting_table_block_reach_radius; j <= rpg_enchanting_table_block_reach_radius; j++) {
+				for (int k = -rpg_enchanting_table_block_reach_radius; k <= rpg_enchanting_table_block_reach_radius; k++) {
+					BlockPos blockPos = new BlockPos(posX + i, posY + j, posZ + k);
+					blockState = world.getBlockState(blockPos);
+
+					if (blockState.getBlock() instanceof ChiseledBookshelfBlock) {
+						BlockEntity blockEntity = world.getBlockEntity(blockPos);
+
+						if (blockEntity instanceof ChiseledBookshelfBlockEntity chiseledBookshelfBlockEntity) {
+							for (int l = 0; l < 6; l++) {
+								ItemStack itemStack = chiseledBookshelfBlockEntity.getStack(l);
+								ItemEnchantmentsComponent itemEnchantmentsComponent = itemStack.get(DataComponentTypes.STORED_ENCHANTMENTS);
+
+								if (itemEnchantmentsComponent != null) {
+									for (Object2IntMap.Entry<RegistryEntry<Enchantment>> entry : itemEnchantmentsComponent.getEnchantmentEntries()) {
+										book_enchantments.add(new MutablePair<>(entry.getKey().getIdAsString(), entry.getIntValue()));
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		return book_enchantments;
+	}
+
+	public RPGEnchantingTableBlock.EnchantingMode getEnchantingMode() {
+		// TODO block entity specific setting
+		return RPGEnchanting.SERVER_CONFIG.default_enchanting_mode.get();
+	}
+
+	public RPGEnchantingTableBlock.BookCost getBookCost() {
+		// TODO block entity specific setting
+		return RPGEnchanting.SERVER_CONFIG.default_book_cost.get();
+	}
+
+	public int getBlockReachRadius() {
+		// TODO block entity specific setting
+		return RPGEnchanting.SERVER_CONFIG.rpg_enchanting_table_block_reach_radius.get();
+	}
+
+	public boolean applyBookCost(MutablePair<RegistryEntry.Reference<Enchantment>, Integer> enchantment) {
+
+		ServerConfig serverConfig = RPGEnchanting.SERVER_CONFIG;
+		int posX = this.pos.getX();
+		int posY = this.pos.getY();
+		int posZ = this.pos.getZ();
+
+		BlockState blockState;
+		int rpg_enchanting_table_block_reach_radius = this.getBlockReachRadius();
+		RPGEnchantingTableBlock.BookCost bookCost = this.getBookCost();
+
+		if (bookCost == RPGEnchantingTableBlock.BookCost.KEEP) {
+			return true;
+		}
+
+		if (this.world != null) {
+			for (int i = -rpg_enchanting_table_block_reach_radius; i <= rpg_enchanting_table_block_reach_radius; i++) {
+				for (int j = -rpg_enchanting_table_block_reach_radius; j <= rpg_enchanting_table_block_reach_radius; j++) {
+					for (int k = -rpg_enchanting_table_block_reach_radius; k <= rpg_enchanting_table_block_reach_radius; k++) {
+						BlockPos blockPos = new BlockPos(posX + i, posY + j, posZ + k);
+						blockState = this.world.getBlockState(blockPos);
+
+						if (blockState.getBlock() instanceof ChiseledBookshelfBlock) {
+							BlockEntity blockEntity = this.world.getBlockEntity(blockPos);
+
+							if (blockEntity instanceof ChiseledBookshelfBlockEntity chiseledBookshelfBlockEntity) {
+								for (int l = 0; l < 6; l++) {
+									ItemStack itemStack = chiseledBookshelfBlockEntity.getStack(l);
+									ItemEnchantmentsComponent itemEnchantmentsComponent = itemStack.get(DataComponentTypes.STORED_ENCHANTMENTS);
+									boolean replaceBook = false;
+
+									if (itemEnchantmentsComponent != null) {
+										for (Object2IntMap.Entry<RegistryEntry<Enchantment>> entry : itemEnchantmentsComponent.getEnchantmentEntries()) {
+
+											if (entry.getKey() == enchantment.getLeft() && entry.getIntValue() == enchantment.getRight()) {
+												replaceBook = true;
+											}
+										}
+									}
+
+									if (replaceBook) {
+										ItemEnchantmentsComponent.Builder builder = new ItemEnchantmentsComponent.Builder(itemEnchantmentsComponent);
+										builder.set(enchantment.getLeft(), 0);
+										ItemStack newStack;
+
+										if (bookCost == RPGEnchantingTableBlock.BookCost.CONSUME || builder.getEnchantments().isEmpty()) {
+											newStack = new ItemStack(Registries.ITEM.get(serverConfig.enchanted_book_replacement.get()));
+										} else {
+											newStack = itemStack.copy();
+											newStack.set(DataComponentTypes.STORED_ENCHANTMENTS, builder.build());
+										}
+										chiseledBookshelfBlockEntity.setStack(l, newStack);
+										chiseledBookshelfBlockEntity.markDirty();
+										this.world.updateListeners(blockPos, blockState, blockState, Block.NOTIFY_ALL);
+										return true;
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		return false;
 	}
 
 	protected void writeNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registryLookup) {

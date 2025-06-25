@@ -4,10 +4,13 @@ import com.github.theredbrain.rpgenchanting.RPGEnchanting;
 import com.github.theredbrain.rpgenchanting.RPGEnchantingClient;
 import com.github.theredbrain.rpgenchanting.config.ClientConfig;
 import com.github.theredbrain.rpgenchanting.config.ServerConfig;
+import com.github.theredbrain.rpgenchanting.network.packet.RPGEnchantItemPacket;
+import com.github.theredbrain.rpgenchanting.network.packet.UpdateEnchantingScreenPacket;
 import com.github.theredbrain.rpgenchanting.screen.RPGEnchantmentScreenHandler;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ingame.CyclingSlotIcon;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
@@ -21,12 +24,14 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.screen.ScreenTexts;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.collection.IndexedIterable;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RotationAxis;
 import net.minecraft.util.math.random.Random;
@@ -107,6 +112,23 @@ public class RPGEnchantmentScreen extends HandledScreen<RPGEnchantmentScreenHand
 		this.doTick();
 	}
 
+	public void enchant(boolean isPrefix, int index) {
+
+		IndexedIterable<RegistryEntry<Enchantment>> indexedIterable = this.handler.world.getRegistryManager().get(RegistryKeys.ENCHANTMENT).getIndexedEntries();
+
+		MutablePair<RegistryEntry.Reference<Enchantment>, Integer> newEnchantment = isPrefix ? this.handler.current_prefix_enchantments.get(index) : this.handler.current_suffix_enchantments.get(index);
+
+		ClientPlayNetworking.send(new RPGEnchantItemPacket(
+				this.handler.blockPos,
+				indexedIterable.getRawId(newEnchantment.getLeft()),
+				newEnchantment.getRight(),
+				this.handler.consumable_enchantments.contains(newEnchantment),
+				isPrefix
+		));
+
+		ClientPlayNetworking.send(new UpdateEnchantingScreenPacket());
+	}
+
 	@Override
 	public boolean mouseClicked(double mouseX, double mouseY, int button) {
 		int i = this.x;
@@ -119,8 +141,8 @@ public class RPGEnchantmentScreen extends HandledScreen<RPGEnchantmentScreenHand
 			for (int k = 0; k < Math.min(4, threshold); k++) {
 				double d = mouseX - (double) (i + 8);
 				double e = mouseY - (double) (j + 59 + 19 * k);
-				if (d >= 0.0 && e >= 0.0 && d < 108.0 && e < 19.0 && this.handler.onButtonClick(this.client.player, k + this.prefixEnchantmentsScrollPosition)) {
-					this.client.interactionManager.clickButton(this.handler.syncId, k + this.prefixEnchantmentsScrollPosition);
+				if (d >= 0.0 && e >= 0.0 && d < 108.0 && e < 19.0) {
+					this.enchant(true, k + this.prefixEnchantmentsScrollPosition);
 					return true;
 				}
 			}
@@ -128,8 +150,8 @@ public class RPGEnchantmentScreen extends HandledScreen<RPGEnchantmentScreenHand
 			for (int k = 0; k < Math.min(4, this.handler.current_suffix_enchantments.size()); k++) {
 				double d = mouseX - (double) (i + 168);
 				double e = mouseY - (double) (j + 59 + 19 * k);
-				if (d >= 0.0 && e >= 0.0 && d < 108.0 && e < 19.0 && this.handler.onButtonClick(this.client.player, k + this.suffixEnchantmentsScrollPosition + threshold)) {
-					this.client.interactionManager.clickButton(this.handler.syncId, k + this.suffixEnchantmentsScrollPosition + threshold);
+				if (d >= 0.0 && e >= 0.0 && d < 108.0 && e < 19.0) {
+					this.enchant(false, k + this.suffixEnchantmentsScrollPosition + threshold);
 					return true;
 				}
 			}

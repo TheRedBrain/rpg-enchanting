@@ -1,3 +1,7 @@
+# 1.4.0
+
+- added enchanted book consumption
+
 # 1.3.0
 
 - the vanilla Enchanting Table recipe now instead results in one RPG Enchanting Table
