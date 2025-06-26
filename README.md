@@ -113,6 +113,20 @@ Taking the modified Fortune translation, but adding an Efficiency enchantment (w
 
 The name for the iron pickaxe is now: "Efficient Fortunate Iron Pickaxe of Fortune".
 
+### Item Name Overwrites
+
+Item name overwrites can give specific combinations of items and enchantments a unique localization.
+
+To enable this feature for a given combination, add a localization key to a lang file in a resource pack. The key has to follow this format:
+
+> "prefix_enchantment_translation_key.prefix_enchantment_level.item_translation_key.suffix_enchantment_translation_key.suffix_enchantment_level"
+
+For combinations with a missing enchantment, replace the translation key with an empty string and the level with 0.
+
+#### Example
+
+`"minecraft.efficiency.5.item.minecraft.diamond_pickaxe.minecraft.fortune.3": "Super Mega Lucky And Fast Pickaxe"`
+
 ### Built-in data and resource packs
 
 RPG Enchanting comes with several data/resource packs that bring compatibility for vanilla Minecraft and several mods.

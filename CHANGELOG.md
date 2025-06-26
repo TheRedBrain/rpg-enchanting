@@ -1,6 +1,7 @@
 # 1.4.0
 
 - added enchanted book consumption
+- added item name overwrites for specific combinations of items and enchantments
 
 # 1.3.0
 
