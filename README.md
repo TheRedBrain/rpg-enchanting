@@ -45,6 +45,19 @@ When a block from the list is found, the corresponding enchantments of the speci
 When enabled in the server config, the RPG Enchanting Table looks for Chiseled Bookshelves, similar to the second option.
 When a Chiseled Bookshelf that stores Enchanted Books is found, every of those enchantments is unlocked.
 
+### Settings
+
+Several settings define how exactly the RPG Enchanting Table works. These settings can be defined for each individual RPG Enchanting Table (via block entity data), with a default defined in the server config.
+
+- Block Reach Radius, defines the area around the RPG Enchanting Table where blocks are checked to unlock enchantments.
+- Enchanted Book Consumption Mode, defines what happens with enchanted books in surrounding bookshelves, when their enchantment is applied to an item. These include:
+    - KEEP (nothing happens)
+    - CONSUME (enchanted books are replaced with a configurable item when one of their enchantments is used)
+    - PARTIAL_CONSUME (same as consume, but books with multiple enchants are not replaced, only the relevant enchantment is removed)
+- Enchantment Unlock Mode, defines how exactly enchantments are unlocked (also see above)
+    - ADDITION (all three methods are working like normal)
+    - BLOCK_REQUIRED_FOR_ADVANCEMENT (enchantments unlocked by advancements are only added, when they are also unlocked by blocks, book enchantments are added like normal)
+
 ### Enchanting cost
 
 Enchanting costs experience and items.
