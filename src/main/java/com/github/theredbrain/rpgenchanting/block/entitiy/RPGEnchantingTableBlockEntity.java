@@ -55,7 +55,12 @@ public class RPGEnchantingTableBlockEntity extends BlockEntity implements Nameab
 	public float targetBookRotation;
 	private static final Random RANDOM = Random.create();
 	@Nullable
+	private RPGEnchantingTableBlock.BookCost customBookCost;
+	@Nullable
+	private RPGEnchantingTableBlock.EnchantmentUnlockMode customEnchantmentUnlockMode;
+	@Nullable
 	private Text customName;
+	private int customBlockReachRadius = -1;
 
 	public RPGEnchantingTableBlockEntity(BlockPos pos, BlockState state) {
 		super(EntityRegistry.RPG_ENCHANTING_TABLE, pos, state);
@@ -193,19 +198,16 @@ public class RPGEnchantingTableBlockEntity extends BlockEntity implements Nameab
 		return book_enchantments;
 	}
 
-	public RPGEnchantingTableBlock.EnchantingMode getEnchantingMode() {
-		// TODO block entity specific setting
-		return RPGEnchanting.SERVER_CONFIG.default_enchanting_mode.get();
+	public RPGEnchantingTableBlock.BookCost getBookCost() {
+		return this.customBookCost != null ? this.customBookCost : RPGEnchanting.SERVER_CONFIG.default_book_cost.get();
 	}
 
-	public RPGEnchantingTableBlock.BookCost getBookCost() {
-		// TODO block entity specific setting
-		return RPGEnchanting.SERVER_CONFIG.default_book_cost.get();
+	public RPGEnchantingTableBlock.EnchantmentUnlockMode getEnchantingMode() {
+		return this.customEnchantmentUnlockMode != null ? this.customEnchantmentUnlockMode : RPGEnchanting.SERVER_CONFIG.default_enchantment_unlock_mode.get();
 	}
 
 	public int getBlockReachRadius() {
-		// TODO block entity specific setting
-		return RPGEnchanting.SERVER_CONFIG.rpg_enchanting_table_block_reach_radius.get();
+		return this.customBlockReachRadius >= 0 ? this.customBlockReachRadius : RPGEnchanting.SERVER_CONFIG.rpg_enchanting_table_block_reach_radius.get();
 	}
 
 	public boolean applyBookCost(MutablePair<RegistryEntry.Reference<Enchantment>, Integer> enchantment) {
@@ -279,7 +281,15 @@ public class RPGEnchantingTableBlockEntity extends BlockEntity implements Nameab
 		if (this.hasCustomName()) {
 			nbt.putString("CustomName", Text.Serialization.toJsonString(this.customName, registryLookup));
 		}
-
+		if (this.customBookCost != null) {
+			nbt.putString("CustomBookCost", this.customBookCost.asString());
+		}
+		if (this.customEnchantmentUnlockMode != null) {
+			nbt.putString("CustomEnchantingMode", this.customEnchantmentUnlockMode.asString());
+		}
+		if (this.customBlockReachRadius >= 0) {
+			nbt.putInt("CustomBlockReachRadius", this.customBlockReachRadius);
+		}
 	}
 
 	protected void readNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registryLookup) {
@@ -287,7 +297,17 @@ public class RPGEnchantingTableBlockEntity extends BlockEntity implements Nameab
 		if (nbt.contains("CustomName", 8)) {
 			this.customName = tryParseCustomName(nbt.getString("CustomName"), registryLookup);
 		}
-
+		if (nbt.contains("CustomBookCost", 8)) {
+			this.customBookCost = RPGEnchantingTableBlock.BookCost.valueOfOrNull(nbt.getString("CustomBookCost"));
+		}
+		if (nbt.contains("CustomEnchantingMode", 8)) {
+			this.customEnchantmentUnlockMode = RPGEnchantingTableBlock.EnchantmentUnlockMode.valueOfOrNull(nbt.getString("CustomEnchantingMode"));
+		}
+		if (nbt.contains("CustomBlockReachRadius", 3)) {
+			this.customBlockReachRadius = nbt.getInt("CustomBlockReachRadius");
+		} else {
+			this.customBlockReachRadius = -1;
+		}
 	}
 
 	public static void tick(World world, BlockPos pos, BlockState state, RPGEnchantingTableBlockEntity blockEntity) {

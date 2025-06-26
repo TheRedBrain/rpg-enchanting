@@ -117,7 +117,7 @@ public class RPGEnchantingTableBlock extends BlockWithEntity {
 	public static NamedScreenHandlerFactory createRPGEnchanterBlockScreenHandlerFactory(
 			BlockPos blockPos,
 			RPGEnchantingTableBlock.BookCost bookCost,
-			RPGEnchantingTableBlock.EnchantingMode enchantingMode,
+			EnchantmentUnlockMode enchantmentUnlockMode,
 			Set<MutablePair<String, Integer>> advancement_enchantments,
 			Set<MutablePair<String, Integer>> block_enchantments,
 			Set<MutablePair<String, Integer>> book_enchantments
@@ -125,7 +125,7 @@ public class RPGEnchantingTableBlock extends BlockWithEntity {
 		return new ExtendedScreenHandlerFactory<>() {
 			@Override
 			public RPGEnchantmentScreenHandler.RPGEnchanterBlockData getScreenOpeningData(ServerPlayerEntity player) {
-				return new RPGEnchantmentScreenHandler.RPGEnchanterBlockData(blockPos, bookCost, enchantingMode, advancement_enchantments, block_enchantments, book_enchantments);
+				return new RPGEnchantmentScreenHandler.RPGEnchanterBlockData(blockPos, bookCost, enchantmentUnlockMode, advancement_enchantments, block_enchantments, book_enchantments);
 			}
 
 			@Override
@@ -136,18 +136,18 @@ public class RPGEnchantingTableBlock extends BlockWithEntity {
 			@Nullable
 			@Override
 			public ScreenHandler createMenu(int syncId, PlayerInventory playerInventory, PlayerEntity player) {
-				return new RPGEnchantmentScreenHandler(syncId, playerInventory, blockPos, bookCost, enchantingMode, advancement_enchantments, block_enchantments, book_enchantments);
+				return new RPGEnchantmentScreenHandler(syncId, playerInventory, blockPos, bookCost, enchantmentUnlockMode, advancement_enchantments, block_enchantments, book_enchantments);
 			}
 		};
 	}
 
-	public enum EnchantingMode implements StringIdentifiable {
+	public enum EnchantmentUnlockMode implements StringIdentifiable {
 		ADDITION("addition"),
 		BLOCK_REQUIRED_FOR_ADVANCEMENT("block_required_for_advancement");
 
 		private final String name;
 
-		EnchantingMode(String name) {
+		EnchantmentUnlockMode(String name) {
 			this.name = name;
 		}
 
@@ -156,8 +156,17 @@ public class RPGEnchantingTableBlock extends BlockWithEntity {
 			return this.name;
 		}
 
-		public static Optional<EnchantingMode> byName(String name) {
-			return Arrays.stream(EnchantingMode.values()).filter(enchantingMode -> enchantingMode.asString().equals(name)).findFirst();
+		public static Optional<EnchantmentUnlockMode> byName(String name) {
+			return Arrays.stream(EnchantmentUnlockMode.values()).filter(enchantmentUnlockMode -> enchantmentUnlockMode.asString().equals(name)).findFirst();
+		}
+
+		@Nullable
+		public static RPGEnchantingTableBlock.EnchantmentUnlockMode valueOfOrNull(String name) {
+			try {
+				return valueOf(name);
+			} catch (IllegalArgumentException e) {
+				return null;
+			}
 		}
 	}
 
@@ -179,6 +188,15 @@ public class RPGEnchantingTableBlock extends BlockWithEntity {
 
 		public static Optional<BookCost> byName(String name) {
 			return Arrays.stream(BookCost.values()).filter(bookCost -> bookCost.asString().equals(name)).findFirst();
+		}
+
+		@Nullable
+		public static BookCost valueOfOrNull(String name) {
+			try {
+				return valueOf(name);
+			} catch (IllegalArgumentException e) {
+				return null;
+			}
 		}
 	}
 

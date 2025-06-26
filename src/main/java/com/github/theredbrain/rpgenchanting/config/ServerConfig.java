@@ -34,7 +34,7 @@ public class ServerConfig extends Config {
 	public ValidatedBoolean hide_normal_enchantment_tooltip_for_enchanted_loot = new ValidatedBoolean(true);
 
 	public ValidatedBoolean enable_enchantment_unlocking_by_chiseled_bookshelves = new ValidatedBoolean(true);
-	public ValidatedEnum<RPGEnchantingTableBlock.EnchantingMode> default_enchanting_mode = new ValidatedEnum<>(RPGEnchantingTableBlock.EnchantingMode.ADDITION);
+	public ValidatedEnum<RPGEnchantingTableBlock.EnchantmentUnlockMode> default_enchantment_unlock_mode = new ValidatedEnum<>(RPGEnchantingTableBlock.EnchantmentUnlockMode.ADDITION);
 	public ValidatedEnum<RPGEnchantingTableBlock.BookCost> default_book_cost = new ValidatedEnum<>(RPGEnchantingTableBlock.BookCost.KEEP);
 	public ValidatedIdentifier enchanted_book_replacement = ValidatedIdentifier.ofRegistry(Identifier.of("book"), Registries.ITEM);
 	public ValidatedBoolean enable_ambient_enchant_particles = new ValidatedBoolean(true);

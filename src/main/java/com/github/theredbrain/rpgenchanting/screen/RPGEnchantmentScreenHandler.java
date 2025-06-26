@@ -63,10 +63,10 @@ public class RPGEnchantmentScreenHandler extends ScreenHandler {
 	public final PlayerEntity player;
 
 	public RPGEnchantmentScreenHandler(int syncId, PlayerInventory playerInventory, RPGEnchanterBlockData data) {
-		this(syncId, playerInventory, data.blockPos, data.bookCost, data.enchantingMode, data.advancement_enchantments, data.block_enchantments, data.book_enchantments);
+		this(syncId, playerInventory, data.blockPos, data.bookCost, data.enchantmentUnlockMode, data.advancement_enchantments, data.block_enchantments, data.book_enchantments);
 	}
 
-	public RPGEnchantmentScreenHandler(int syncId, PlayerInventory playerInventory, BlockPos blockPos, RPGEnchantingTableBlock.BookCost bookCost, RPGEnchantingTableBlock.EnchantingMode enchantingMode, Set<MutablePair<String, Integer>> advancement_enchantments, Set<MutablePair<String, Integer>> block_enchantments, Set<MutablePair<String, Integer>> book_enchantments) {
+	public RPGEnchantmentScreenHandler(int syncId, PlayerInventory playerInventory, BlockPos blockPos, RPGEnchantingTableBlock.BookCost bookCost, RPGEnchantingTableBlock.EnchantmentUnlockMode enchantmentUnlockMode, Set<MutablePair<String, Integer>> advancement_enchantments, Set<MutablePair<String, Integer>> block_enchantments, Set<MutablePair<String, Integer>> book_enchantments) {
 		super(ScreenHandlerTypesRegistry.RPG_ENCHANTMENT_SCREEN_HANDLER, syncId);
 		this.world = playerInventory.player.getWorld();
 		this.blockPos = blockPos;
@@ -108,11 +108,11 @@ public class RPGEnchantmentScreenHandler extends ScreenHandler {
 			((SlotCustomization) this.slots.get(i)).slotcustomizationapi$setDisabledOverride(i >= 9 + activeInventorySize);
 		}
 
-		this.updateEnchantmentLists(bookCost, enchantingMode, advancement_enchantments, block_enchantments, book_enchantments);
+		this.updateEnchantmentLists(bookCost, enchantmentUnlockMode, advancement_enchantments, block_enchantments, book_enchantments);
 
 	}
 
-	public void updateEnchantmentLists(RPGEnchantingTableBlock.BookCost bookCost, RPGEnchantingTableBlock.EnchantingMode enchantingMode, Set<MutablePair<String, Integer>> advancement_enchantments, Set<MutablePair<String, Integer>> block_enchantments, Set<MutablePair<String, Integer>> book_enchantments) {
+	public void updateEnchantmentLists(RPGEnchantingTableBlock.BookCost bookCost, RPGEnchantingTableBlock.EnchantmentUnlockMode enchantmentUnlockMode, Set<MutablePair<String, Integer>> advancement_enchantments, Set<MutablePair<String, Integer>> block_enchantments, Set<MutablePair<String, Integer>> book_enchantments) {
 
 		List<MutablePair<RegistryEntry.Reference<Enchantment>, Integer>> verified_advancement_enchantments = new ArrayList<>();
 		List<MutablePair<RegistryEntry.Reference<Enchantment>, Integer>> verified_block_enchantments = new ArrayList<>();
@@ -137,7 +137,7 @@ public class RPGEnchantmentScreenHandler extends ScreenHandler {
 			}
 		}
 
-		if (enchantingMode == RPGEnchantingTableBlock.EnchantingMode.BLOCK_REQUIRED_FOR_ADVANCEMENT) {
+		if (enchantmentUnlockMode == RPGEnchantingTableBlock.EnchantmentUnlockMode.BLOCK_REQUIRED_FOR_ADVANCEMENT) {
 			for (MutablePair<RegistryEntry.Reference<Enchantment>, Integer> pair : verified_book_enchantments) {
 
 				if (pair.getLeft().isIn(RPGEnchanting.PREFIX_ENCHANTMENTS)) {
@@ -163,7 +163,7 @@ public class RPGEnchantmentScreenHandler extends ScreenHandler {
 					this.consumable_enchantments.remove(pair);
 				}
 			}
-		} else if (enchantingMode == RPGEnchantingTableBlock.EnchantingMode.ADDITION) {
+		} else if (enchantmentUnlockMode == RPGEnchantingTableBlock.EnchantmentUnlockMode.ADDITION) {
 			for (MutablePair<RegistryEntry.Reference<Enchantment>, Integer> pair : verified_book_enchantments) {
 
 				if (pair.getLeft().isIn(RPGEnchanting.PREFIX_ENCHANTMENTS)) {
@@ -376,7 +376,7 @@ public class RPGEnchantmentScreenHandler extends ScreenHandler {
 	public record RPGEnchanterBlockData(
 			BlockPos blockPos,
 			RPGEnchantingTableBlock.BookCost bookCost,
-			RPGEnchantingTableBlock.EnchantingMode enchantingMode,
+			RPGEnchantingTableBlock.EnchantmentUnlockMode enchantmentUnlockMode,
 			Set<MutablePair<String, Integer>> advancement_enchantments,
 			Set<MutablePair<String, Integer>> block_enchantments,
 			Set<MutablePair<String, Integer>> book_enchantments
@@ -388,7 +388,7 @@ public class RPGEnchantmentScreenHandler extends ScreenHandler {
 			this(
 					registryByteBuf.readBlockPos(),
 					RPGEnchantingTableBlock.BookCost.byName(registryByteBuf.readString()).orElse(RPGEnchantingTableBlock.BookCost.KEEP),
-					RPGEnchantingTableBlock.EnchantingMode.byName(registryByteBuf.readString()).orElse(RPGEnchantingTableBlock.EnchantingMode.ADDITION),
+					RPGEnchantingTableBlock.EnchantmentUnlockMode.byName(registryByteBuf.readString()).orElse(RPGEnchantingTableBlock.EnchantmentUnlockMode.ADDITION),
 					registryByteBuf.readCollection(HashSet::new, RPGEnchanting.MUTABLE_PAIR_STRING_INTEGER),
 					registryByteBuf.readCollection(HashSet::new, RPGEnchanting.MUTABLE_PAIR_STRING_INTEGER),
 					registryByteBuf.readCollection(HashSet::new, RPGEnchanting.MUTABLE_PAIR_STRING_INTEGER)
@@ -398,7 +398,7 @@ public class RPGEnchantmentScreenHandler extends ScreenHandler {
 		private void write(RegistryByteBuf registryByteBuf) {
 			registryByteBuf.writeBlockPos(blockPos);
 			registryByteBuf.writeString(bookCost.asString());
-			registryByteBuf.writeString(enchantingMode.asString());
+			registryByteBuf.writeString(enchantmentUnlockMode.asString());
 			registryByteBuf.writeCollection(this.advancement_enchantments, RPGEnchanting.MUTABLE_PAIR_STRING_INTEGER);
 			registryByteBuf.writeCollection(this.block_enchantments, RPGEnchanting.MUTABLE_PAIR_STRING_INTEGER);
 			registryByteBuf.writeCollection(this.book_enchantments, RPGEnchanting.MUTABLE_PAIR_STRING_INTEGER);
