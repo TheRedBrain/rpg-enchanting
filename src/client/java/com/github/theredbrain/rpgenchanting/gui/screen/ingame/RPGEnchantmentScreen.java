@@ -151,7 +151,7 @@ public class RPGEnchantmentScreen extends HandledScreen<RPGEnchantmentScreenHand
 				double d = mouseX - (double) (i + 168);
 				double e = mouseY - (double) (j + 59 + 19 * k);
 				if (d >= 0.0 && e >= 0.0 && d < 108.0 && e < 19.0) {
-					this.enchant(false, k + this.suffixEnchantmentsScrollPosition + threshold);
+					this.enchant(false, k + this.suffixEnchantmentsScrollPosition);
 					return true;
 				}
 			}

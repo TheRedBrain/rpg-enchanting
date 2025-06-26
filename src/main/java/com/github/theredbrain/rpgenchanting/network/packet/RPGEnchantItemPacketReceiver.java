@@ -62,11 +62,11 @@ public class RPGEnchantItemPacketReceiver implements ServerPlayNetworking.PlayPa
 				MutablePair<RegistryEntry.Reference<Enchantment>, Integer> newEnchantment = new MutablePair<>(optionalEnchantmentReference.get(), enchantmentLevel);
 				int experience_cost_amount = (isPrefix ? rpgEnchantmentScreenHandler.existing_enchantment_costs[0] : rpgEnchantmentScreenHandler.existing_enchantment_costs[2]) + (int) Math.max(0, Math.floor(newEnchantment.getLeft().value().getMaxPower(newEnchantment.getRight()) * serverConfig.new_enchantment_exp_cost_multiplier.get()));
 
-				if (!(player.experienceLevel < experience_cost_amount && !player.isInCreativeMode())) {
+				if (player.experienceLevel >= experience_cost_amount || player.isInCreativeMode()) {
 
 					int item_cost_amount = (isPrefix ? rpgEnchantmentScreenHandler.existing_enchantment_costs[1] : rpgEnchantmentScreenHandler.existing_enchantment_costs[3]) + (int) Math.max(0, Math.floor(newEnchantment.getLeft().value().getAnvilCost() * newEnchantment.getRight() * serverConfig.new_enchantment_item_cost_multiplier.get()));
 
-					if (!((!itemCostItemStack.isOf(Registries.ITEM.get(serverConfig.prefix_item_cost.get())) || itemCostItemStack.getCount() < item_cost_amount) && !player.isInCreativeMode())) {
+					if (((isPrefix ? itemCostItemStack.isOf(Registries.ITEM.get(serverConfig.prefix_item_cost.get())) : itemCostItemStack.isOf(Registries.ITEM.get(serverConfig.suffix_item_cost.get()))) && itemCostItemStack.getCount() >= item_cost_amount) || player.isInCreativeMode()) {
 
 						boolean shouldEnchant = true;
 
