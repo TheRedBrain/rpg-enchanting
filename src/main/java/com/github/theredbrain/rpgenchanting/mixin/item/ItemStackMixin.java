@@ -55,17 +55,39 @@ public class ItemStackMixin {
 			}
 
 			Text text = instance.get(DataComponentTypes.ITEM_NAME);
+//			MutableText textPrefixOverwrite = Text.empty();
+//			MutableText textSuffixOverwrite = Text.empty();
 			if (text == null) {
 
 				// checks if the combination of item and enchantments has a dedicated translation
 				// this is disabled when the item has a custom name
 				String translationKeyOverwrite = prefixEnchantmentTranslationKey + "." + prefixEnchantmentLevel + "." + instance.getItem().getTranslationKey() + "." + suffixEnchantmentTranslationKey + "." + suffixEnchantmentLevel;
 				MutableText textOverwrite = Text.translatable(translationKeyOverwrite);
-				RPGEnchanting.info("textOverwrite.getString(): " + textOverwrite.getString());
-				RPGEnchanting.info("translationKeyOverwrite: " + translationKeyOverwrite);
+//				RPGEnchanting.info("textOverwrite.getString(): " + textOverwrite.getString());
+//				RPGEnchanting.info("translationKeyOverwrite: " + translationKeyOverwrite);
 				if (!Objects.equals(textOverwrite.getString(), translationKeyOverwrite)) {
 					return textOverwrite;
 				}
+
+//				// prefix overwrite
+//				String translationKeyPrefixOverwrite = prefixEnchantmentTranslationKey + "." + prefixEnchantmentLevel + "." + instance.getItem().getTranslationKey();
+//				textPrefixOverwrite = Text.translatable(translationKeyPrefixOverwrite);
+//				RPGEnchanting.info("textPrefixOverwrite.getString(): " + textPrefixOverwrite.getString());
+//				RPGEnchanting.info("translationKeyPrefixOverwrite: " + translationKeyPrefixOverwrite);
+//				if (Objects.equals(textPrefixOverwrite.getString().hashCode(), translationKeyPrefixOverwrite.hashCode())) {
+//					translationKeyPrefixOverwrite = "";
+//					textPrefixOverwrite = Text.empty();
+//				}
+//
+//				// suffix overwrite
+//				String translationKeySuffixOverwrite = prefixEnchantmentTranslationKey + "." + prefixEnchantmentLevel + "." + instance.getItem().getTranslationKey();
+//				textSuffixOverwrite = Text.translatable(translationKeySuffixOverwrite);
+//				RPGEnchanting.info("textSuffixOverwrite.getString(): " + textSuffixOverwrite.getString());
+//				RPGEnchanting.info("translationKeySuffixOverwrite: " + translationKeySuffixOverwrite);
+//				if (Objects.equals(textSuffixOverwrite.getString(), translationKeySuffixOverwrite)) {
+//					translationKeySuffixOverwrite = "";
+//					textSuffixOverwrite = Text.empty();
+//				}
 
 				text = instance.getItem().getName(instance);
 			}
@@ -73,6 +95,8 @@ public class ItemStackMixin {
 				text = Text.translatable(suffixEnchantmentString, text);
 			}
 			if (!prefixEnchantmentString.isEmpty()) {
+//				if () {
+//				}
 				text = Text.translatable(prefixEnchantmentString, text);
 			}
 			return text;
