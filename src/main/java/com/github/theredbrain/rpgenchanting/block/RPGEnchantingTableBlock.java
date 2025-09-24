@@ -25,6 +25,7 @@ import net.minecraft.screen.ScreenHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
+import net.minecraft.util.Nameable;
 import net.minecraft.util.StringIdentifiable;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
@@ -63,7 +64,7 @@ public class RPGEnchantingTableBlock extends BlockWithEntity {
 		super.randomDisplayTick(state, world, pos, random);
 		ServerConfig serverConfig = RPGEnchanting.SERVER_CONFIG;
 		if (serverConfig.enable_ambient_enchant_particles.get()) {
-			int rpg_enchanting_table_block_reach_radius = serverConfig.rpg_enchanting_table_block_reach_radius.get();
+			int rpg_enchanting_table_block_reach_radius = serverConfig.ambient_enchant_particle_radius.get();
 			for (int i = -rpg_enchanting_table_block_reach_radius; i <= rpg_enchanting_table_block_reach_radius; i++) {
 				for (int j = -rpg_enchanting_table_block_reach_radius; j <= rpg_enchanting_table_block_reach_radius; j++) {
 					for (int k = -rpg_enchanting_table_block_reach_radius; k <= rpg_enchanting_table_block_reach_radius; k++) {
@@ -104,6 +105,7 @@ public class RPGEnchantingTableBlock extends BlockWithEntity {
 		} else if (world.getBlockEntity(pos) instanceof RPGEnchantingTableBlockEntity rpgEnchantingTableBlockEntity) {
 			player.openHandledScreen(createRPGEnchanterBlockScreenHandlerFactory(
 					rpgEnchantingTableBlockEntity.getPos(),
+					((Nameable)rpgEnchantingTableBlockEntity).getDisplayName(),
 					rpgEnchantingTableBlockEntity.getBookCost(),
 					rpgEnchantingTableBlockEntity.getEnchantingMode(),
 					rpgEnchantingTableBlockEntity.getAdvancementEnchantments(player),
@@ -116,6 +118,7 @@ public class RPGEnchantingTableBlock extends BlockWithEntity {
 
 	public static NamedScreenHandlerFactory createRPGEnchanterBlockScreenHandlerFactory(
 			BlockPos blockPos,
+			Text title,
 			RPGEnchantingTableBlock.BookCost bookCost,
 			EnchantmentUnlockMode enchantmentUnlockMode,
 			Set<MutablePair<String, Integer>> advancement_enchantments,
@@ -130,7 +133,7 @@ public class RPGEnchantingTableBlock extends BlockWithEntity {
 
 			@Override
 			public Text getDisplayName() {
-				return Text.translatable("gui.rpg_enchanting_table.title");
+				return title;
 			}
 
 			@Nullable

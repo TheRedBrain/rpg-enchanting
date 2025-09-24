@@ -8,6 +8,7 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.util.Nameable;
 import net.minecraft.world.World;
 
 public class UpdateEnchantingScreenPacketReceiver implements ServerPlayNetworking.PlayPayloadHandler<UpdateEnchantingScreenPacket> {
@@ -32,6 +33,7 @@ public class UpdateEnchantingScreenPacketReceiver implements ServerPlayNetworkin
 			if (blockEntity instanceof RPGEnchantingTableBlockEntity rpgEnchantingTableBlockEntity) {
 				player.openHandledScreen(RPGEnchantingTableBlock.createRPGEnchanterBlockScreenHandlerFactory(
 						rpgEnchantingTableBlockEntity.getPos(),
+						((Nameable)rpgEnchantingTableBlockEntity).getDisplayName(),
 						rpgEnchantingTableBlockEntity.getBookCost(),
 						rpgEnchantingTableBlockEntity.getEnchantingMode(),
 						rpgEnchantingTableBlockEntity.getAdvancementEnchantments(player),

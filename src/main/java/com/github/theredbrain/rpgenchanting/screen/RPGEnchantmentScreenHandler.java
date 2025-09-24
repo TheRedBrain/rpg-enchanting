@@ -82,6 +82,13 @@ public class RPGEnchantmentScreenHandler extends ScreenHandler {
 			public boolean canInsert(ItemStack stack) {
 				return stack.isOf(Registries.ITEM.get(RPGEnchanting.SERVER_CONFIG.prefix_item_cost.get())) || stack.isOf(Registries.ITEM.get(RPGEnchanting.SERVER_CONFIG.suffix_item_cost.get()));
 			}
+
+			@Override
+			public boolean isEnabled() {
+				ServerConfig serverConfig = RPGEnchanting.SERVER_CONFIG;
+				return super.isEnabled() && (serverConfig.old_enchantment_item_cost_multiplier.get() > 0.0 || serverConfig.new_enchantment_item_cost_multiplier.get() > 0.0) && (!serverConfig.prefix_item_cost.get().equals(Identifier.of("minecraft:air")) || !serverConfig.suffix_item_cost.get().equals(Identifier.of("minecraft:air")));
+			}
+
 		});
 
 		int i;
@@ -95,8 +102,6 @@ public class RPGEnchantmentScreenHandler extends ScreenHandler {
 				this.addSlot(new Slot(playerInventory, j + (i + 1) * 9, 62 + j * 18, 151 + i * 18));
 			}
 		}
-
-		((SlotCustomization) this.slots.get(1)).slotcustomizationapi$setDisabledOverride(RPGEnchanting.SERVER_CONFIG.old_enchantment_item_cost_multiplier.get() > 0.0 || RPGEnchanting.SERVER_CONFIG.new_enchantment_item_cost_multiplier.get() > 0.0);
 
 		// Inventory Size Attributes compatibility
 		int activeHotbarSize = RPGEnchanting.getActiveHotbarSize(playerInventory.player);

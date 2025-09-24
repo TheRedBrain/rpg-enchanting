@@ -38,6 +38,7 @@ public class ServerConfig extends Config {
 	public ValidatedEnum<RPGEnchantingTableBlock.BookCost> default_book_cost = new ValidatedEnum<>(RPGEnchantingTableBlock.BookCost.KEEP);
 	public ValidatedIdentifier enchanted_book_replacement = ValidatedIdentifier.ofRegistry(Identifier.of("book"), Registries.ITEM);
 	public ValidatedBoolean enable_ambient_enchant_particles = new ValidatedBoolean(true);
+	public ValidatedInt ambient_enchant_particle_radius = new ValidatedInt(3);
 
 	public ValidatedBoolean enable_enchanted_by_player_component_application = new ValidatedBoolean(true);
 

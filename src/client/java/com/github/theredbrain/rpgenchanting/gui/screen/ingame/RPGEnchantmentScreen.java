@@ -226,8 +226,9 @@ public class RPGEnchantmentScreen extends HandledScreen<RPGEnchantmentScreenHand
 
 		context.drawTexture(TEXTURE, i, j, 0, 0, this.backgroundWidth, this.backgroundHeight, this.backgroundWidth, this.backgroundHeight);
 
-		if (serverConfig.old_enchantment_item_cost_multiplier.get() > 0.0 || serverConfig.new_enchantment_item_cost_multiplier.get() > 0.0) {
+		if ((serverConfig.old_enchantment_item_cost_multiplier.get() > 0.0 || serverConfig.new_enchantment_item_cost_multiplier.get() > 0.0) && (!serverConfig.prefix_item_cost.get().equals(Identifier.of("minecraft:air")) || !serverConfig.suffix_item_cost.get().equals(Identifier.of("minecraft:air")))) {
 			context.drawTexture(SLOT_TEXTURE, x + 133, y + 61, 0, 0, 18, 18, 18, 18);
+			this.itemCostSlotIcon.render(this.handler, context, delta, this.x, this.y);
 		}
 
 		boolean showInactiveSlots = RPGEnchantingClient.showInactiveInventorySlots();
@@ -238,8 +239,6 @@ public class RPGEnchantmentScreen extends HandledScreen<RPGEnchantmentScreenHand
 		for (k = 0; k < (showInactiveSlots ? 9 : Math.min(this.hotbarSize, 9)); ++k) {
 			context.drawTexture(SLOT_TEXTURE, x + 61 + k * 18, y + 208, 0, 0, 18, 18, 18, 18);
 		}
-
-		this.itemCostSlotIcon.render(this.handler, context, delta, this.x, this.y);
 
 		this.drawBook(context, i, j, delta);
 
