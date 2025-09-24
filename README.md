@@ -10,7 +10,7 @@ Every enchantment is either a prefix or a suffix enchantment.
 
 ## Tooltip changes
 
-Enchantments are no longer displayed in a list below the item name. Instead the item name is modified.
+Enchantments are no longer displayed in a list below the item name. Instead, the item name is modified.
 
 E.g. an Iron Pickaxe enchanted with Efficiency and Fortune is called "Efficient Iron Pickaxe of Fortune".
 
@@ -176,11 +176,15 @@ These features of RPG Enchanting can also be customized:
 
 ### Data components
 
-RPG Enchanting adds the "rpgenchanting:show_enchantment_name_additions" data component. When this component is present on an itemStack, the item name is modified with enchantment pre/suffixes.
+#### "rpgenchanting:show_enchantment_name_additions"
+
+When this component is present on an itemStack, the item name is modified with enchantment pre/suffixes.
 
 The RPG Enchanting Table automatically adds this component to items that it enchants.
 
-RPG Enchanting adds the "rpgenchanting:player_enchanted" data component. It saves a player profile and displays the player name in the item tooltip.
+#### "rpgenchanting:player_enchanted"
+
+This component saves a player profile and displays the player name in the item tooltip.
 
 The RPG Enchanting Table automatically adds this component to items that it enchants. This can be disabled for every player in the server config.
 

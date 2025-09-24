@@ -1,3 +1,11 @@
+# 1.4.1
+
+- RPG Enchanting Table now shows custom names in GUI
+- radius around RPG Enchanting Table that produce particles is now a separate server config option
+- fixed an issue where the item cost slot would not be properly disabled, when item costs were disabled in the server config
+- fixed Inventory Size Attributes integration
+- fixed log spam
+
 # 1.4.0
 
 - added enchanted book consumption modes, optionally defined individually for each RPG Enchanting Table, with a configurable default. The current modes are:
