@@ -1,6 +1,6 @@
 package com.github.theredbrain.rpgenchanting;
 
-import com.github.theredbrain.inventorysizeattributes.InventorySizeAttributesClient;
+import com.github.theredbrain.rpgenchanting.compatibility.InventorySizeAttributesClientCompat;
 import com.github.theredbrain.rpgenchanting.config.ClientConfig;
 import com.github.theredbrain.rpgenchanting.gui.screen.ingame.RPGEnchantmentScreen;
 import com.github.theredbrain.rpgenchanting.registry.EntityRegistry;
@@ -19,7 +19,7 @@ public class RPGEnchantingClient implements ClientModInitializer {
 	public static ClientConfig CLIENT_CONFIG;
 
 	public static boolean showInactiveInventorySlots() {
-		return RPGEnchanting.isInventorySizeAttributesLoaded ? InventorySizeAttributesClient.CLIENT_CONFIG.show_inactive_inventory_slots.get() : true;
+		return RPGEnchanting.isInventorySizeAttributesLoaded ? InventorySizeAttributesClientCompat.showInactiveInventorySlots() : true;
 	}
 
 	@Override
