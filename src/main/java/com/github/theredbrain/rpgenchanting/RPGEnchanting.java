@@ -84,9 +84,11 @@ public class RPGEnchanting implements ModInitializer {
 		Optional<ModContainer> modContainer = FabricLoader.getInstance().getModContainer(MOD_ID);
 		if (modContainer.isPresent()) {
 			ResourceManagerHelper.registerBuiltinResourcePack(identifier("rpgenchanting_dungeons_and_taverns"), modContainer.get(), Text.translatable("resourcepack.rpgenchanting.rpgenchanting_dungeons_and_taverns.name"), ResourcePackActivationType.DEFAULT_ENABLED);
-			ResourceManagerHelper.registerBuiltinResourcePack(identifier("rpgenchanting_more_rpg_series"), modContainer.get(), Text.translatable("resourcepack.rpgenchanting.rpgenchanting_more_rpg_series.name"), ResourcePackActivationType.DEFAULT_ENABLED);
-			ResourceManagerHelper.registerBuiltinResourcePack(identifier("rpgenchanting_rpg_series"), modContainer.get(), Text.translatable("resourcepack.rpgenchanting.rpgenchanting_rpg_series.name"), ResourcePackActivationType.DEFAULT_ENABLED);
+//			ResourceManagerHelper.registerBuiltinResourcePack(identifier("rpgenchanting_extra_spell_attributes"), modContainer.get(), Text.translatable("resourcepack.rpgenchanting.rpgenchanting_extra_spell_attributes.name"), ResourcePackActivationType.DEFAULT_ENABLED);
+//			ResourceManagerHelper.registerBuiltinResourcePack(identifier("rpgenchanting_more_rpg_series"), modContainer.get(), Text.translatable("resourcepack.rpgenchanting.rpgenchanting_more_rpg_series.name"), ResourcePackActivationType.DEFAULT_ENABLED);
+//			ResourceManagerHelper.registerBuiltinResourcePack(identifier("rpgenchanting_rpg_series"), modContainer.get(), Text.translatable("resourcepack.rpgenchanting.rpgenchanting_rpg_series.name"), ResourcePackActivationType.DEFAULT_ENABLED);
 			ResourceManagerHelper.registerBuiltinResourcePack(identifier("rpgenchanting_vanilla"), modContainer.get(), Text.translatable("resourcepack.rpgenchanting.rpgenchanting_vanilla.name"), ResourcePackActivationType.DEFAULT_ENABLED);
+			ResourceManagerHelper.registerBuiltinResourcePack(identifier("rpgenchanting_replace_vanilla_enchanting_table_recipe"), modContainer.get(), Text.translatable("resourcepack.rpgenchanting.rpgenchanting_replace_vanilla_enchanting_table_recipe.name"), ResourcePackActivationType.DEFAULT_ENABLED);
 			ResourceManagerHelper.registerBuiltinResourcePack(identifier("rpgenchanting_compatibility_resources"), modContainer.get(), Text.translatable("resourcepack.rpgenchanting.rpgenchanting_compatibility_resources.name"), ResourcePackActivationType.DEFAULT_ENABLED);
 		}
 	}
