@@ -3,7 +3,6 @@ package com.github.theredbrain.rpgenchanting.mixin.item;
 import com.github.theredbrain.rpgenchanting.RPGEnchanting;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
-import net.minecraft.component.ComponentType;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.ItemEnchantmentsComponent;
 import net.minecraft.enchantment.Enchantment;
@@ -24,9 +23,9 @@ public class ItemStackMixin {
 
 	@WrapOperation(
 			method = "getName",
-			at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;get(Lnet/minecraft/component/ComponentType;)Ljava/lang/Object;", ordinal = 1)
+			at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;getItemName()Lnet/minecraft/text/Text;")
 	)
-	private Object rpgenchanting$wrap_getName(ItemStack instance, ComponentType<?> componentType, Operation<Object> original) {
+	private Text rpgenchanting$wrap_getName(ItemStack instance, Operation<Text> original) {
 		if (instance.contains(RPGEnchanting.SHOW_ENCHANTMENT_NAME_ADDITIONS)) {
 			ItemEnchantmentsComponent itemEnchantmentsComponent = instance.get(DataComponentTypes.ENCHANTMENTS);
 			String prefixEnchantmentString = "";
@@ -54,7 +53,7 @@ public class ItemStackMixin {
 				}
 			}
 
-			Text text = instance.get(DataComponentTypes.ITEM_NAME);
+			Text text = instance.getCustomName();
 //			MutableText textPrefixOverwrite = Text.empty();
 //			MutableText textSuffixOverwrite = Text.empty();
 			if (text == null) {
@@ -89,7 +88,7 @@ public class ItemStackMixin {
 //					textSuffixOverwrite = Text.empty();
 //				}
 
-				text = instance.getItem().getName(instance);
+				text = instance.getItemName();
 			}
 			if (!suffixEnchantmentString.isEmpty()) {
 				text = Text.translatable(suffixEnchantmentString, text);
@@ -101,7 +100,7 @@ public class ItemStackMixin {
 			}
 			return text;
 		} else {
-			return original.call(instance, componentType);
+			return original.call(instance);
 		}
 	}
 }

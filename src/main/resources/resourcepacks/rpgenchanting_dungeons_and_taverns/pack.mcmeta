@@ -3,7 +3,8 @@
     "description": {
       "text": "Compatibility for Dungeons and Taverns\nRequires 'Patched' to work properly."
     },
-    "pack_format": 48
+    "min_format": [88, 0],
+    "max_format": [88, 0]
   },
   "patched": {
     "format_version": 1

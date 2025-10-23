@@ -14,19 +14,22 @@ import net.minecraft.block.ChiseledBookshelfBlock;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.ChiseledBookshelfBlockEntity;
 import net.minecraft.component.ComponentMap;
+import net.minecraft.component.ComponentsAccess;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.ItemEnchantmentsComponent;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKeys;
-import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.storage.ReadView;
+import net.minecraft.storage.WriteView;
 import net.minecraft.text.Text;
+import net.minecraft.text.TextCodecs;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Nameable;
 import net.minecraft.util.math.BlockPos;
@@ -43,6 +46,7 @@ import java.util.Optional;
 import java.util.Set;
 
 public class RPGEnchantingTableBlockEntity extends BlockEntity implements Nameable {
+	private static final Text CONTAINER_NAME_TEXT = Text.translatable("gui.rpg_enchanting_table.title");
 	public int ticks;
 	public float nextPageAngle;
 	public float pageAngle;
@@ -66,6 +70,75 @@ public class RPGEnchantingTableBlockEntity extends BlockEntity implements Nameab
 		super(EntityRegistry.RPG_ENCHANTING_TABLE, pos, state);
 	}
 
+	@Override
+	protected void writeData(WriteView view) {
+		super.writeData(view);
+		view.putNullable("CustomName", TextCodecs.CODEC, this.customName);
+		if (this.customBookCost != null) {
+			view.putString("custom_book_cost", this.customBookCost.asString());
+		}
+		if (this.customEnchantmentUnlockMode != null) {
+			view.putString("custom_enchanting_mode", this.customEnchantmentUnlockMode.asString());
+		}
+		if (this.customBlockReachRadius >= 0) {
+			view.putInt("custom_block_reach_radius", this.customBlockReachRadius);
+		}
+	}
+
+	@Override
+	protected void readData(ReadView view) {
+		super.readData(view);
+		this.customName = tryParseCustomName(view, "CustomName");
+
+		Optional<RPGEnchantingTableBlock.BookCost> optionalBookCost = RPGEnchantingTableBlock.BookCost.byName(view.getString("custom_book_cost", "consume"));
+		optionalBookCost.ifPresent(bookCost -> this.customBookCost = bookCost);
+
+		Optional<RPGEnchantingTableBlock.EnchantmentUnlockMode> optionalEnchantmentUnlockMode = RPGEnchantingTableBlock.EnchantmentUnlockMode.byName(view.getString("custom_enchanting_mode", "addition"));
+		optionalEnchantmentUnlockMode.ifPresent(enchantmentUnlockMode -> this.customEnchantmentUnlockMode = enchantmentUnlockMode);
+
+		this.customBlockReachRadius = view.getInt("custom_block_reach_radius", -1);
+	}
+
+//	protected void writeNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registryLookup) {
+//		if (this.hasCustomName()) {
+//			nbt.putString("CustomName", Text.Serialization.toJsonString(this.customName, registryLookup));
+//		}
+//		if (this.customBookCost != null) {
+//			nbt.putString("custom_book_cost", this.customBookCost.asString());
+//		}
+//		if (this.customEnchantmentUnlockMode != null) {
+//			nbt.putString("custom_enchanting_mode", this.customEnchantmentUnlockMode.asString());
+//		}
+//		if (this.customBlockReachRadius >= 0) {
+//			nbt.putInt("custom_block_reach_radius", this.customBlockReachRadius);
+//		}
+//		super.writeNbt(nbt, registryLookup);
+//	}
+
+//	protected void readNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registryLookup) {
+//		if (nbt.contains("CustomName", 8)) {
+//			this.customName = tryParseCustomName(nbt.getString("CustomName"), registryLookup);
+//		}
+//		if (nbt.contains("custom_book_cost")) {
+//			Optional<RPGEnchantingTableBlock.BookCost> optionalBookCost = RPGEnchantingTableBlock.BookCost.byName(nbt.getString("custom_book_cost"));
+//			optionalBookCost.ifPresent(bookCost -> this.customBookCost = bookCost);
+//		} else {
+//			this.customBookCost = null;
+//		}
+//		if (nbt.contains("custom_enchanting_mode")) {
+//			Optional<RPGEnchantingTableBlock.EnchantmentUnlockMode> optionalEnchantmentUnlockMode = RPGEnchantingTableBlock.EnchantmentUnlockMode.byName(nbt.getString("custom_enchanting_mode"));
+//			optionalEnchantmentUnlockMode.ifPresent(enchantmentUnlockMode -> this.customEnchantmentUnlockMode = enchantmentUnlockMode);
+//		} else {
+//			this.customEnchantmentUnlockMode = null;
+//		}
+//		if (nbt.contains("custom_block_reach_radius")) {
+//			this.customBlockReachRadius = nbt.getInt("custom_block_reach_radius");
+//		} else {
+//			this.customBlockReachRadius = -1;
+//		}
+//		super.readNbt(nbt, registryLookup);
+//	}
+
 	public HashSet<MutablePair<String, Integer>> getAdvancementEnchantments(PlayerEntity playerEntity) {
 		HashSet<MutablePair<String, Integer>> advancement_enchantments = new HashSet<>();
 
@@ -84,9 +157,13 @@ public class RPGEnchantingTableBlockEntity extends BlockEntity implements Nameab
 					if (placedAdvancement != null) {
 						AdvancementEntry advancementEntry = placedAdvancement.getAdvancementEntry();
 						if (serverPlayerEntity.getAdvancementTracker().getProgress(advancementEntry).isDone()) {
-							Optional<RegistryEntry.Reference<Enchantment>> optionalEnchantmentReference = world.getRegistryManager().get(RegistryKeys.ENCHANTMENT).getEntry(Identifier.of(unlockedEnchantment.enchantment));
-							if (optionalEnchantmentReference.isPresent()) {
-								advancement_enchantments.add(new MutablePair<>(optionalEnchantmentReference.get().getIdAsString(), unlockedEnchantment.level));
+							Optional<Registry<Enchantment>> optionalEnchantmentRegistry = this.world.getRegistryManager().getOptional(RegistryKeys.ENCHANTMENT);
+							if (optionalEnchantmentRegistry.isPresent()) {
+								Optional<RegistryEntry.Reference<Enchantment>> optionalEnchantmentReference = optionalEnchantmentRegistry.get().getEntry(Identifier.of(unlockedEnchantment.enchantment));
+
+								if (optionalEnchantmentReference.isPresent()) {
+									advancement_enchantments.add(new MutablePair<>(optionalEnchantmentReference.get().getIdAsString(), unlockedEnchantment.level));
+								}
 							}
 						}
 					}
@@ -113,12 +190,17 @@ public class RPGEnchantingTableBlockEntity extends BlockEntity implements Nameab
 			if (optionalBlock.isPresent()) {
 				registryBlockEntry = optionalBlock.get();
 			}
-			Optional<RegistryEntry.Reference<Enchantment>> optionalEnchantmentReference = world.getRegistryManager().get(RegistryKeys.ENCHANTMENT).getEntry(Identifier.of(unlockedEnchantment.enchantment));
+			if (this.world != null) {
+				Optional<Registry<Enchantment>> optionalEnchantmentRegistry = this.world.getRegistryManager().getOptional(RegistryKeys.ENCHANTMENT);
+				if (optionalEnchantmentRegistry.isPresent()) {
+					Optional<RegistryEntry.Reference<Enchantment>> optionalEnchantmentReference = optionalEnchantmentRegistry.get().getEntry(Identifier.of(unlockedEnchantment.enchantment));
 
-			if (registryBlockEntry != null && optionalEnchantmentReference.isPresent()) {
-				HashSet<MutablePair<RegistryEntry.Reference<Enchantment>, Integer>> arrayList = blockMap.getOrDefault(registryBlockEntry.value(), new HashSet<>());
-				arrayList.add(new MutablePair<>(optionalEnchantmentReference.get(), unlockedEnchantment.level));
-				blockMap.put(registryBlockEntry.value(), arrayList);
+					if (registryBlockEntry != null && optionalEnchantmentReference.isPresent()) {
+						HashSet<MutablePair<RegistryEntry.Reference<Enchantment>, Integer>> arrayList = blockMap.getOrDefault(registryBlockEntry.value(), new HashSet<>());
+						arrayList.add(new MutablePair<>(optionalEnchantmentReference.get(), unlockedEnchantment.level));
+						blockMap.put(registryBlockEntry.value(), arrayList);
+					}
+				}
 			}
 		}
 		if (blockMap.isEmpty()) {
@@ -276,46 +358,6 @@ public class RPGEnchantingTableBlockEntity extends BlockEntity implements Nameab
 		return false;
 	}
 
-	protected void writeNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registryLookup) {
-		if (this.hasCustomName()) {
-			nbt.putString("CustomName", Text.Serialization.toJsonString(this.customName, registryLookup));
-		}
-		if (this.customBookCost != null) {
-			nbt.putString("custom_book_cost", this.customBookCost.asString());
-		}
-		if (this.customEnchantmentUnlockMode != null) {
-			nbt.putString("custom_enchanting_mode", this.customEnchantmentUnlockMode.asString());
-		}
-		if (this.customBlockReachRadius >= 0) {
-			nbt.putInt("custom_block_reach_radius", this.customBlockReachRadius);
-		}
-		super.writeNbt(nbt, registryLookup);
-	}
-
-	protected void readNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registryLookup) {
-		if (nbt.contains("CustomName", 8)) {
-			this.customName = tryParseCustomName(nbt.getString("CustomName"), registryLookup);
-		}
-		if (nbt.contains("custom_book_cost")) {
-			Optional<RPGEnchantingTableBlock.BookCost> optionalBookCost = RPGEnchantingTableBlock.BookCost.byName(nbt.getString("custom_book_cost"));
-			optionalBookCost.ifPresent(bookCost -> this.customBookCost = bookCost);
-		} else {
-			this.customBookCost = null;
-		}
-		if (nbt.contains("custom_enchanting_mode")) {
-			Optional<RPGEnchantingTableBlock.EnchantmentUnlockMode> optionalEnchantmentUnlockMode = RPGEnchantingTableBlock.EnchantmentUnlockMode.byName(nbt.getString("custom_enchanting_mode"));
-			optionalEnchantmentUnlockMode.ifPresent(enchantmentUnlockMode -> this.customEnchantmentUnlockMode = enchantmentUnlockMode);
-		} else {
-			this.customEnchantmentUnlockMode = null;
-		}
-		if (nbt.contains("custom_block_reach_radius")) {
-			this.customBlockReachRadius = nbt.getInt("custom_block_reach_radius");
-		} else {
-			this.customBlockReachRadius = -1;
-		}
-		super.readNbt(nbt, registryLookup);
-	}
-
 	public static void tick(World world, BlockPos pos, BlockState state, RPGEnchantingTableBlockEntity blockEntity) {
 		blockEntity.pageTurningSpeed = blockEntity.nextPageTurningSpeed;
 		blockEntity.lastBookRotation = blockEntity.bookRotation;
@@ -374,7 +416,7 @@ public class RPGEnchantingTableBlockEntity extends BlockEntity implements Nameab
 
 	@Override
 	public Text getName() {
-		return (Text) (this.customName != null ? this.customName : Text.translatable("gui.rpg_enchanting_table.title"));
+		return (Text) (this.customName != null ? this.customName : CONTAINER_NAME_TEXT);
 	}
 
 	public void setCustomName(@Nullable Text customName) {
@@ -388,7 +430,7 @@ public class RPGEnchantingTableBlockEntity extends BlockEntity implements Nameab
 	}
 
 	@Override
-	protected void readComponents(BlockEntity.ComponentsAccess components) {
+	protected void readComponents(ComponentsAccess components) {
 		super.readComponents(components);
 		this.customName = (Text) components.get(DataComponentTypes.CUSTOM_NAME);
 	}
@@ -400,7 +442,7 @@ public class RPGEnchantingTableBlockEntity extends BlockEntity implements Nameab
 	}
 
 	@Override
-	public void removeFromCopiedStackNbt(NbtCompound nbt) {
-		nbt.remove("CustomName");
+	public void removeFromCopiedStackData(WriteView view) {
+		view.remove("CustomName");
 	}
 }

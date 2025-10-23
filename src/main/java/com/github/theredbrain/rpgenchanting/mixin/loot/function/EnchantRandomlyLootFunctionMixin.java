@@ -4,6 +4,7 @@ import com.github.theredbrain.rpgenchanting.RPGEnchanting;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.ItemEnchantmentsComponent;
+import net.minecraft.component.type.TooltipDisplayComponent;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.loot.function.EnchantRandomlyLootFunction;
@@ -23,11 +24,9 @@ public class EnchantRandomlyLootFunctionMixin {
 			original.set(RPGEnchanting.SHOW_ENCHANTMENT_NAME_ADDITIONS, Unit.INSTANCE);
 		}
 		if (RPGEnchanting.SERVER_CONFIG.hide_normal_enchantment_tooltip_for_enchanted_loot.get() && !original.isOf(Items.BOOK)) {
-			ItemEnchantmentsComponent itemEnchantmentsComponent = original.getEnchantments();
-			if (itemEnchantmentsComponent != null) {
-				ItemEnchantmentsComponent newItemEnchantmentsComponent = new ItemEnchantmentsComponent.Builder(itemEnchantmentsComponent).build().withShowInTooltip(false);
-				original.set(DataComponentTypes.ENCHANTMENTS, newItemEnchantmentsComponent);
-			}
+			TooltipDisplayComponent tooltipDisplayComponent = original.getOrDefault(DataComponentTypes.TOOLTIP_DISPLAY, TooltipDisplayComponent.DEFAULT);
+			tooltipDisplayComponent.with(DataComponentTypes.ENCHANTMENTS, true);
+			original.set(DataComponentTypes.TOOLTIP_DISPLAY, tooltipDisplayComponent);
 		}
 
 		return original;

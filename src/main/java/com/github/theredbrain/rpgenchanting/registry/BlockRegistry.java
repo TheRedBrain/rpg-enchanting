@@ -14,15 +14,22 @@ import net.minecraft.item.ItemGroups;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
+
+import java.util.List;
 
 public class BlockRegistry {
 
-	public static final Block RPG_ENCHANTING_TABLE_BLOCK = registerBlock("rpg_enchanting_table", new RPGEnchantingTableBlock(AbstractBlock.Settings.create().mapColor(MapColor.RED).instrument(NoteBlockInstrument.BASEDRUM).requiresTool().luminance(state -> 7).strength(5.0F, 1200.0F)), ItemGroups.FUNCTIONAL);
+	public static RegistryKey<Block> RPG_ENCHANTING_TABLE_BLOCK_KEY = RegistryKey.of(RegistryKeys.BLOCK, RPGEnchanting.identifier("rpg_enchanting_table"));
+	public static RegistryKey<Item> RPG_ENCHANTING_TABLE_ITEM_KEY = RegistryKey.of(RegistryKeys.ITEM, RPGEnchanting.identifier("rpg_enchanting_table"));
+	public static final Block RPG_ENCHANTING_TABLE_BLOCK = registerBlock(RPG_ENCHANTING_TABLE_BLOCK_KEY, RPG_ENCHANTING_TABLE_ITEM_KEY, new RPGEnchantingTableBlock(AbstractBlock.Settings.create().registryKey(RPG_ENCHANTING_TABLE_BLOCK_KEY).mapColor(MapColor.RED).instrument(NoteBlockInstrument.BASEDRUM).requiresTool().luminance(state -> 7).strength(5.0F, 1200.0F)), List.of(ItemGroups.FUNCTIONAL));
 
-	private static Block registerBlock(String name, Block block, RegistryKey<ItemGroup> itemGroup) {
-		Registry.register(Registries.ITEM, RPGEnchanting.identifier(name), new BlockItem(block, new Item.Settings()));
-		ItemGroupEvents.modifyEntriesEvent(itemGroup).register(content -> content.add(block));
-		return Registry.register(Registries.BLOCK, RPGEnchanting.identifier(name), block);
+	private static Block registerBlock(RegistryKey<Block> block_key, RegistryKey<Item> item_key, Block block, List<RegistryKey<ItemGroup>> itemGroupList) {
+		Registry.register(Registries.ITEM, item_key, new BlockItem(block, new Item.Settings().registryKey(item_key)));
+		for (RegistryKey<ItemGroup> itemGroup : itemGroupList) {
+			ItemGroupEvents.modifyEntriesEvent(itemGroup).register(content -> content.add(block));
+		}
+		return Registry.register(Registries.BLOCK, block_key, block);
 	}
 
 	public static void init() {

@@ -17,7 +17,7 @@ public class UpdateEnchantingScreenPacketReceiver implements ServerPlayNetworkin
 
 		ServerPlayerEntity player = context.player();
 
-		World world = player.getWorld();
+		World world = player.getEntityWorld();
 
 		ScreenHandler screenHandler = player.currentScreenHandler;
 

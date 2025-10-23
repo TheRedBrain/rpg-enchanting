@@ -1,3 +1,7 @@
+# 2.0.0
+
+- updated to 1.21.10
+
 # 1.4.1
 
 - RPG Enchanting Table now shows custom names in GUI

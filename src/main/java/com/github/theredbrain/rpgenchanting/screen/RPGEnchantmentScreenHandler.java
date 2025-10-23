@@ -19,6 +19,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.registry.tag.EnchantmentTags;
@@ -68,7 +69,7 @@ public class RPGEnchantmentScreenHandler extends ScreenHandler {
 
 	public RPGEnchantmentScreenHandler(int syncId, PlayerInventory playerInventory, BlockPos blockPos, RPGEnchantingTableBlock.BookCost bookCost, RPGEnchantingTableBlock.EnchantmentUnlockMode enchantmentUnlockMode, Set<MutablePair<String, Integer>> advancement_enchantments, Set<MutablePair<String, Integer>> block_enchantments, Set<MutablePair<String, Integer>> book_enchantments) {
 		super(ScreenHandlerTypesRegistry.RPG_ENCHANTMENT_SCREEN_HANDLER, syncId);
-		this.world = playerInventory.player.getWorld();
+		this.world = playerInventory.player.getEntityWorld();
 		this.blockPos = blockPos;
 		this.player = playerInventory.player;
 		this.addSlot(new Slot(this.inventory, 0, 134, 40) {
@@ -123,22 +124,26 @@ public class RPGEnchantmentScreenHandler extends ScreenHandler {
 		List<MutablePair<RegistryEntry.Reference<Enchantment>, Integer>> verified_block_enchantments = new ArrayList<>();
 		List<MutablePair<RegistryEntry.Reference<Enchantment>, Integer>> verified_book_enchantments = new ArrayList<>();
 
-		for (MutablePair<String, Integer> pair : advancement_enchantments) {
-			Optional<RegistryEntry.Reference<Enchantment>> optionalEnchantmentReference = world.getRegistryManager().get(RegistryKeys.ENCHANTMENT).getEntry(Identifier.of(pair.getLeft()));
-			if (optionalEnchantmentReference.isPresent()) {
-				verified_advancement_enchantments.add(new MutablePair<>(optionalEnchantmentReference.get(), pair.getRight()));
+		Optional<Registry<Enchantment>> optionalEnchantmentRegistry = this.world.getRegistryManager().getOptional(RegistryKeys.ENCHANTMENT);
+		if (optionalEnchantmentRegistry.isPresent()) {
+
+			for (MutablePair<String, Integer> pair : advancement_enchantments) {
+				Optional<RegistryEntry.Reference<Enchantment>> optionalEnchantmentReference = optionalEnchantmentRegistry.get().getEntry(Identifier.of(pair.getLeft()));
+				if (optionalEnchantmentReference.isPresent()) {
+					verified_advancement_enchantments.add(new MutablePair<>(optionalEnchantmentReference.get(), pair.getRight()));
+				}
 			}
-		}
-		for (MutablePair<String, Integer> pair : block_enchantments) {
-			Optional<RegistryEntry.Reference<Enchantment>> optionalEnchantmentReference = world.getRegistryManager().get(RegistryKeys.ENCHANTMENT).getEntry(Identifier.of(pair.getLeft()));
-			if (optionalEnchantmentReference.isPresent()) {
-				verified_block_enchantments.add(new MutablePair<>(optionalEnchantmentReference.get(), pair.getRight()));
+			for (MutablePair<String, Integer> pair : block_enchantments) {
+				Optional<RegistryEntry.Reference<Enchantment>> optionalEnchantmentReference = optionalEnchantmentRegistry.get().getEntry(Identifier.of(pair.getLeft()));
+				if (optionalEnchantmentReference.isPresent()) {
+					verified_block_enchantments.add(new MutablePair<>(optionalEnchantmentReference.get(), pair.getRight()));
+				}
 			}
-		}
-		for (MutablePair<String, Integer> pair : book_enchantments) {
-			Optional<RegistryEntry.Reference<Enchantment>> optionalEnchantmentReference = world.getRegistryManager().get(RegistryKeys.ENCHANTMENT).getEntry(Identifier.of(pair.getLeft()));
-			if (optionalEnchantmentReference.isPresent()) {
-				verified_book_enchantments.add(new MutablePair<>(optionalEnchantmentReference.get(), pair.getRight()));
+			for (MutablePair<String, Integer> pair : book_enchantments) {
+				Optional<RegistryEntry.Reference<Enchantment>> optionalEnchantmentReference = optionalEnchantmentRegistry.get().getEntry(Identifier.of(pair.getLeft()));
+				if (optionalEnchantmentReference.isPresent()) {
+					verified_book_enchantments.add(new MutablePair<>(optionalEnchantmentReference.get(), pair.getRight()));
+				}
 			}
 		}
 
@@ -214,52 +219,56 @@ public class RPGEnchantmentScreenHandler extends ScreenHandler {
 			this.existing_enchantment_costs = new int[]{0, 0, 0, 0};
 			ServerConfig serverConfig = RPGEnchanting.SERVER_CONFIG;
 
-			ItemStack itemStack = inventory.getStack(0);
-			ItemEnchantmentsComponent itemEnchantmentsComponent = itemStack.get(DataComponentTypes.ENCHANTMENTS);
-			if (!itemStack.isEmpty() && itemStack.getItem().isEnchantable(itemStack) && itemEnchantmentsComponent != null) {
-				if (!itemEnchantmentsComponent.isEmpty()) {
-					for (Object2IntMap.Entry<RegistryEntry<Enchantment>> entry : itemEnchantmentsComponent.getEnchantmentEntries()) {
-						if (entry.getKey().isIn(RPGEnchanting.PREFIX_ENCHANTMENTS)) {
-							Optional<RegistryEntry.Reference<Enchantment>> optionalEnchantmentReference = this.world.getRegistryManager().get(RegistryKeys.ENCHANTMENT).getEntry(Identifier.of(entry.getKey().getIdAsString()));
-							if (optionalEnchantmentReference.isPresent()) {
-								this.existing_prefix_enchantment = new MutablePair<>(optionalEnchantmentReference.get(), entry.getIntValue());
-								this.existing_enchantment_costs[0] = (int) Math.max(0, Math.floor(optionalEnchantmentReference.get().value().getMinPower(entry.getIntValue()) * serverConfig.old_enchantment_exp_cost_multiplier.get()));
-								this.existing_enchantment_costs[1] = (int) Math.max(0, Math.floor(optionalEnchantmentReference.get().value().getAnvilCost() * entry.getIntValue() * serverConfig.old_enchantment_item_cost_multiplier.get()));
-							}
-						}
-						if (entry.getKey().isIn(RPGEnchanting.SUFFIX_ENCHANTMENTS)) {
-							Optional<RegistryEntry.Reference<Enchantment>> optionalEnchantmentReference = this.world.getRegistryManager().get(RegistryKeys.ENCHANTMENT).getEntry(Identifier.of(entry.getKey().getIdAsString()));
-							if (optionalEnchantmentReference.isPresent()) {
-								this.existing_suffix_enchantment = new MutablePair<>(optionalEnchantmentReference.get(), entry.getIntValue());
-								this.existing_enchantment_costs[2] = (int) Math.max(0, Math.floor(optionalEnchantmentReference.get().value().getMinPower(entry.getIntValue()) * serverConfig.old_enchantment_exp_cost_multiplier.get()));
-								this.existing_enchantment_costs[3] = (int) Math.max(0, Math.floor(optionalEnchantmentReference.get().value().getAnvilCost() * entry.getIntValue() * serverConfig.old_enchantment_item_cost_multiplier.get()));
-							}
-						}
-					}
-				}
+			Optional<Registry<Enchantment>> optionalEnchantmentRegistry = this.world.getRegistryManager().getOptional(RegistryKeys.ENCHANTMENT);
+			if (optionalEnchantmentRegistry.isPresent()) {
 
-				if (this.existing_prefix_enchantment == null || !this.existing_prefix_enchantment.getLeft().isIn(EnchantmentTags.CURSE)) {
-					for (MutablePair<RegistryEntry.Reference<Enchantment>, Integer> entry : this.prefix_enchantments) {
-						if (entry.getLeft().value().isAcceptableItem(itemStack)) {
-							boolean bl = true;
-							if (this.existing_prefix_enchantment != null) {
-								bl = (entry.getLeft() != this.existing_prefix_enchantment.getLeft()) || (!Objects.equals(entry.getRight(), this.existing_prefix_enchantment.getRight()));
+				ItemStack itemStack = inventory.getStack(0);
+				ItemEnchantmentsComponent itemEnchantmentsComponent = itemStack.get(DataComponentTypes.ENCHANTMENTS);
+				if (!itemStack.isEmpty() && itemEnchantmentsComponent != null) {
+					if (!itemEnchantmentsComponent.isEmpty()) {
+						for (Object2IntMap.Entry<RegistryEntry<Enchantment>> entry : itemEnchantmentsComponent.getEnchantmentEntries()) {
+							if (entry.getKey().isIn(RPGEnchanting.PREFIX_ENCHANTMENTS)) {
+								Optional<RegistryEntry.Reference<Enchantment>> optionalEnchantmentReference = optionalEnchantmentRegistry.get().getEntry(Identifier.of(entry.getKey().getIdAsString()));
+								if (optionalEnchantmentReference.isPresent()) {
+									this.existing_prefix_enchantment = new MutablePair<>(optionalEnchantmentReference.get(), entry.getIntValue());
+									this.existing_enchantment_costs[0] = (int) Math.max(0, Math.floor(optionalEnchantmentReference.get().value().getMinPower(entry.getIntValue()) * serverConfig.old_enchantment_exp_cost_multiplier.get()));
+									this.existing_enchantment_costs[1] = (int) Math.max(0, Math.floor(optionalEnchantmentReference.get().value().getAnvilCost() * entry.getIntValue() * serverConfig.old_enchantment_item_cost_multiplier.get()));
+								}
 							}
-							if (bl) {
-								this.current_prefix_enchantments.add(new MutablePair<>(entry.getLeft(), entry.getRight()));
+							if (entry.getKey().isIn(RPGEnchanting.SUFFIX_ENCHANTMENTS)) {
+								Optional<RegistryEntry.Reference<Enchantment>> optionalEnchantmentReference = optionalEnchantmentRegistry.get().getEntry(Identifier.of(entry.getKey().getIdAsString()));
+								if (optionalEnchantmentReference.isPresent()) {
+									this.existing_suffix_enchantment = new MutablePair<>(optionalEnchantmentReference.get(), entry.getIntValue());
+									this.existing_enchantment_costs[2] = (int) Math.max(0, Math.floor(optionalEnchantmentReference.get().value().getMinPower(entry.getIntValue()) * serverConfig.old_enchantment_exp_cost_multiplier.get()));
+									this.existing_enchantment_costs[3] = (int) Math.max(0, Math.floor(optionalEnchantmentReference.get().value().getAnvilCost() * entry.getIntValue() * serverConfig.old_enchantment_item_cost_multiplier.get()));
+								}
 							}
 						}
 					}
-				}
-				if (this.existing_suffix_enchantment == null || !this.existing_suffix_enchantment.getLeft().isIn(EnchantmentTags.CURSE)) {
-					for (MutablePair<RegistryEntry.Reference<Enchantment>, Integer> entry : this.suffix_enchantments) {
-						if (entry.getLeft().value().isAcceptableItem(itemStack)) {
-							boolean bl = true;
-							if (this.existing_suffix_enchantment != null) {
-								bl = (entry.getLeft() != this.existing_suffix_enchantment.getLeft()) || (!Objects.equals(entry.getRight(), this.existing_suffix_enchantment.getRight()));
+
+					if (this.existing_prefix_enchantment == null || !this.existing_prefix_enchantment.getLeft().isIn(EnchantmentTags.CURSE)) {
+						for (MutablePair<RegistryEntry.Reference<Enchantment>, Integer> entry : this.prefix_enchantments) {
+							if (entry.getLeft().value().isAcceptableItem(itemStack)) {
+								boolean bl = true;
+								if (this.existing_prefix_enchantment != null) {
+									bl = (entry.getLeft() != this.existing_prefix_enchantment.getLeft()) || (!Objects.equals(entry.getRight(), this.existing_prefix_enchantment.getRight()));
+								}
+								if (bl) {
+									this.current_prefix_enchantments.add(new MutablePair<>(entry.getLeft(), entry.getRight()));
+								}
 							}
-							if (bl) {
-								this.current_suffix_enchantments.add(new MutablePair<>(entry.getLeft(), entry.getRight()));
+						}
+					}
+					if (this.existing_suffix_enchantment == null || !this.existing_suffix_enchantment.getLeft().isIn(EnchantmentTags.CURSE)) {
+						for (MutablePair<RegistryEntry.Reference<Enchantment>, Integer> entry : this.suffix_enchantments) {
+							if (entry.getLeft().value().isAcceptableItem(itemStack)) {
+								boolean bl = true;
+								if (this.existing_suffix_enchantment != null) {
+									bl = (entry.getLeft() != this.existing_suffix_enchantment.getLeft()) || (!Objects.equals(entry.getRight(), this.existing_suffix_enchantment.getRight()));
+								}
+								if (bl) {
+									this.current_suffix_enchantments.add(new MutablePair<>(entry.getLeft(), entry.getRight()));
+								}
 							}
 						}
 					}
@@ -275,7 +284,12 @@ public class RPGEnchantmentScreenHandler extends ScreenHandler {
 		if (itemStack.isEmpty()) {
 			return false;
 		}
-		IndexedIterable<RegistryEntry<Enchantment>> indexedIterable = world.getRegistryManager().get(RegistryKeys.ENCHANTMENT).getIndexedEntries();
+		Optional<Registry<Enchantment>> optionalEnchantmentRegistry = this.world.getRegistryManager().getOptional(RegistryKeys.ENCHANTMENT);
+		if (optionalEnchantmentRegistry.isEmpty()) {
+			return false;
+		}
+
+		IndexedIterable<RegistryEntry<Enchantment>> indexedIterable = optionalEnchantmentRegistry.get().getIndexedEntries();
 		int first_threshold = this.current_prefix_enchantments.size();
 
 		if (id >= 0 && id < first_threshold) {
@@ -307,7 +321,7 @@ public class RPGEnchantmentScreenHandler extends ScreenHandler {
 			return true;
 
 		} else {
-			Util.error(player.getName() + " pressed invalid button id: " + id);
+			Util.logErrorOrPause(player.getName() + " pressed invalid button id: " + id);
 			return false;
 		}
 	}

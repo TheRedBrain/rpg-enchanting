@@ -42,7 +42,7 @@ public class RPGEnchantingClient implements ClientModInitializer {
 						formatting_string.append("§").append(formatting_config_string.charAt(i));
 					}
 				}
-				lines.add(Text.translatable("item.additional_tooltip.player_relation.enchanted_by", formatting_string + playerEnchantedComponent.gameProfile().getName()));
+				lines.add(Text.translatable("item.additional_tooltip.player_relation.enchanted_by", formatting_string + playerEnchantedComponent.getGameProfile().name()));
 			}
 		});
 	}

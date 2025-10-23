@@ -70,7 +70,7 @@ public class RPGEnchantingTableBlock extends BlockWithEntity {
 					for (int k = -rpg_enchanting_table_block_reach_radius; k <= rpg_enchanting_table_block_reach_radius; k++) {
 						BlockPos blockPos = new BlockPos(pos.getX() + i, pos.getY() + j, pos.getZ() + k);
 						if (random.nextInt(16) == 0 && world.getBlockState(blockPos).isIn(RPGEnchanting.ENCHANTING_PARTICLE_TARGETS)) {
-							world.addParticle(
+							world.addParticleClient(
 									ParticleTypes.ENCHANT,
 									(double) pos.getX() + 0.5,
 									(double) pos.getY() + 2.0,
@@ -96,11 +96,11 @@ public class RPGEnchantingTableBlock extends BlockWithEntity {
 
 	@Nullable
 	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState state, BlockEntityType<T> type) {
-		return world.isClient ? validateTicker(type, EntityRegistry.RPG_ENCHANTING_TABLE, RPGEnchantingTableBlockEntity::tick) : null;
+		return world.isClient() ? validateTicker(type, EntityRegistry.RPG_ENCHANTING_TABLE, RPGEnchantingTableBlockEntity::tick) : null;
 	}
 
 	protected ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
-		if (world.isClient) {
+		if (world.isClient()) {
 			return ActionResult.SUCCESS;
 		} else if (world.getBlockEntity(pos) instanceof RPGEnchantingTableBlockEntity rpgEnchantingTableBlockEntity) {
 			player.openHandledScreen(createRPGEnchanterBlockScreenHandlerFactory(
