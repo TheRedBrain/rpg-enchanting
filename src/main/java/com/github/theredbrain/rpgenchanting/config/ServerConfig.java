@@ -35,7 +35,7 @@ public class ServerConfig extends Config {
 
 	public ValidatedBoolean enable_enchantment_unlocking_by_chiseled_bookshelves = new ValidatedBoolean(true);
 	public ValidatedEnum<RPGEnchantingTableBlock.EnchantmentUnlockMode> default_enchantment_unlock_mode = new ValidatedEnum<>(RPGEnchantingTableBlock.EnchantmentUnlockMode.ADDITION);
-	public ValidatedEnum<RPGEnchantingTableBlock.BookCost> default_book_cost = new ValidatedEnum<>(RPGEnchantingTableBlock.BookCost.KEEP);
+	public ValidatedEnum<RPGEnchantingTableBlock.BookCost> default_book_cost = new ValidatedEnum<>(RPGEnchantingTableBlock.BookCost.PARTIAL_CONSUME);
 	public ValidatedIdentifier enchanted_book_replacement = ValidatedIdentifier.ofRegistry(Identifier.of("book"), Registries.ITEM);
 	public ValidatedBoolean enable_ambient_enchant_particles = new ValidatedBoolean(true);
 	public ValidatedInt ambient_enchant_particle_radius = new ValidatedInt(3);
@@ -43,13 +43,9 @@ public class ServerConfig extends Config {
 	public ValidatedBoolean enable_enchanted_by_player_component_application = new ValidatedBoolean(true);
 
 	public ValidatedList<UnlockedEnchantment> enchantments_unlocked_by_advancements = new ValidatedList<>(List.of(
-			new UnlockedEnchantment("minecraft:story/smelt_iron", "minecraft:efficiency", 1)
 	), new ValidatedAny<>(new UnlockedEnchantment()));
 
 	public ValidatedList<UnlockedEnchantment> enchantments_unlocked_by_blocks = new ValidatedList<>(List.of(
-			new UnlockedEnchantment("minecraft:iron_block", "minecraft:silk_touch", 1),
-			new UnlockedEnchantment("minecraft:gold_block", "minecraft:fortune", 1),
-			new UnlockedEnchantment("minecraft:diamond_block", "minecraft:looting", 2)
 	), new ValidatedAny<>(new UnlockedEnchantment()));
 
 	public static class UnlockedEnchantment implements Walkable {

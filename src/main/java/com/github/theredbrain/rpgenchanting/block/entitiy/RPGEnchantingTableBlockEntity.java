@@ -90,54 +90,14 @@ public class RPGEnchantingTableBlockEntity extends BlockEntity implements Nameab
 		super.readData(view);
 		this.customName = tryParseCustomName(view, "CustomName");
 
-		Optional<RPGEnchantingTableBlock.BookCost> optionalBookCost = RPGEnchantingTableBlock.BookCost.byName(view.getString("custom_book_cost", "consume"));
-		optionalBookCost.ifPresent(bookCost -> this.customBookCost = bookCost);
+		Optional<RPGEnchantingTableBlock.BookCost> optionalBookCost = RPGEnchantingTableBlock.BookCost.byName(view.getString("custom_book_cost", ""));
+		this.customBookCost = optionalBookCost.orElse(null);
 
-		Optional<RPGEnchantingTableBlock.EnchantmentUnlockMode> optionalEnchantmentUnlockMode = RPGEnchantingTableBlock.EnchantmentUnlockMode.byName(view.getString("custom_enchanting_mode", "addition"));
-		optionalEnchantmentUnlockMode.ifPresent(enchantmentUnlockMode -> this.customEnchantmentUnlockMode = enchantmentUnlockMode);
+		Optional<RPGEnchantingTableBlock.EnchantmentUnlockMode> optionalEnchantmentUnlockMode = RPGEnchantingTableBlock.EnchantmentUnlockMode.byName(view.getString("custom_enchanting_mode", ""));
+		this.customEnchantmentUnlockMode = optionalEnchantmentUnlockMode.orElse(null);
 
 		this.customBlockReachRadius = view.getInt("custom_block_reach_radius", -1);
 	}
-
-//	protected void writeNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registryLookup) {
-//		if (this.hasCustomName()) {
-//			nbt.putString("CustomName", Text.Serialization.toJsonString(this.customName, registryLookup));
-//		}
-//		if (this.customBookCost != null) {
-//			nbt.putString("custom_book_cost", this.customBookCost.asString());
-//		}
-//		if (this.customEnchantmentUnlockMode != null) {
-//			nbt.putString("custom_enchanting_mode", this.customEnchantmentUnlockMode.asString());
-//		}
-//		if (this.customBlockReachRadius >= 0) {
-//			nbt.putInt("custom_block_reach_radius", this.customBlockReachRadius);
-//		}
-//		super.writeNbt(nbt, registryLookup);
-//	}
-
-//	protected void readNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registryLookup) {
-//		if (nbt.contains("CustomName", 8)) {
-//			this.customName = tryParseCustomName(nbt.getString("CustomName"), registryLookup);
-//		}
-//		if (nbt.contains("custom_book_cost")) {
-//			Optional<RPGEnchantingTableBlock.BookCost> optionalBookCost = RPGEnchantingTableBlock.BookCost.byName(nbt.getString("custom_book_cost"));
-//			optionalBookCost.ifPresent(bookCost -> this.customBookCost = bookCost);
-//		} else {
-//			this.customBookCost = null;
-//		}
-//		if (nbt.contains("custom_enchanting_mode")) {
-//			Optional<RPGEnchantingTableBlock.EnchantmentUnlockMode> optionalEnchantmentUnlockMode = RPGEnchantingTableBlock.EnchantmentUnlockMode.byName(nbt.getString("custom_enchanting_mode"));
-//			optionalEnchantmentUnlockMode.ifPresent(enchantmentUnlockMode -> this.customEnchantmentUnlockMode = enchantmentUnlockMode);
-//		} else {
-//			this.customEnchantmentUnlockMode = null;
-//		}
-//		if (nbt.contains("custom_block_reach_radius")) {
-//			this.customBlockReachRadius = nbt.getInt("custom_block_reach_radius");
-//		} else {
-//			this.customBlockReachRadius = -1;
-//		}
-//		super.readNbt(nbt, registryLookup);
-//	}
 
 	public HashSet<MutablePair<String, Integer>> getAdvancementEnchantments(PlayerEntity playerEntity) {
 		HashSet<MutablePair<String, Integer>> advancement_enchantments = new HashSet<>();

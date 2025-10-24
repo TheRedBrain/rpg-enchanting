@@ -50,8 +50,8 @@ public class RPGEnchantmentScreen extends HandledScreen<RPGEnchantmentScreenHand
 	private static final Identifier SCROLLER_VERTICAL_6_7_DISABLED_TEXTURE = RPGEnchanting.identifier("scroll_bar/scroller_vertical_6_7_disabled");
 	private static final Identifier TEXTURE = RPGEnchanting.identifier("textures/gui/container/rpg_enchanting_table.png");
 	private static final Identifier BOOK_TEXTURE = Identifier.ofVanilla("textures/entity/enchanting_table_book.png");
-	private static final Identifier PREFIX_ITEM_COST_SLOT_TEXTURE = RPGEnchanting.identifier("item/prefix_slot_item_cost");
-	private static final Identifier SUFFIX_ITEM_COST_SLOT_TEXTURE = RPGEnchanting.identifier("item/suffix_slot_item_cost");
+	private static final Identifier PREFIX_ITEM_COST_SLOT_TEXTURE = RPGEnchanting.identifier("container/slot/prefix_slot_item_cost");
+	private static final Identifier SUFFIX_ITEM_COST_SLOT_TEXTURE = RPGEnchanting.identifier("container/slot/suffix_slot_item_cost");
 	private static final List<Identifier> ITEM_COST_SLOT_TEXTURES = List.of(
 			PREFIX_ITEM_COST_SLOT_TEXTURE, SUFFIX_ITEM_COST_SLOT_TEXTURE
 	);
