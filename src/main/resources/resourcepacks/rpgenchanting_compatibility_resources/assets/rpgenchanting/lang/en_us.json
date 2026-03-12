@@ -360,5 +360,53 @@
 	"rpgenchanting.witcher_rpg.yrden_intensity.2.suffix": "%s of Yrden Intensity (2) ",
 	"rpgenchanting.witcher_rpg.yrden_intensity.3.suffix": "%s of Yrden Intensity (3) ",
 	"rpgenchanting.witcher_rpg.yrden_intensity.4.suffix": "%s of Yrden Intensity (4) ",
-	"rpgenchanting.witcher_rpg.yrden_intensity.5.suffix": "%s of Yrden Intensity (5) "
+	"rpgenchanting.witcher_rpg.yrden_intensity.5.suffix": "%s of Yrden Intensity (5) ",
+
+	"rpgenchanting.rpgclassselection.arcane_staff_modifier_1.1.suffix": "%s of Conjured Arcane Charges",
+	"rpgenchanting.rpgclassselection.arcane_staff_modifier_2.1.suffix": "%s of Arcane Endurance",
+
+	"rpgenchanting.rpgclassselection.axe_modifier_1.1.suffix": "%s of Wide Cleaves",
+	"rpgenchanting.rpgclassselection.axe_modifier_2.1.suffix": "%s of Hot Hatchets",
+
+	"rpgenchanting.rpgclassselection.bow_modifier_1.1.suffix": "%s of Dazing Arrows",
+	"rpgenchanting.rpgclassselection.bow_modifier_2.1.suffix": "%s of Poison Arrows",
+
+	"rpgenchanting.rpgclassselection.claymore_modifier_1.1.suffix": "%s of Relentless Flurry",
+	"rpgenchanting.rpgclassselection.claymore_modifier_2.1.suffix": "%s of Frenzied Strikes",
+
+	"rpgenchanting.rpgclassselection.crossbow_modifier_1.1.suffix": "%s of Weakening Bolts",
+	"rpgenchanting.rpgclassselection.crossbow_modifier_2.1.suffix": "%s of Fuse Bolts",
+
+	"rpgenchanting.rpgclassselection.dagger_modifier_1.1.suffix": "%s of Ricochet",
+	"rpgenchanting.rpgclassselection.dagger_modifier_2.1.suffix": "%s of Expanded Fans",
+
+	"rpgenchanting.rpgclassselection.double_axe_modifier_1.1.suffix": "%s of Whirlwind Mastery",
+	"rpgenchanting.rpgclassselection.double_axe_modifier_2.1.suffix": "%s of Hamstring",
+
+	"rpgenchanting.rpgclassselection.fire_staff_modifier_1.1.suffix": "%s of Blast Radius",
+	"rpgenchanting.rpgclassselection.fire_staff_modifier_2.1.suffix": "%s of Blast Punch",
+
+	"rpgenchanting.rpgclassselection.frost_staff_modifier_1.1.suffix": "%s of Frost Bounce",
+	"rpgenchanting.rpgclassselection.frost_staff_modifier_2.1.suffix": "%s of Lingering Chill",
+
+	"rpgenchanting.rpgclassselection.glaive_modifier_1.1.suffix": "%s of Full Thrust",
+	"rpgenchanting.rpgclassselection.glaive_modifier_2.1.suffix": "%s of Impaling Thrust",
+
+	"rpgenchanting.rpgclassselection.hammer_modifier_1.1.suffix": "%s of Aftershock",
+	"rpgenchanting.rpgclassselection.hammer_modifier_2.1.suffix": "%s of Punishment",
+
+	"rpgenchanting.rpgclassselection.holy_staff_modifier_1.1.suffix": "%s of Improved Healing",
+	"rpgenchanting.rpgclassselection.holy_staff_modifier_2.1.suffix": "%s of Holy Blast",
+
+	"rpgenchanting.rpgclassselection.mace_modifier_1.1.suffix": "%s of Served Justice",
+	"rpgenchanting.rpgclassselection.mace_modifier_2.1.suffix": "%s of Shattering",
+
+	"rpgenchanting.rpgclassselection.sickle_modifier_1.1.suffix": "%s of Evasive Swipes",
+	"rpgenchanting.rpgclassselection.sickle_modifier_2.1.suffix": "%s of Sequential Swipes",
+
+	"rpgenchanting.rpgclassselection.spear_modifier_1.1.suffix": "%s of Pierce",
+	"rpgenchanting.rpgclassselection.spear_modifier_2.1.suffix": "%s of Pin Down",
+
+	"rpgenchanting.rpgclassselection.sword_modifier_1.1.suffix": "%s of Frequent Strikes",
+	"rpgenchanting.rpgclassselection.sword_modifier_2.1.suffix": "%s of Precision"
 }
