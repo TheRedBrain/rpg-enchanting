@@ -5,7 +5,8 @@ import com.github.theredbrain.rpgenchanting.render.block.entity.state.RPGEnchant
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.render.OverlayTexture;
-import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.RenderLayers;
+import net.minecraft.client.render.TexturedRenderLayers;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 import net.minecraft.client.render.command.ModelCommandRenderer;
@@ -13,11 +14,9 @@ import net.minecraft.client.render.command.OrderedRenderCommandQueue;
 import net.minecraft.client.render.entity.model.BookModel;
 import net.minecraft.client.render.entity.model.EntityModelLayers;
 import net.minecraft.client.render.state.CameraRenderState;
-import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.texture.SpriteHolder;
 import net.minecraft.client.util.SpriteIdentifier;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RotationAxis;
 import net.minecraft.util.math.Vec3d;
@@ -25,9 +24,7 @@ import org.jetbrains.annotations.Nullable;
 
 @Environment(EnvType.CLIENT)
 public class RPGEnchantingTableBlockEntityRenderer implements BlockEntityRenderer<RPGEnchantingTableBlockEntity, RPGEnchantingTableBlockEntityRenderState> {
-	public static final SpriteIdentifier BOOK_TEXTURE = new SpriteIdentifier(
-			SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE, Identifier.ofVanilla("entity/enchanting_table_book")
-	);
+	public static final SpriteIdentifier BOOK_TEXTURE = TexturedRenderLayers.ENTITY_SPRITE_MAPPER.mapVanilla("enchanting_table_book");
 	private final SpriteHolder spriteHolder;
 	private final BookModel book;
 
@@ -90,7 +87,7 @@ public class RPGEnchantingTableBlockEntityRenderer implements BlockEntityRendere
 				this.book,
 				bookModelState,
 				matrixStack,
-				BOOK_TEXTURE.getRenderLayer(RenderLayer::getEntitySolid),
+				BOOK_TEXTURE.getRenderLayer(RenderLayers::entitySolid),
 				rpgEnchantingTableBlockEntityRenderState.lightmapCoordinates,
 				OverlayTexture.DEFAULT_UV,
 				-1,
