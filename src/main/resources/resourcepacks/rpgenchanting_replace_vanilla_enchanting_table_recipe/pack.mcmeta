@@ -1,7 +1,7 @@
 {
   "pack": {
     "description": {
-      "text": "Compatibility for 'Extra RPG Attributes' by Forg\nRequires 'Patched' to work properly."
+      "text": "The vanilla enchanting table crafting recipe now results in the RPG Enchanting Table."
     },
     "min_format": [88, 0],
     "max_format": [88, 0]

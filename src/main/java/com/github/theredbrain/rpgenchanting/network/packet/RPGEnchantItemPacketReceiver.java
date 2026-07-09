@@ -5,24 +5,26 @@ import com.github.theredbrain.rpgenchanting.block.entitiy.RPGEnchantingTableBloc
 import com.github.theredbrain.rpgenchanting.config.ServerConfig;
 import com.github.theredbrain.rpgenchanting.screen.RPGEnchantmentScreenHandler;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.advancement.criterion.Criteria;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.ItemEnchantmentsComponent;
-import net.minecraft.component.type.ProfileComponent;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.item.ItemStack;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.screen.ScreenHandler;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.stat.Stats;
+import net.minecraft.advancements.CriteriaTriggers;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
+import net.minecraft.core.Registry;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.stats.Stats;
 import net.minecraft.util.Unit;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.ResolvableProfile;
+import net.minecraft.world.item.component.TooltipDisplay;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.ItemEnchantments;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import org.apache.commons.lang3.tuple.MutablePair;
 
 import java.util.Optional;
@@ -31,11 +33,11 @@ public class RPGEnchantItemPacketReceiver implements ServerPlayNetworking.PlayPa
 	@Override
 	public void receive(RPGEnchantItemPacket payload, ServerPlayNetworking.Context context) {
 
-		ServerPlayerEntity player = context.player();
+		ServerPlayer player = context.player();
 
-		World world = player.getWorld();
+		Level world = player.level();
 
-		ScreenHandler screenHandler = player.currentScreenHandler;
+		AbstractContainerMenu screenHandler = player.containerMenu;
 
 		ServerConfig serverConfig = RPGEnchanting.SERVER_CONFIG;
 
@@ -52,61 +54,70 @@ public class RPGEnchantItemPacketReceiver implements ServerPlayNetworking.PlayPa
 		BlockEntity blockEntity = world.getBlockEntity(blockPos);
 
 		if (screenHandler instanceof RPGEnchantmentScreenHandler rpgEnchantmentScreenHandler && blockEntity instanceof RPGEnchantingTableBlockEntity rpgEnchantingTableBlockEntity) {
-			ItemStack enchantedItemStack = rpgEnchantmentScreenHandler.inventory.getStack(0);
-			ItemStack itemCostItemStack = rpgEnchantmentScreenHandler.inventory.getStack(1);
+			ItemStack enchantedItemStack = rpgEnchantmentScreenHandler.inventory.getItem(0);
+			ItemStack itemCostItemStack = rpgEnchantmentScreenHandler.inventory.getItem(1);
 
-			Optional<RegistryEntry.Reference<Enchantment>> optionalEnchantmentReference = world.getRegistryManager().get(RegistryKeys.ENCHANTMENT).getEntry(enchantmentId);
+			Optional<Registry<Enchantment>> optionalEnchantmentRegistry = world.registryAccess().lookup(Registries.ENCHANTMENT);
 
-			if (optionalEnchantmentReference.isPresent()) {
+			if (optionalEnchantmentRegistry.isPresent()) {
+				Optional<Holder.Reference<Enchantment>> optionalEnchantmentReference = optionalEnchantmentRegistry.get().get(enchantmentId);
 
-				MutablePair<RegistryEntry.Reference<Enchantment>, Integer> newEnchantment = new MutablePair<>(optionalEnchantmentReference.get(), enchantmentLevel);
-				int experience_cost_amount = (isPrefix ? rpgEnchantmentScreenHandler.existing_enchantment_costs[0] : rpgEnchantmentScreenHandler.existing_enchantment_costs[2]) + (int) Math.max(0, Math.floor(newEnchantment.getLeft().value().getMaxPower(newEnchantment.getRight()) * serverConfig.new_enchantment_exp_cost_multiplier.get()));
+				if (optionalEnchantmentReference.isPresent()) {
 
-				if (player.experienceLevel >= experience_cost_amount || player.isInCreativeMode()) {
+					MutablePair<Holder.Reference<Enchantment>, Integer> newEnchantment = new MutablePair<>(optionalEnchantmentReference.get(), enchantmentLevel);
+					int experience_cost_amount = (isPrefix ? rpgEnchantmentScreenHandler.existing_enchantment_costs[0] : rpgEnchantmentScreenHandler.existing_enchantment_costs[2]) + (int) Math.max(0, Math.floor(newEnchantment.getLeft().value().getMaxCost(newEnchantment.getRight()) * serverConfig.new_enchantment_exp_cost_multiplier.get()));
 
-					int item_cost_amount = (isPrefix ? rpgEnchantmentScreenHandler.existing_enchantment_costs[1] : rpgEnchantmentScreenHandler.existing_enchantment_costs[3]) + (int) Math.max(0, Math.floor(newEnchantment.getLeft().value().getAnvilCost() * newEnchantment.getRight() * serverConfig.new_enchantment_item_cost_multiplier.get()));
+					if (player.experienceLevel >= experience_cost_amount || player.hasInfiniteMaterials()) {
 
-					if (((isPrefix ? itemCostItemStack.isOf(Registries.ITEM.get(serverConfig.prefix_item_cost.get())) : itemCostItemStack.isOf(Registries.ITEM.get(serverConfig.suffix_item_cost.get()))) && itemCostItemStack.getCount() >= item_cost_amount) || player.isInCreativeMode()) {
+						int item_cost_amount = (isPrefix ? rpgEnchantmentScreenHandler.existing_enchantment_costs[1] : rpgEnchantmentScreenHandler.existing_enchantment_costs[3]) + (int) Math.max(0, Math.floor(newEnchantment.getLeft().value().getAnvilCost() * newEnchantment.getRight() * serverConfig.new_enchantment_item_cost_multiplier.get()));
 
-						boolean shouldEnchant = true;
+						if (((isPrefix ? itemCostItemStack.is(BuiltInRegistries.ITEM.getValue(serverConfig.prefix_item_cost.get())) : itemCostItemStack.is(BuiltInRegistries.ITEM.getValue(serverConfig.suffix_item_cost.get()))) && itemCostItemStack.getCount() >= item_cost_amount) || player.hasInfiniteMaterials()) {
 
-						if (shouldConsumeBook) {
-							shouldEnchant = rpgEnchantingTableBlockEntity.applyBookCost(newEnchantment);
-						}
+							boolean shouldEnchant = true;
 
-						if (shouldEnchant) {
-
-							player.applyEnchantmentCosts(enchantedItemStack, experience_cost_amount);
-							ItemEnchantmentsComponent.Builder itemEnchantmentsComponentBuilder = new ItemEnchantmentsComponent.Builder(enchantedItemStack.getEnchantments());
-
-							if (isPrefix && rpgEnchantmentScreenHandler.existing_prefix_enchantment != null) {
-								itemEnchantmentsComponentBuilder.set(rpgEnchantmentScreenHandler.existing_prefix_enchantment.getLeft(), 0);
-							} else if (!isPrefix && rpgEnchantmentScreenHandler.existing_suffix_enchantment != null) {
-								itemEnchantmentsComponentBuilder.set(rpgEnchantmentScreenHandler.existing_suffix_enchantment.getLeft(), 0);
+							if (shouldConsumeBook) {
+								shouldEnchant = rpgEnchantingTableBlockEntity.applyBookCost(newEnchantment);
 							}
 
-							itemEnchantmentsComponentBuilder.add(newEnchantment.getLeft(), newEnchantment.getRight());
-							enchantedItemStack.set(DataComponentTypes.ENCHANTMENTS, itemEnchantmentsComponentBuilder.build().withShowInTooltip(false));
-							enchantedItemStack.set(RPGEnchanting.SHOW_ENCHANTMENT_NAME_ADDITIONS, Unit.INSTANCE);
+							if (shouldEnchant) {
 
-							if (serverConfig.enable_enchanted_by_player_component_application.get()) {
-								enchantedItemStack.set(RPGEnchanting.PLAYER_ENCHANTED, new ProfileComponent(player.getGameProfile()));
+								player.onEnchantmentPerformed(enchantedItemStack, experience_cost_amount);
+								ItemEnchantments.Mutable itemEnchantmentsComponentBuilder = new ItemEnchantments.Mutable(enchantedItemStack.getEnchantments());
+
+								if (isPrefix && rpgEnchantmentScreenHandler.existing_prefix_enchantment != null) {
+									itemEnchantmentsComponentBuilder.set(rpgEnchantmentScreenHandler.existing_prefix_enchantment.getLeft(), 0);
+								} else if (!isPrefix && rpgEnchantmentScreenHandler.existing_suffix_enchantment != null) {
+									itemEnchantmentsComponentBuilder.set(rpgEnchantmentScreenHandler.existing_suffix_enchantment.getLeft(), 0);
+								}
+
+								itemEnchantmentsComponentBuilder.upgrade(newEnchantment.getLeft(), newEnchantment.getRight());
+								enchantedItemStack.set(DataComponents.ENCHANTMENTS, itemEnchantmentsComponentBuilder.toImmutable());
+
+								enchantedItemStack.set(RPGEnchanting.SHOW_ENCHANTMENT_NAME_ADDITIONS, Unit.INSTANCE);
+
+								TooltipDisplay tooltipDisplayComponent = enchantedItemStack.getOrDefault(DataComponents.TOOLTIP_DISPLAY, TooltipDisplay.DEFAULT);
+								tooltipDisplayComponent.withHidden(DataComponents.ENCHANTMENTS, true);
+								enchantedItemStack.set(DataComponents.TOOLTIP_DISPLAY, tooltipDisplayComponent);
+
+								if (serverConfig.enable_enchanted_by_player_component_application.get()) {
+									enchantedItemStack.set(RPGEnchanting.PLAYER_ENCHANTED, ResolvableProfile.createResolved(player.getGameProfile()));
+								}
+
+								itemCostItemStack.consume(item_cost_amount, player);
+
+								if (itemCostItemStack.isEmpty()) {
+									rpgEnchantmentScreenHandler.inventory.setItem(1, ItemStack.EMPTY);
+								}
+
+								player.awardStat(Stats.ENCHANT_ITEM);
+								CriteriaTriggers.ENCHANTED_ITEM.trigger((ServerPlayer) player, enchantedItemStack, experience_cost_amount);
+
+								rpgEnchantmentScreenHandler.inventory.setChanged();
+								rpgEnchantmentScreenHandler.slotsChanged(rpgEnchantmentScreenHandler.inventory);
+
+								world.playSound(null, blockPos, SoundEvents.ENCHANTMENT_TABLE_USE, SoundSource.BLOCKS, 1.0F, world.random.nextFloat() * 0.1F + 0.9F);
+
 							}
-
-							itemCostItemStack.decrementUnlessCreative(item_cost_amount, player);
-
-							if (itemCostItemStack.isEmpty()) {
-								rpgEnchantmentScreenHandler.inventory.setStack(1, ItemStack.EMPTY);
-							}
-
-							player.incrementStat(Stats.ENCHANT_ITEM);
-							Criteria.ENCHANTED_ITEM.trigger((ServerPlayerEntity) player, enchantedItemStack, experience_cost_amount);
-
-							rpgEnchantmentScreenHandler.inventory.markDirty();
-							rpgEnchantmentScreenHandler.onContentChanged(rpgEnchantmentScreenHandler.inventory);
-
-							world.playSound(null, blockPos, SoundEvents.BLOCK_ENCHANTMENT_TABLE_USE, SoundCategory.BLOCKS, 1.0F, world.random.nextFloat() * 0.1F + 0.9F);
-
 						}
 					}
 				}

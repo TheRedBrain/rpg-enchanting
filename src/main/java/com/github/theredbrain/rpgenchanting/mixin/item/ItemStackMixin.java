@@ -3,32 +3,31 @@ package com.github.theredbrain.rpgenchanting.mixin.item;
 import com.github.theredbrain.rpgenchanting.RPGEnchanting;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
-import net.minecraft.component.ComponentType;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.ItemEnchantmentsComponent;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.item.ItemStack;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
 import java.util.Objects;
 import java.util.Optional;
+import net.minecraft.core.Holder;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.ItemEnchantments;
 
 @Mixin(ItemStack.class)
 public class ItemStackMixin {
 
 	@WrapOperation(
-			method = "getName",
-			at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;get(Lnet/minecraft/component/ComponentType;)Ljava/lang/Object;", ordinal = 1)
+			method = "getHoverName",
+			at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;getItemName()Lnet/minecraft/network/chat/Component;")
 	)
-	private Object rpgenchanting$wrap_getName(ItemStack instance, ComponentType<?> componentType, Operation<Object> original) {
-		if (instance.contains(RPGEnchanting.SHOW_ENCHANTMENT_NAME_ADDITIONS)) {
-			ItemEnchantmentsComponent itemEnchantmentsComponent = instance.get(DataComponentTypes.ENCHANTMENTS);
+	private Component rpgenchanting$wrap_getName(ItemStack instance, Operation<Component> original) {
+		if (instance.has(RPGEnchanting.SHOW_ENCHANTMENT_NAME_ADDITIONS)) {
+			ItemEnchantments itemEnchantmentsComponent = instance.get(DataComponents.ENCHANTMENTS);
 			String prefixEnchantmentString = "";
 			String suffixEnchantmentString = "";
 			String prefixEnchantmentTranslationKey = "";
@@ -36,17 +35,17 @@ public class ItemStackMixin {
 			int prefixEnchantmentLevel = 0;
 			int suffixEnchantmentLevel = 0;
 			if (itemEnchantmentsComponent != null) {
-				for (RegistryEntry<Enchantment> enchantmentEntry : itemEnchantmentsComponent.getEnchantments()) {
-					Optional<RegistryKey<Enchantment>> optional = enchantmentEntry.getKey();
+				for (Holder<Enchantment> enchantmentEntry : itemEnchantmentsComponent.keySet()) {
+					Optional<ResourceKey<Enchantment>> optional = enchantmentEntry.unwrapKey();
 					if (optional.isPresent()) {
-						Identifier id = optional.get().getValue();
-						if (enchantmentEntry.isIn(RPGEnchanting.PREFIX_ENCHANTMENTS)) {
-							prefixEnchantmentTranslationKey = id.toTranslationKey();
+						Identifier id = optional.get().identifier();
+						if (enchantmentEntry.is(RPGEnchanting.PREFIX_ENCHANTMENTS)) {
+							prefixEnchantmentTranslationKey = id.toLanguageKey();
 							prefixEnchantmentLevel = itemEnchantmentsComponent.getLevel(enchantmentEntry);
 							prefixEnchantmentString = RPGEnchanting.MOD_ID + "." + prefixEnchantmentTranslationKey + "." + prefixEnchantmentLevel + ".prefix";
 						}
-						if (enchantmentEntry.isIn(RPGEnchanting.SUFFIX_ENCHANTMENTS)) {
-							suffixEnchantmentTranslationKey = id.toTranslationKey();
+						if (enchantmentEntry.is(RPGEnchanting.SUFFIX_ENCHANTMENTS)) {
+							suffixEnchantmentTranslationKey = id.toLanguageKey();
 							suffixEnchantmentLevel = itemEnchantmentsComponent.getLevel(enchantmentEntry);
 							suffixEnchantmentString = RPGEnchanting.MOD_ID + "." + suffixEnchantmentTranslationKey + "." + suffixEnchantmentLevel + ".suffix";
 						}
@@ -54,15 +53,15 @@ public class ItemStackMixin {
 				}
 			}
 
-			Text text = instance.get(DataComponentTypes.ITEM_NAME);
+			Component text = instance.getCustomName();
 //			MutableText textPrefixOverwrite = Text.empty();
 //			MutableText textSuffixOverwrite = Text.empty();
 			if (text == null) {
 
 				// checks if the combination of item and enchantments has a dedicated translation
 				// this is disabled when the item has a custom name
-				String translationKeyOverwrite = prefixEnchantmentTranslationKey + "." + prefixEnchantmentLevel + "." + instance.getItem().getTranslationKey() + "." + suffixEnchantmentTranslationKey + "." + suffixEnchantmentLevel;
-				MutableText textOverwrite = Text.translatable(translationKeyOverwrite);
+				String translationKeyOverwrite = prefixEnchantmentTranslationKey + "." + prefixEnchantmentLevel + "." + instance.getItem().getDescriptionId() + "." + suffixEnchantmentTranslationKey + "." + suffixEnchantmentLevel;
+				MutableComponent textOverwrite = Component.translatable(translationKeyOverwrite);
 //				RPGEnchanting.info("textOverwrite.getString(): " + textOverwrite.getString());
 //				RPGEnchanting.info("translationKeyOverwrite: " + translationKeyOverwrite);
 				if (!Objects.equals(textOverwrite.getString(), translationKeyOverwrite)) {
@@ -89,19 +88,19 @@ public class ItemStackMixin {
 //					textSuffixOverwrite = Text.empty();
 //				}
 
-				text = instance.getItem().getName(instance);
+				text = instance.getItemName();
 			}
 			if (!suffixEnchantmentString.isEmpty()) {
-				text = Text.translatable(suffixEnchantmentString, text);
+				text = Component.translatable(suffixEnchantmentString, text);
 			}
 			if (!prefixEnchantmentString.isEmpty()) {
 //				if () {
 //				}
-				text = Text.translatable(prefixEnchantmentString, text);
+				text = Component.translatable(prefixEnchantmentString, text);
 			}
 			return text;
 		} else {
-			return original.call(instance, componentType);
+			return original.call(instance);
 		}
 	}
 }

@@ -3,7 +3,8 @@
     "description": {
       "text": "Compatibility for the mods by Fichte\nRequires 'Patched' to work properly."
     },
-    "pack_format": 48
+    "min_format": [88, 0],
+    "max_format": [88, 0]
   },
   "patched": {
     "format_version": 1

@@ -15,18 +15,18 @@ import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.resource.ResourcePackActivationType;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
-import net.minecraft.block.Block;
-import net.minecraft.component.ComponentType;
-import net.minecraft.component.type.ProfileComponent;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.network.codec.PacketCodecs;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.registry.tag.TagKey;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
+import net.minecraft.core.component.DataComponentType;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.Identifier;
+import net.minecraft.tags.TagKey;
 import net.minecraft.util.Unit;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.component.ResolvableProfile;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.level.block.Block;
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,35 +38,35 @@ public class RPGEnchanting implements ModInitializer {
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 	public static ServerConfig SERVER_CONFIG;
 
-	public static TagKey<Block> ENCHANTING_PARTICLE_TARGETS = TagKey.of(RegistryKeys.BLOCK, identifier("enchanting_particle_targets"));
+	public static TagKey<Block> ENCHANTING_PARTICLE_TARGETS = TagKey.create(Registries.BLOCK, identifier("enchanting_particle_targets"));
 
-	public static TagKey<Enchantment> PREFIX_ENCHANTMENTS = TagKey.of(RegistryKeys.ENCHANTMENT, identifier("prefix_enchantments"));
-	public static TagKey<Enchantment> SUFFIX_ENCHANTMENTS = TagKey.of(RegistryKeys.ENCHANTMENT, identifier("suffix_enchantments"));
+	public static TagKey<Enchantment> PREFIX_ENCHANTMENTS = TagKey.create(Registries.ENCHANTMENT, identifier("prefix_enchantments"));
+	public static TagKey<Enchantment> SUFFIX_ENCHANTMENTS = TagKey.create(Registries.ENCHANTMENT, identifier("suffix_enchantments"));
 
-	public static ComponentType<Unit> SHOW_ENCHANTMENT_NAME_ADDITIONS;
-	public static ComponentType<ProfileComponent> PLAYER_ENCHANTED;
+	public static DataComponentType<Unit> SHOW_ENCHANTMENT_NAME_ADDITIONS;
+	public static DataComponentType<ResolvableProfile> PLAYER_ENCHANTED;
 
 	public static final boolean isInventorySizeAttributesLoaded = FabricLoader.getInstance().isModLoaded("inventorysizeattributes");
 
-	public static int getActiveInventorySize(PlayerEntity player) {
+	public static int getActiveInventorySize(Player player) {
 		return isInventorySizeAttributesLoaded ? ((DuckPlayerEntityMixin) player).inventorysizeattributes$getActiveInventorySlotAmount() : 27;
 	}
 
-	public static int getActiveHotbarSize(PlayerEntity player) {
+	public static int getActiveHotbarSize(Player player) {
 		return isInventorySizeAttributesLoaded ? ((DuckPlayerEntityMixin) player).inventorysizeattributes$getActiveHotbarSlotAmount() : 9;
 	}
 
-	public static final PacketCodec<ByteBuf, MutablePair<String, Integer>> MUTABLE_PAIR_STRING_INTEGER = new PacketCodec<>() {
+	public static final StreamCodec<ByteBuf, MutablePair<String, Integer>> MUTABLE_PAIR_STRING_INTEGER = new StreamCodec<>() {
 		public MutablePair<String, Integer> decode(ByteBuf byteBuf) {
 			return new MutablePair<>(
-					PacketCodecs.STRING.decode(byteBuf),
-					PacketCodecs.INTEGER.decode(byteBuf)
+					ByteBufCodecs.STRING_UTF8.decode(byteBuf),
+					ByteBufCodecs.INT.decode(byteBuf)
 			);
 		}
 
 		public void encode(ByteBuf byteBuf, MutablePair<String, Integer> pairIdentifierEntityAttributeModifier) {
-			PacketCodecs.STRING.encode(byteBuf, pairIdentifierEntityAttributeModifier.getLeft());
-			PacketCodecs.INTEGER.encode(byteBuf, pairIdentifierEntityAttributeModifier.getRight());
+			ByteBufCodecs.STRING_UTF8.encode(byteBuf, pairIdentifierEntityAttributeModifier.getLeft());
+			ByteBufCodecs.INT.encode(byteBuf, pairIdentifierEntityAttributeModifier.getRight());
 		}
 	};
 
@@ -93,7 +93,7 @@ public class RPGEnchanting implements ModInitializer {
 	}
 
 	public static Identifier identifier(String path) {
-		return Identifier.of(MOD_ID, path);
+		return Identifier.fromNamespaceAndPath(MOD_ID, path);
 	}
 
 	public static void info(String message) {

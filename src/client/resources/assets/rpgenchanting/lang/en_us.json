@@ -1,5 +1,6 @@
 {
 	"block.rpgenchanting.rpg_enchanting_table": "RPG Enchanting Table",
+	"item.rpgenchanting.rpg_enchanting_table": "RPG Enchanting Table",
 
 	"item.additional_tooltip.player_relation.enchanted_by": "Enchanted by %s",
 
@@ -14,6 +15,7 @@
 	"resourcepack.rpgenchanting.rpgenchanting_rpg_series.name": "RPG Enchanting - RPG Series",
 	"resourcepack.rpgenchanting.rpgenchanting_rpgclassselection.name": "RPG Enchanting - RPG Class Selection",
 	"resourcepack.rpgenchanting.rpgenchanting_vanilla.name": "RPG Enchanting - Vanilla",
+	"resourcepack.rpgenchanting.rpgenchanting_replace_vanilla_enchanting_table_recipe.name": "RPG Enchanting - Recipe Replacement",
 
 	"resourcepack.rpgenchanting.rpgenchanting_compatibility_resources.name": "Compatibility Resources",
 
