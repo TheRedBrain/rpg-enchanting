@@ -15,7 +15,7 @@ import org.spongepowered.asm.mixin.injection.At;
 public class EnchantRandomlyLootFunctionMixin {
 
 	@ModifyReturnValue(
-			method = "enchantItem(Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/core/Holder;Lnet/minecraft/util/RandomSource;)Lnet/minecraft/world/item/ItemStack;",
+			method = "enchantItem(Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/core/Holder;Lnet/minecraft/world/level/storage/loot/LootContext;)Lnet/minecraft/world/item/ItemStack;",
 			at = @At("RETURN")
 	)
 	private static ItemStack rpgenchanting$addEnchantmentToStack(ItemStack original) {
