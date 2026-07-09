@@ -3,7 +3,7 @@
     "description": {
       "text": "Connects 'RPG Enchanting' with other projects."
     },
-    "min_format": [69, 0],
-    "max_format": [69, 0]
+    "min_format": [84, 0],
+    "max_format": [84, 0]
   }
 }

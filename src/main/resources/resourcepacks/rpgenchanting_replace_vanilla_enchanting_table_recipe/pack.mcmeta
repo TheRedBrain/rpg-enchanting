@@ -3,10 +3,7 @@
     "description": {
       "text": "The vanilla enchanting table crafting recipe now results in the RPG Enchanting Table."
     },
-    "min_format": [88, 0],
-    "max_format": [88, 0]
-  },
-  "patched": {
-    "format_version": 1
+    "min_format": [101, 1],
+    "max_format": [101, 1]
   }
 }

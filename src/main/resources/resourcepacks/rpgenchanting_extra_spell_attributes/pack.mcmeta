@@ -1,12 +1,9 @@
 {
   "pack": {
     "description": {
-      "text": "Compatibility for 'Extra RPG Attributes' by Forg\nRequires 'Patched' to work properly."
+      "text": "Compatibility for 'Extra RPG Attributes' by Forg\nRequires 'Defaulted' to work properly."
     },
-    "min_format": [88, 0],
-    "max_format": [88, 0]
-  },
-  "patched": {
-    "format_version": 1
+    "min_format": [101, 1],
+    "max_format": [101, 1]
   }
 }

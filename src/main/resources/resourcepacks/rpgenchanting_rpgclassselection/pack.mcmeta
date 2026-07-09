@@ -1,11 +1,9 @@
 {
   "pack": {
     "description": {
-      "text": "Compatibility for the weapon skill upgrade enchantments from RPG Class Selection\nRequires 'Patched' to work properly."
+      "text": "Compatibility for the weapon skill upgrade enchantments from RPG Class Selection\nRequires 'Defaulted' to work properly."
     },
-    "pack_format": 48
-  },
-  "patched": {
-    "format_version": 1
+         "min_format": [88, 0],
+         "max_format": [88, 0]
   }
 }
