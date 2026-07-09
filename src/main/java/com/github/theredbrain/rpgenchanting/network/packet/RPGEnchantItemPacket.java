@@ -1,10 +1,10 @@
 package com.github.theredbrain.rpgenchanting.network.packet;
 
 import com.github.theredbrain.rpgenchanting.RPGEnchanting;
-import net.minecraft.network.RegistryByteBuf;
-import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.network.packet.CustomPayload;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 
 public record RPGEnchantItemPacket(
 		BlockPos blockPos,
@@ -12,11 +12,11 @@ public record RPGEnchantItemPacket(
 		int enchantmentLevel,
 		boolean shouldConsumeBook,
 		boolean isPrefix
-) implements CustomPayload {
-	public static final CustomPayload.Id<RPGEnchantItemPacket> PACKET_ID = new CustomPayload.Id<>(RPGEnchanting.identifier("rpg_enchant_item"));
-	public static final PacketCodec<RegistryByteBuf, RPGEnchantItemPacket> PACKET_CODEC = PacketCodec.of(RPGEnchantItemPacket::write, RPGEnchantItemPacket::new);
+) implements CustomPacketPayload {
+	public static final CustomPacketPayload.Type<RPGEnchantItemPacket> PACKET_ID = new CustomPacketPayload.Type<>(RPGEnchanting.identifier("rpg_enchant_item"));
+	public static final StreamCodec<RegistryFriendlyByteBuf, RPGEnchantItemPacket> PACKET_CODEC = StreamCodec.ofMember(RPGEnchantItemPacket::write, RPGEnchantItemPacket::new);
 
-	public RPGEnchantItemPacket(RegistryByteBuf registryByteBuf) {
+	public RPGEnchantItemPacket(RegistryFriendlyByteBuf registryByteBuf) {
 		this(
 				registryByteBuf.readBlockPos(),
 				registryByteBuf.readInt(),
@@ -26,7 +26,7 @@ public record RPGEnchantItemPacket(
 		);
 	}
 
-	private void write(RegistryByteBuf registryByteBuf) {
+	private void write(RegistryFriendlyByteBuf registryByteBuf) {
 		registryByteBuf.writeBlockPos(this.blockPos);
 		registryByteBuf.writeInt(this.enchantmentId);
 		registryByteBuf.writeInt(this.enchantmentLevel);
@@ -35,7 +35,7 @@ public record RPGEnchantItemPacket(
 	}
 
 	@Override
-	public CustomPayload.Id<? extends CustomPayload> getId() {
+	public CustomPacketPayload.Type<? extends CustomPacketPayload> type() {
 		return PACKET_ID;
 	}
 }
