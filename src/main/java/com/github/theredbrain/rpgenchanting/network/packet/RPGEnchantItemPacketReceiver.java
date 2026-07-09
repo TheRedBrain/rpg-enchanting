@@ -115,7 +115,7 @@ public class RPGEnchantItemPacketReceiver implements ServerPlayNetworking.PlayPa
 								rpgEnchantmentScreenHandler.inventory.setChanged();
 								rpgEnchantmentScreenHandler.slotsChanged(rpgEnchantmentScreenHandler.inventory);
 
-								world.playSound(null, blockPos, SoundEvents.ENCHANTMENT_TABLE_USE, SoundSource.BLOCKS, 1.0F, world.random.nextFloat() * 0.1F + 0.9F);
+								world.playSound(null, blockPos, SoundEvents.ENCHANTMENT_TABLE_USE, SoundSource.BLOCKS, 1.0F, world.getRandom().nextFloat() * 0.1F + 0.9F);
 
 							}
 						}

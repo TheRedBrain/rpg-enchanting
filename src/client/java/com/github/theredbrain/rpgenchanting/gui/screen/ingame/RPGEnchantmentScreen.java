@@ -11,7 +11,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.CyclingSlotBackground;
 import net.minecraft.client.input.MouseButtonEvent;
@@ -31,6 +31,7 @@ import net.minecraft.util.CommonColors;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
 import org.apache.commons.lang3.tuple.MutablePair;
@@ -60,12 +61,12 @@ public class RPGEnchantmentScreen extends AbstractContainerScreen<RPGEnchantment
 	private final RandomSource random = RandomSource.create();
 	private BookModel BOOK_MODEL;
 	public int ticks;
-	public float nextPageAngle;
-	public float pageAngle;
-	public float approximatePageAngle;
-	public float pageRotationSpeed;
-	public float nextPageTurningSpeed;
-	public float pageTurningSpeed;
+	public float flip;
+	public float oFlip;
+	public float flipT;
+	public float flipA;
+	public float open;
+	public float oOpen;
 	private ItemStack stack = ItemStack.EMPTY;
 	private final int hotbarSize;
 	private final int inventorySize;
@@ -77,15 +78,13 @@ public class RPGEnchantmentScreen extends AbstractContainerScreen<RPGEnchantment
 	private boolean suffixEnchantmentsMouseClicked = false;
 
 	public RPGEnchantmentScreen(RPGEnchantmentScreenHandler handler, Inventory inventory, Component title) {
-		super(handler, inventory, title);
+		super(handler, inventory, title, 284, 233);
 		this.hotbarSize = RPGEnchanting.getActiveHotbarSize(inventory.player);
 		this.inventorySize = RPGEnchanting.getActiveInventorySize(inventory.player);
 	}
 
 	@Override
 	protected void init() {
-		this.imageWidth = 284;
-		this.imageHeight = 233;
 
 		this.inventoryLabelX = 62;
 		this.inventoryLabelY = 139;
@@ -107,7 +106,7 @@ public class RPGEnchantmentScreen extends AbstractContainerScreen<RPGEnchantment
 		if (RPGEnchantingClient.CLIENT_CONFIG.enable_texture_cycling_for_item_cost_slot.get()) {
 			this.itemCostSlotIcon.tick(ITEM_COST_SLOT_TEXTURES);
 		}
-		this.doTick();
+		this.tickBook();
 	}
 
 	public void enchant(boolean isPrefix, int index) {
@@ -215,30 +214,30 @@ public class RPGEnchantmentScreen extends AbstractContainerScreen<RPGEnchantment
 	}
 
 	@Override
-	protected void renderBg(GuiGraphics context, float delta, int mouseX, int mouseY) {
+	public void extractBackground(final GuiGraphicsExtractor graphics, final int mouseX, final int mouseY, final float a) {
 		int i = this.leftPos;
 		int j = this.topPos;
 		int k;
 		int m;
 		ServerConfig serverConfig = RPGEnchanting.SERVER_CONFIG;
 
-		context.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, i, j, 0, 0, this.imageWidth, this.imageHeight, this.imageWidth, this.imageHeight);
+		graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, i, j, 0, 0, this.imageWidth, this.imageHeight, this.imageWidth, this.imageHeight);
 
 		if ((serverConfig.old_enchantment_item_cost_multiplier.get() > 0.0 || serverConfig.new_enchantment_item_cost_multiplier.get() > 0.0) && (!serverConfig.prefix_item_cost.get().equals(Identifier.parse("minecraft:air")) || !serverConfig.suffix_item_cost.get().equals(Identifier.parse("minecraft:air")))) {
-			context.blit(RenderPipelines.GUI_TEXTURED, SLOT_TEXTURE, leftPos + 133, topPos + 61, 0, 0, 18, 18, 18, 18);
-			this.itemCostSlotIcon.render(this.menu, context, delta, this.leftPos, this.topPos);
+			graphics.blit(RenderPipelines.GUI_TEXTURED, SLOT_TEXTURE, leftPos + 133, topPos + 61, 0, 0, 18, 18, 18, 18);
+			this.itemCostSlotIcon.extractRenderState(this.menu, graphics, a, this.leftPos, this.topPos);
 		}
 
 		boolean showInactiveSlots = RPGEnchantingClient.showInactiveInventorySlots();
 		for (k = 0; k < (showInactiveSlots ? 27 : Math.min(this.inventorySize, 27)); ++k) {
 			m = (k / 9);
-			context.blit(RenderPipelines.GUI_TEXTURED, SLOT_TEXTURE, leftPos + 61 + (k - (m * 9)) * 18, topPos + 150 + (m * 18), 0, 0, 18, 18, 18, 18);
+			graphics.blit(RenderPipelines.GUI_TEXTURED, SLOT_TEXTURE, leftPos + 61 + (k - (m * 9)) * 18, topPos + 150 + (m * 18), 0, 0, 18, 18, 18, 18);
 		}
 		for (k = 0; k < (showInactiveSlots ? 9 : Math.min(this.hotbarSize, 9)); ++k) {
-			context.blit(RenderPipelines.GUI_TEXTURED, SLOT_TEXTURE, leftPos + 61 + k * 18, topPos + 208, 0, 0, 18, 18, 18, 18);
+			graphics.blit(RenderPipelines.GUI_TEXTURED, SLOT_TEXTURE, leftPos + 61 + k * 18, topPos + 208, 0, 0, 18, 18, 18, 18);
 		}
 
-		this.drawBook(context, i, j);
+		this.extractBook(graphics, i, j);
 
 		MutablePair<Holder.Reference<Enchantment>, Integer> existing_prefix_enchantment = this.menu.existing_prefix_enchantment;
 		MutablePair<Holder.Reference<Enchantment>, Integer> existing_suffix_enchantment = this.menu.existing_suffix_enchantment;
@@ -250,9 +249,9 @@ public class RPGEnchantmentScreen extends AbstractContainerScreen<RPGEnchantment
 			if (optionalPrefixEnchantmentKey.isPresent()) {
 				prefixEnchantmentText = Component.translatable(RPGEnchanting.MOD_ID + "." + optionalPrefixEnchantmentKey.get().identifier().toLanguageKey() + "." + existing_prefix_enchantment.getRight() + ".prefix", Component.translatable("gui.rpg_enchanting_table.placeholder"));
 			}
-			context.blitSprite(RenderPipelines.GUI_TEXTURED, ENCHANTMENT_SLOT_TEXTURE, i + 8, j + 18, 108, 19);
+			graphics.blitSprite(RenderPipelines.GUI_TEXTURED, ENCHANTMENT_SLOT_TEXTURE, i + 8, j + 18, 108, 19);
 
-			context.drawWordWrap(this.font, prefixEnchantmentText, i + 10, j + 23, 106, -9937334, false);
+			graphics.textWithWordWrap(this.font, prefixEnchantmentText, i + 10, j + 23, 106, -9937334, false);
 		}
 		if (existing_suffix_enchantment != null) {
 			Optional<ResourceKey<Enchantment>> optionalSuffixEnchantmentKey = existing_suffix_enchantment.getLeft().unwrapKey();
@@ -260,15 +259,15 @@ public class RPGEnchantmentScreen extends AbstractContainerScreen<RPGEnchantment
 			if (optionalSuffixEnchantmentKey.isPresent()) {
 				suffixEnchantmentText = Component.translatable(RPGEnchanting.MOD_ID + "." + optionalSuffixEnchantmentKey.get().identifier().toLanguageKey() + "." + existing_suffix_enchantment.getRight() + ".suffix", Component.translatable("gui.rpg_enchanting_table.placeholder"));
 			}
-			context.blitSprite(RenderPipelines.GUI_TEXTURED, ENCHANTMENT_SLOT_TEXTURE, i + 168, j + 18, 108, 19);
+			graphics.blitSprite(RenderPipelines.GUI_TEXTURED, ENCHANTMENT_SLOT_TEXTURE, i + 168, j + 18, 108, 19);
 
-			context.drawWordWrap(this.font, suffixEnchantmentText, i + 170, j + 23, 106, -9937334, false);
+			graphics.textWithWordWrap(this.font, suffixEnchantmentText, i + 170, j + 23, 106, -9937334, false);
 		}
 		if (!current_prefix_enchantments.isEmpty()) {
 			if (existing_prefix_enchantment != null) {
-				context.drawString(this.font, REPLACE_ENCHANTMENT_TEXT, i + 10, j + 47, CommonColors.DARK_GRAY, false);
+				graphics.text(this.font, REPLACE_ENCHANTMENT_TEXT, i + 10, j + 47, CommonColors.DARK_GRAY, false);
 			} else {
-				context.drawString(this.font, ADD_ENCHANTMENT_TEXT, i + 10, j + 47, CommonColors.DARK_GRAY, false);
+				graphics.text(this.font, ADD_ENCHANTMENT_TEXT, i + 10, j + 47, CommonColors.DARK_GRAY, false);
 			}
 
 			int index = 0;
@@ -291,20 +290,20 @@ public class RPGEnchantmentScreen extends AbstractContainerScreen<RPGEnchantment
 				if (bl) {
 					q = -12550384;
 				} else if (r >= 0 && s >= 0 && r < 108 && s < 19) {
-					context.blitSprite(RenderPipelines.GUI_TEXTURED, ENCHANTMENT_SLOT_HIGHLIGHTED_TEXTURE, i + 8, j + 59 + index * 19, 108, 19);
+					graphics.blitSprite(RenderPipelines.GUI_TEXTURED, ENCHANTMENT_SLOT_HIGHLIGHTED_TEXTURE, i + 8, j + 59 + index * 19, 108, 19);
 					q = -128;
 				} else {
-					context.blitSprite(RenderPipelines.GUI_TEXTURED, ENCHANTMENT_SLOT_TEXTURE, i + 8, j + 59 + index * 19, 108, 19);
+					graphics.blitSprite(RenderPipelines.GUI_TEXTURED, ENCHANTMENT_SLOT_TEXTURE, i + 8, j + 59 + index * 19, 108, 19);
 				}
-				context.drawWordWrap(this.font, text, i + 10, j + 64 + index * 19, p, q, false);
+				graphics.textWithWordWrap(this.font, text, i + 10, j + 64 + index * 19, p, q, false);
 				index++;
 			}
 		}
 		if (!current_suffix_enchantments.isEmpty()) {
 			if (existing_suffix_enchantment != null) {
-				context.drawString(this.font, REPLACE_ENCHANTMENT_TEXT, i + 170, j + 47, CommonColors.DARK_GRAY, false);
+				graphics.text(this.font, REPLACE_ENCHANTMENT_TEXT, i + 170, j + 47, CommonColors.DARK_GRAY, false);
 			} else {
-				context.drawString(this.font, ADD_ENCHANTMENT_TEXT, i + 170, j + 47, CommonColors.DARK_GRAY, false);
+				graphics.text(this.font, ADD_ENCHANTMENT_TEXT, i + 170, j + 47, CommonColors.DARK_GRAY, false);
 			}
 
 			int index = 0;
@@ -327,17 +326,17 @@ public class RPGEnchantmentScreen extends AbstractContainerScreen<RPGEnchantment
 				if (bl) {
 					q = -12550384;
 				} else if (r >= 0 && s >= 0 && r < 108 && s < 19) {
-					context.blitSprite(RenderPipelines.GUI_TEXTURED, ENCHANTMENT_SLOT_HIGHLIGHTED_TEXTURE, i + 168, j + 59 + index * 19, 108, 19);
+					graphics.blitSprite(RenderPipelines.GUI_TEXTURED, ENCHANTMENT_SLOT_HIGHLIGHTED_TEXTURE, i + 168, j + 59 + index * 19, 108, 19);
 					q = -128;
 				} else {
-					context.blitSprite(RenderPipelines.GUI_TEXTURED, ENCHANTMENT_SLOT_TEXTURE, i + 168, j + 59 + index * 19, 108, 19);
+					graphics.blitSprite(RenderPipelines.GUI_TEXTURED, ENCHANTMENT_SLOT_TEXTURE, i + 168, j + 59 + index * 19, 108, 19);
 				}
-				context.drawWordWrap(this.font, text, i + 170, j + 64 + index * 19, p, q, false);
+				graphics.textWithWordWrap(this.font, text, i + 170, j + 64 + index * 19, p, q, false);
 				index++;
 			}
 		}
 
-		context.blitSprite(
+		graphics.blitSprite(
 				RenderPipelines.GUI_TEXTURED,
 				current_prefix_enchantments.size() > 4 ? SCROLLER_VERTICAL_6_7_TEXTURE : SCROLLER_VERTICAL_6_7_DISABLED_TEXTURE,
 				leftPos + 119,
@@ -345,7 +344,7 @@ public class RPGEnchantmentScreen extends AbstractContainerScreen<RPGEnchantment
 				6,
 				7
 		);
-		context.blitSprite(
+		graphics.blitSprite(
 				RenderPipelines.GUI_TEXTURED,
 				current_suffix_enchantments.size() > 4 ? SCROLLER_VERTICAL_6_7_TEXTURE : SCROLLER_VERTICAL_6_7_DISABLED_TEXTURE,
 				leftPos + 159,
@@ -355,21 +354,21 @@ public class RPGEnchantmentScreen extends AbstractContainerScreen<RPGEnchantment
 		);
 	}
 
-	private void drawBook(GuiGraphics context, int x, int y) {
+	private void extractBook(GuiGraphicsExtractor graphics, int x, int y) {
 		float f = this.minecraft.getDeltaTracker().getGameTimeDeltaPartialTick(false);
-		float g = Mth.lerp(f, this.pageTurningSpeed, this.nextPageTurningSpeed);
-		float h = Mth.lerp(f, this.pageAngle, this.nextPageAngle);
+		float g = Mth.lerp(f, this.oOpen, this.open);
+		float h = Mth.lerp(f, this.oFlip, this.flip);
 		int i = x + 123;
 		int j = y + 7;
 		int k = i + 38;
 		int l = j + 31;
-		context.submitBookModelRenderState(this.BOOK_MODEL, BOOK_TEXTURE, 40.0F, g, h, i, j, k, l);
+		graphics.book(this.BOOK_MODEL, BOOK_TEXTURE, 40.0F, g, h, i, j, k, l);
 	}
 
 	@Override
-	public void render(GuiGraphics context, int mouseX, int mouseY, float delta) {
-		super.render(context, mouseX, mouseY, delta);
-		this.renderTooltip(context, mouseX, mouseY);
+	public void extractRenderState(final GuiGraphicsExtractor graphics, final int mouseX, final int mouseY, final float ignored) {
+		float a = this.minecraft.getDeltaTracker().getGameTimeDeltaPartialTick(false);
+		super.extractRenderState(graphics, mouseX, mouseY, a);
 		int i = this.leftPos;
 		int j = this.topPos;
 		int k;
@@ -390,7 +389,7 @@ public class RPGEnchantmentScreen extends AbstractContainerScreen<RPGEnchantment
 				if (optionalRegistryKey.isPresent() && clientConfig.show_enchantment_descriptions.get()) {
 					list.add(Component.translatable("enchantment." + optionalRegistryKey.get().identifier().toLanguageKey() + ".desc").withStyle(ChatFormatting.GRAY));
 				}
-				context.setComponentTooltipForNextFrame(this.font, list, mouseX, mouseY);
+				graphics.setComponentTooltipForNextFrame(this.font, list, mouseX, mouseY);
 				return;
 			}
 		}
@@ -402,7 +401,7 @@ public class RPGEnchantmentScreen extends AbstractContainerScreen<RPGEnchantment
 				if (optionalRegistryKey.isPresent() && clientConfig.show_enchantment_descriptions.get()) {
 					list.add(Component.translatable("enchantment." + optionalRegistryKey.get().identifier().toLanguageKey() + ".desc").withStyle(ChatFormatting.GRAY));
 				}
-				context.setComponentTooltipForNextFrame(this.font, list, mouseX, mouseY);
+				graphics.setComponentTooltipForNextFrame(this.font, list, mouseX, mouseY);
 				return;
 			}
 		}
@@ -426,7 +425,8 @@ public class RPGEnchantmentScreen extends AbstractContainerScreen<RPGEnchantment
 						int item_cost_amount = this.menu.existing_enchantment_costs[1] + (int) Math.max(0, Math.floor(entry.getLeft().value().getAnvilCost() * entry.getRight() * serverConfig.new_enchantment_item_cost_multiplier.get()));
 
 						if (item_cost_amount > 0) {
-							MutableComponent mutableText = Component.literal(item_cost_amount + " ").append(BuiltInRegistries.ITEM.getValue(RPGEnchanting.SERVER_CONFIG.prefix_item_cost.get()).asItem().getName());
+							Item item = BuiltInRegistries.ITEM.getValue(RPGEnchanting.SERVER_CONFIG.prefix_item_cost.get());
+							MutableComponent mutableText = Component.literal(item_cost_amount + " ").append(item.getName(item.getDefaultInstance()));
 							list.add(mutableText.withStyle(prefixItemCount >= item_cost_amount ? ChatFormatting.GRAY : ChatFormatting.RED));
 						}
 
@@ -441,7 +441,7 @@ public class RPGEnchantmentScreen extends AbstractContainerScreen<RPGEnchantment
 						}
 					}
 
-					context.setComponentTooltipForNextFrame(this.font, list, mouseX, mouseY);
+					graphics.setComponentTooltipForNextFrame(this.font, list, mouseX, mouseY);
 					return;
 				}
 				index++;
@@ -467,7 +467,8 @@ public class RPGEnchantmentScreen extends AbstractContainerScreen<RPGEnchantment
 						int item_cost_amount = this.menu.existing_enchantment_costs[3] + (int) Math.max(0, Math.floor(entry.getLeft().value().getAnvilCost() * entry.getRight() * serverConfig.new_enchantment_item_cost_multiplier.get()));
 
 						if (item_cost_amount > 0) {
-							MutableComponent mutableText = Component.literal(item_cost_amount + " ").append(BuiltInRegistries.ITEM.getValue(RPGEnchanting.SERVER_CONFIG.suffix_item_cost.get()).asItem().getName());
+							Item item = BuiltInRegistries.ITEM.getValue(RPGEnchanting.SERVER_CONFIG.suffix_item_cost.get());
+							MutableComponent mutableText = Component.literal(item_cost_amount + " ").append(item.getName(item.getDefaultInstance()));
 							list.add(mutableText.withStyle(suffixItemCount >= item_cost_amount ? ChatFormatting.GRAY : ChatFormatting.RED));
 						}
 
@@ -482,7 +483,7 @@ public class RPGEnchantmentScreen extends AbstractContainerScreen<RPGEnchantment
 						}
 					}
 
-					context.setComponentTooltipForNextFrame(this.font, list, mouseX, mouseY);
+					graphics.setComponentTooltipForNextFrame(this.font, list, mouseX, mouseY);
 					return;
 				}
 				index++;
@@ -490,30 +491,30 @@ public class RPGEnchantmentScreen extends AbstractContainerScreen<RPGEnchantment
 		}
 	}
 
-	public void doTick() {
+	public void tickBook() {
 		ItemStack itemStack = this.menu.getSlot(0).getItem();
 		if (!ItemStack.matches(itemStack, this.stack)) {
 			this.stack = itemStack;
 
 			do {
-				this.approximatePageAngle = this.approximatePageAngle + (this.random.nextInt(4) - this.random.nextInt(4));
-			} while (this.nextPageAngle <= this.approximatePageAngle + 1.0F && this.nextPageAngle >= this.approximatePageAngle - 1.0F);
+				this.flipT = this.flipT + (this.random.nextInt(4) - this.random.nextInt(4));
+			} while (this.flip <= this.flipT + 1.0F && this.flip >= this.flipT - 1.0F);
 		}
 
-		this.pageAngle = this.nextPageAngle;
-		this.pageTurningSpeed = this.nextPageTurningSpeed;
+		this.oFlip = this.flip;
+		this.oOpen = this.open;
 
 		if (this.menu.existing_prefix_enchantment != null || this.menu.existing_suffix_enchantment != null) {
-			this.nextPageTurningSpeed += 0.2F;
+			this.open += 0.2F;
 		} else {
-			this.nextPageTurningSpeed -= 0.2F;
+			this.open -= 0.2F;
 		}
 
-		this.nextPageTurningSpeed = Mth.clamp(this.nextPageTurningSpeed, 0.0F, 1.0F);
-		float f = (this.approximatePageAngle - this.nextPageAngle) * 0.4F;
+		this.open = Mth.clamp(this.open, 0.0F, 1.0F);
+		float f = (this.flipT - this.flip) * 0.4F;
 		float g = 0.2F;
 		f = Mth.clamp(f, -0.2F, 0.2F);
-		this.pageRotationSpeed = this.pageRotationSpeed + (f - this.pageRotationSpeed) * 0.9F;
-		this.nextPageAngle = this.nextPageAngle + this.pageRotationSpeed;
+		this.flipA = this.flipA + (f - this.flipA) * 0.9F;
+		this.flip = this.flip + this.flipA;
 	}
 }

@@ -11,10 +11,10 @@ public class ServerPacketRegistry {
 
 	public static void init() {
 
-		PayloadTypeRegistry.playC2S().register(RPGEnchantItemPacket.PACKET_ID, RPGEnchantItemPacket.PACKET_CODEC);
+		PayloadTypeRegistry.serverboundPlay().register(RPGEnchantItemPacket.PACKET_ID, RPGEnchantItemPacket.PACKET_CODEC);
 		ServerPlayNetworking.registerGlobalReceiver(RPGEnchantItemPacket.PACKET_ID, new RPGEnchantItemPacketReceiver());
 
-		PayloadTypeRegistry.playC2S().register(UpdateEnchantingScreenPacket.PACKET_ID, UpdateEnchantingScreenPacket.PACKET_CODEC);
+		PayloadTypeRegistry.serverboundPlay().register(UpdateEnchantingScreenPacket.PACKET_ID, UpdateEnchantingScreenPacket.PACKET_CODEC);
 		ServerPlayNetworking.registerGlobalReceiver(UpdateEnchantingScreenPacket.PACKET_ID, new UpdateEnchantingScreenPacketReceiver());
 
 	}

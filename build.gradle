@@ -1,5 +1,5 @@
 plugins {
-	id 'net.fabricmc.fabric-loom-remap' version "${loom_version}"
+	id 'net.fabricmc.fabric-loom' version "${loom_version}"
 	id "com.matthewprenger.cursegradle" version "1.4.0"
 	id "com.github.breadmoirai.github-release" version "2.4.1"
 	id "com.modrinth.minotaur" version "2.+"
@@ -45,20 +45,22 @@ loom {
 dependencies {
 	// To change the versions see the gradle.properties file
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
-	mappings loom.officialMojangMappings()
-	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+	implementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
 	// Fabric API. This is technically optional, but you probably want it anyway.
-	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
+	implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
 
 	// Fzzy Config
-	modImplementation"me.fzzyhmstrs:fzzy_config:${project.fzzy_config_version}"
+	implementation ("me.fzzyhmstrs:fzzy_config:${project.fzzy_config_version}") {
+		exclude(group: "me.lucko")
+		exclude(group: "com.terraformersmc")
+	}
 
 	// Slot Customization API
-	modImplementation "maven.modrinth:slot-customization-api:${project.slot_customization_api_version}"
+	implementation "maven.modrinth:slot-customization-api:${project.slot_customization_api_version}"
 
 	// Inventory Size Attributes
-	modImplementation "maven.modrinth:inventory-size-attributes:${project.inventory_size_attributes_version}"
+	implementation "maven.modrinth:inventory-size-attributes:${project.inventory_size_attributes_version}"
 
 }
 
@@ -72,7 +74,7 @@ processResources {
 }
 
 tasks.withType(JavaCompile).configureEach {
-	it.options.release = 21
+	it.options.release = 25
 }
 
 java {
@@ -81,8 +83,8 @@ java {
 	// If you remove this line, sources will not be generated.
 	withSourcesJar()
 
-	sourceCompatibility = JavaVersion.VERSION_21
-	targetCompatibility = JavaVersion.VERSION_21
+	sourceCompatibility = JavaVersion.VERSION_25
+	targetCompatibility = JavaVersion.VERSION_25
 }
 
 jar {
@@ -100,38 +102,38 @@ ext.changelog_last_section = { ->
 if (project.hasProperty('release_type')) {
 	tasks.register("publishMod") {
 		dependsOn(build)
-		finalizedBy(tasks.curseforge)
+//		finalizedBy(tasks.curseforge)
 		finalizedBy(tasks.modrinth)
 		finalizedBy(tasks.githubRelease)
 	}
 
-	curseforge {
-		apiKey = System.getenv("CURSEFORGE_API_KEY")
-		project {
-			id = System.getenv("CURSEFORGE_PROJECT_ID")
-			changelog = changelog_last_section()
-			changelogType = 'markdown'
-			releaseType = release_type
-			addGameVersion "${project.minecraft_version}"
-			addGameVersion "Fabric"
-
-			relations {
-				requiredDependency 'fabric-api'
-				requiredDependency 'fzzy-config'
-				requiredDependency 'slot-customization-api'
-				optionalDependency 'inventory-size-attributes'
-				optionalDependency 'enchantment-descriptions'
-			}
-
-			mainArtifact(remapJar)
-			afterEvaluate {
-				uploadTask.dependsOn(remapJar)
-			}
-			options {
-				forgeGradleIntegration = false
-			}
-		}
-	}
+//	curseforge {
+//		apiKey = System.getenv("CURSEFORGE_API_KEY")
+//		project {
+//			id = System.getenv("CURSEFORGE_PROJECT_ID")
+//			changelog = changelog_last_section()
+//			changelogType = 'markdown'
+//			releaseType = release_type
+//			addGameVersion "${project.minecraft_version}"
+//			addGameVersion "Fabric"
+//
+//			relations {
+//				requiredDependency 'fabric-api'
+//				requiredDependency 'fzzy-config'
+//				requiredDependency 'slot-customization-api'
+//				optionalDependency 'inventory-size-attributes'
+//				optionalDependency 'enchantment-descriptions'
+//			}
+//
+//			mainArtifact(jar)
+//			afterEvaluate {
+//				uploadTask.dependsOn(jar)
+//			}
+//			options {
+//				forgeGradleIntegration = false
+//			}
+//		}
+//	}
 
 	modrinth {
 		token = System.getenv("MODRINTH_API_KEY")
@@ -141,7 +143,7 @@ if (project.hasProperty('release_type')) {
 		versionNumber = "${version}"
 		// You don't need to set this manually. Will fail if Modrinth has this version already
 		versionType = release_type // This is the default -- can also be `beta` or `alpha`
-		uploadFile = remapJar // With Loom, this MUST be set to `remapJar` instead of `jar`!
+		uploadFile = jar // With Loom, this MUST be set to `remapJar` instead of `jar`!
 		gameVersions = ["${project.minecraft_version}"] // Must be an array, even with only one version
 		loaders = ["fabric"] // Must also be an array - no need to specify this if you're using Loom or ForgeGradle
 		changelog = changelog_last_section()

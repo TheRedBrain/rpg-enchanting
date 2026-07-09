@@ -2,7 +2,7 @@ package com.github.theredbrain.rpgenchanting.registry;
 
 import com.github.theredbrain.rpgenchanting.RPGEnchanting;
 import com.github.theredbrain.rpgenchanting.block.RPGEnchantingTableBlock;
-import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
+import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -26,7 +26,7 @@ public class BlockRegistry {
 	private static Block registerBlock(ResourceKey<Block> block_key, ResourceKey<Item> item_key, Block block, List<ResourceKey<CreativeModeTab>> itemGroupList) {
 		Registry.register(BuiltInRegistries.ITEM, item_key, new BlockItem(block, new Item.Properties().setId(item_key)));
 		for (ResourceKey<CreativeModeTab> itemGroup : itemGroupList) {
-			ItemGroupEvents.modifyEntriesEvent(itemGroup).register(content -> content.accept(block));
+			CreativeModeTabEvents.modifyOutputEvent(itemGroup).register(content -> content.accept(block));
 		}
 		return Registry.register(BuiltInRegistries.BLOCK, block_key, block);
 	}

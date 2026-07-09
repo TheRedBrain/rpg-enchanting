@@ -6,8 +6,8 @@ import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 
 @Environment(EnvType.CLIENT)
 public class RPGEnchantingTableBlockEntityRenderState extends BlockEntityRenderState {
-	public float ticks;
-	public float bookRotationDegrees;
-	public float pageAngle;
-	public float pageTurningSpeed;
+	public float time;
+	public float yRot;
+	public float flip;
+	public float open;
 }

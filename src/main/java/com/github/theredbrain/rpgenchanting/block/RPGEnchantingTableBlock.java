@@ -6,7 +6,7 @@ import com.github.theredbrain.rpgenchanting.config.ServerConfig;
 import com.github.theredbrain.rpgenchanting.registry.EntityRegistry;
 import com.github.theredbrain.rpgenchanting.screen.RPGEnchantmentScreenHandler;
 import com.mojang.serialization.MapCodec;
-import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
+import net.fabricmc.fabric.api.menu.v1.ExtendedMenuProvider;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
@@ -18,7 +18,6 @@ import net.minecraft.world.MenuProvider;
 import net.minecraft.world.Nameable;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
@@ -105,7 +104,7 @@ public class RPGEnchantingTableBlock extends BaseEntityBlock {
 		} else if (world.getBlockEntity(pos) instanceof RPGEnchantingTableBlockEntity rpgEnchantingTableBlockEntity) {
 			player.openMenu(createRPGEnchanterBlockScreenHandlerFactory(
 					rpgEnchantingTableBlockEntity.getBlockPos(),
-					((Nameable)rpgEnchantingTableBlockEntity).getDisplayName(),
+					((Nameable) rpgEnchantingTableBlockEntity).getDisplayName(),
 					rpgEnchantingTableBlockEntity.getBookCost(),
 					rpgEnchantingTableBlockEntity.getEnchantingMode(),
 					rpgEnchantingTableBlockEntity.getAdvancementEnchantments(player),
@@ -125,7 +124,7 @@ public class RPGEnchantingTableBlock extends BaseEntityBlock {
 			Set<MutablePair<String, Integer>> block_enchantments,
 			Set<MutablePair<String, Integer>> book_enchantments
 	) {
-		return new ExtendedScreenHandlerFactory<>() {
+		return new ExtendedMenuProvider<>() {
 			@Override
 			public RPGEnchantmentScreenHandler.RPGEnchanterBlockData getScreenOpeningData(ServerPlayer player) {
 				return new RPGEnchantmentScreenHandler.RPGEnchanterBlockData(blockPos, bookCost, enchantmentUnlockMode, advancement_enchantments, block_enchantments, book_enchantments);
@@ -138,7 +137,7 @@ public class RPGEnchantingTableBlock extends BaseEntityBlock {
 
 			@Nullable
 			@Override
-			public AbstractContainerMenu createMenu(int syncId, Inventory playerInventory, Player player) {
+			public RPGEnchantmentScreenHandler createMenu(int syncId, Inventory playerInventory, Player player) {
 				return new RPGEnchantmentScreenHandler(syncId, playerInventory, blockPos, bookCost, enchantmentUnlockMode, advancement_enchantments, block_enchantments, book_enchantments);
 			}
 		};
