@@ -1,0 +1,12 @@
+[
+    {
+      "op": "test",
+      "type": "patched:mod_loaded",
+      "value": "rpgclassselection"
+    },
+    {
+      "op": "add",
+      "path": "/exclusive_set",
+      "value": "#rpgenchanting:suffix_enchantments"
+    }
+]
