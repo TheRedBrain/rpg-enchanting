@@ -20,7 +20,6 @@ import net.minecraft.client.model.object.book.BookModel;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.core.Holder;
 import net.minecraft.core.IdMap;
-import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.CommonComponents;
@@ -93,9 +92,6 @@ public class RPGEnchantmentScreen extends AbstractContainerScreen<RPGEnchantment
 
 		super.init();
 
-		if (this.minecraft == null) {
-			this.onClose();
-		}
 		this.BOOK_MODEL = new BookModel(this.minecraft.getEntityModels().bakeLayer(ModelLayers.BOOK));
 
 		this.prefixEnchantmentsScrollPosition = 0;
@@ -116,23 +112,19 @@ public class RPGEnchantmentScreen extends AbstractContainerScreen<RPGEnchantment
 
 	public void enchant(boolean isPrefix, int index) {
 
-		Optional<Registry<Enchantment>> optionalEnchantmentRegistry = this.menu.world.getRegistryManager().getOptional(Registries.ENCHANTMENT);
+		IdMap<Holder<Enchantment>> indexedIterable = this.menu.world.registryAccess().lookupOrThrow(Registries.ENCHANTMENT).asHolderIdMap();
 
-		if (optionalEnchantmentRegistry.isPresent()) {
-			IdMap<Holder<Enchantment>> indexedIterable = optionalEnchantmentRegistry.get().asHolderIdMap();
+		MutablePair<Holder.Reference<Enchantment>, Integer> newEnchantment = isPrefix ? this.menu.current_prefix_enchantments.get(index) : this.menu.current_suffix_enchantments.get(index);
 
-			MutablePair<Holder.Reference<Enchantment>, Integer> newEnchantment = isPrefix ? this.menu.current_prefix_enchantments.get(index) : this.menu.current_suffix_enchantments.get(index);
+		ClientPlayNetworking.send(new RPGEnchantItemPacket(
+				this.menu.blockPos,
+				indexedIterable.getId(newEnchantment.getLeft()),
+				newEnchantment.getRight(),
+				this.menu.consumable_enchantments.contains(newEnchantment),
+				isPrefix
+		));
 
-			ClientPlayNetworking.send(new RPGEnchantItemPacket(
-					this.menu.blockPos,
-					indexedIterable.getId(newEnchantment.getLeft()),
-					newEnchantment.getRight(),
-					this.menu.consumable_enchantments.contains(newEnchantment),
-					isPrefix
-			));
-
-			ClientPlayNetworking.send(new UpdateEnchantingScreenPacket());
-		}
+		ClientPlayNetworking.send(new UpdateEnchantingScreenPacket());
 	}
 
 	@Override
@@ -142,7 +134,7 @@ public class RPGEnchantmentScreen extends AbstractContainerScreen<RPGEnchantment
 		this.prefixEnchantmentsMouseClicked = false;
 		this.suffixEnchantmentsMouseClicked = false;
 
-		if (this.minecraft != null && this.minecraft.gameMode != null) {
+		if (this.minecraft.gameMode != null) {
 			int threshold = this.menu.current_prefix_enchantments.size();
 			for (int k = 0; k < Math.min(4, threshold); k++) {
 				double d = click.x() - (double) (i + 8);
@@ -364,16 +356,14 @@ public class RPGEnchantmentScreen extends AbstractContainerScreen<RPGEnchantment
 	}
 
 	private void drawBook(GuiGraphics context, int x, int y) {
-		if (this.minecraft != null) {
-			float f = this.minecraft.getDeltaTracker().getGameTimeDeltaPartialTick(false);
-			float g = Mth.lerp(f, this.pageTurningSpeed, this.nextPageTurningSpeed);
-			float h = Mth.lerp(f, this.pageAngle, this.nextPageAngle);
-			int i = x + 123;
-			int j = y + 7;
-			int k = i + 38;
-			int l = j + 31;
-			context.submitBookModelRenderState(this.BOOK_MODEL, BOOK_TEXTURE, 40.0F, g, h, i, j, k, l);
-		}
+		float f = this.minecraft.getDeltaTracker().getGameTimeDeltaPartialTick(false);
+		float g = Mth.lerp(f, this.pageTurningSpeed, this.nextPageTurningSpeed);
+		float h = Mth.lerp(f, this.pageAngle, this.nextPageAngle);
+		int i = x + 123;
+		int j = y + 7;
+		int k = i + 38;
+		int l = j + 31;
+		context.submitBookModelRenderState(this.BOOK_MODEL, BOOK_TEXTURE, 40.0F, g, h, i, j, k, l);
 	}
 
 	@Override

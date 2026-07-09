@@ -11,8 +11,8 @@ import io.netty.buffer.ByteBuf;
 import me.fzzyhmstrs.fzzy_config.api.ConfigApiJava;
 import me.fzzyhmstrs.fzzy_config.api.RegisterType;
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
-import net.fabricmc.fabric.api.resource.ResourcePackActivationType;
+import net.fabricmc.fabric.api.resource.v1.ResourceLoader;
+import net.fabricmc.fabric.api.resource.v1.pack.PackActivationType;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 import net.minecraft.core.component.DataComponentType;
@@ -83,12 +83,12 @@ public class RPGEnchanting implements ModInitializer {
 
 		Optional<ModContainer> modContainer = FabricLoader.getInstance().getModContainer(MOD_ID);
 		if (modContainer.isPresent()) {
-			ResourceManagerHelper.registerBuiltinResourcePack(identifier("rpgenchanting_dungeons_and_taverns"), modContainer.get(), Text.translatable("resourcepack.rpgenchanting.rpgenchanting_dungeons_and_taverns.name"), ResourcePackActivationType.DEFAULT_ENABLED);
-			ResourceManagerHelper.registerBuiltinResourcePack(identifier("rpgenchanting_extra_spell_attributes"), modContainer.get(), Text.translatable("resourcepack.rpgenchanting.rpgenchanting_extra_spell_attributes.name"), ResourcePackActivationType.DEFAULT_ENABLED);
-			ResourceManagerHelper.registerBuiltinResourcePack(identifier("rpgenchanting_more_rpg_series"), modContainer.get(), Text.translatable("resourcepack.rpgenchanting.rpgenchanting_more_rpg_series.name"), ResourcePackActivationType.DEFAULT_ENABLED);
-			ResourceManagerHelper.registerBuiltinResourcePack(identifier("rpgenchanting_rpg_series"), modContainer.get(), Text.translatable("resourcepack.rpgenchanting.rpgenchanting_rpg_series.name"), ResourcePackActivationType.DEFAULT_ENABLED);
-			ResourceManagerHelper.registerBuiltinResourcePack(identifier("rpgenchanting_vanilla"), modContainer.get(), Text.translatable("resourcepack.rpgenchanting.rpgenchanting_vanilla.name"), ResourcePackActivationType.DEFAULT_ENABLED);
-			ResourceManagerHelper.registerBuiltinResourcePack(identifier("rpgenchanting_compatibility_resources"), modContainer.get(), Text.translatable("resourcepack.rpgenchanting.rpgenchanting_compatibility_resources.name"), ResourcePackActivationType.DEFAULT_ENABLED);
+			ResourceLoader.registerBuiltinPack(identifier("rpgenchanting_dungeons_and_taverns"), modContainer.get(), Component.translatable("resourcepack.rpgenchanting.rpgenchanting_dungeons_and_taverns.name"), PackActivationType.DEFAULT_ENABLED);
+			ResourceLoader.registerBuiltinPack(identifier("rpgenchanting_extra_spell_attributes"), modContainer.get(), Component.translatable("resourcepack.rpgenchanting.rpgenchanting_extra_spell_attributes.name"), PackActivationType.DEFAULT_ENABLED);
+			ResourceLoader.registerBuiltinPack(identifier("rpgenchanting_more_rpg_series"), modContainer.get(), Component.translatable("resourcepack.rpgenchanting.rpgenchanting_more_rpg_series.name"), PackActivationType.DEFAULT_ENABLED);
+			ResourceLoader.registerBuiltinPack(identifier("rpgenchanting_rpg_series"), modContainer.get(), Component.translatable("resourcepack.rpgenchanting.rpgenchanting_rpg_series.name"), PackActivationType.DEFAULT_ENABLED);
+			ResourceLoader.registerBuiltinPack(identifier("rpgenchanting_vanilla"), modContainer.get(), Component.translatable("resourcepack.rpgenchanting.rpgenchanting_vanilla.name"), PackActivationType.DEFAULT_ENABLED);
+			ResourceLoader.registerBuiltinPack(identifier("rpgenchanting_compatibility_resources"), modContainer.get(), Component.translatable("resourcepack.rpgenchanting.rpgenchanting_compatibility_resources.name"), PackActivationType.DEFAULT_ENABLED);
 		}
 	}
 
