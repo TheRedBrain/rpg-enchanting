@@ -155,6 +155,7 @@ if (project.hasProperty('release_type')) {
 			required.project 'fzzy-config'
 			required.project 'slot-customization-api'
 			optional.project 'inventory-size-attributes'
+			optional.project 'defaulted'
 			optional.project 'enchantment-descriptions'
 		}
 	}

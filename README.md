@@ -20,7 +20,7 @@ The RPG Enchanting Table adds a "Enchanted by player_name" line to items it ench
 
 ## RPG Enchanting Table
 
-This new block allows the player to enchant items in a more controlled way. The table will replace exiting enchantments of the same group (prefix or suffix).
+This new block allows the player to enchant items in a more controlled way. The table will replace existing enchantments of the same group (prefix or suffix).
 Only unlocked enchantments are available for the player to choose from.
 
 The RPG Enchanting Table can be crafted with the same recipe as the vanilla Enchanting Table (replacing it). It has the same properties when interacting with the world (emits light, mineable faster with a pickaxe, etc)
@@ -43,7 +43,7 @@ When a block from the list is found, the corresponding enchantments of the speci
 3. Enchanted books in Chiseled Bookshelves
 
 When enabled in the server config, the RPG Enchanting Table looks for Chiseled Bookshelves, similar to the second option.
-When a Chiseled Bookshelf that stores Enchanted Books is found, every of those enchantments is unlocked.
+When a Chiseled Bookshelf that stores Enchanted Books is found, each of those enchantments is unlocked.
 
 ### Settings
 
@@ -75,10 +75,6 @@ Namely, enchantments must be present in one of these enchantment tags: "rpgencha
 RPG Enchanting uses these two enchantment tags for all its logic.
 
 > Note that putting an enchantment into both tags at the same time can lead to unexpected behaviour.
-
-Additionally, the same tag needs to be their "exclusive_set". This ensures that only one enchantment from each group can be present on an item.
-
-> The enchantment tag that includes an enchantment and the tag defined as the "exclusive_set" should be the same.
 
 The item name additions are controlled by localization keys of these formats:
 
@@ -130,11 +126,17 @@ The name for the iron pickaxe is now: "Efficient Fortunate Iron Pickaxe of Fortu
 
 Item name overwrites can give specific combinations of items and enchantments a unique localization.
 
-To enable this feature for a given combination, add a localization key to a lang file in a resource pack. The key has to follow this format:
+To enable this feature for a given combination, add a localization key to a lang file in a resource pack. The key has to follow one of these formats:
 
 > "prefix_enchantment_translation_key.prefix_enchantment_level.item_translation_key.suffix_enchantment_translation_key.suffix_enchantment_level"
+> 
+> "prefix_enchantment_translation_key.prefix_enchantment_level.item_translation_key"
+> 
+> "item_translation_key.suffix_enchantment_translation_key.suffix_enchantment_level"
 
 For combinations with a missing enchantment, replace the translation key with an empty string and the level with 0.
+
+Overwrites that only define one enchantment use the regular format for additional enchantments. Note that only one overwrite can be active for a specific item stack. A suffix overwrite has priority over a prefix overwrite.
 
 #### Example
 
@@ -149,14 +151,12 @@ RPG Enchanting comes with several data/resource packs that bring compatibility f
 - The RPG Series mods by Daedelus
 - The More RPG Series mods by Fichte
 
-The mod [Patched](https://github.com/EnderTurret/PatchedMod) is required for full functionality.
+The mod [Defaulted](https://modrinth.com/mod/defaulted) is required for full functionality.
 
 These packs include the following:
 
-- adding all enchantments to one of these enchantment tags
-- each enchantment has a corresponding patch file, that sets the "exclusive_set" to either "#rpgenchanting:prefix_enchantments" or "#rpgenchanting:suffix_enchantments".
-
-> Using Patched is not a requirement, the exclusive_set can also be configured the normal way. Using "Patched" ensures compatibility with mods/data packs that modify enchantments
+- adding all enchantments to one of these enchantment tags:
+  - "#rpgenchanting:prefix_enchantments" or "#rpgenchanting:suffix_enchantments"
 
 The resource packs provide the localization for the item name additions.
 

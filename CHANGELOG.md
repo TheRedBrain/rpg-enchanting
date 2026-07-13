@@ -1,3 +1,16 @@
+# 2.1.0
+
+- updated to 26.1.x
+- migrated to Mojang Mapping
+
+## Additions
+
+- added item name overwrites for "prefix + item" and "item + suffix" combinations, in addition to the existing overwrites for "prefix + items + suffix" combinations
+
+## Technical
+
+- integration for vanilla/modded enchantments was simplified and now uses "Defaulted", instead of "Patched"
+
 # 2.0.0
 
 - updated to 1.21.10

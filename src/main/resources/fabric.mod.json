@@ -40,8 +40,10 @@
     "fzzy_config": ">=${fzzy_config_version}",
     "slotcustomizationapi": ">=${slot_customization_api_version}"
   },
-  "suggests": {
-    "enchdesc": "*",
+  "recommends": {
     "defaulted": "*"
+  },
+  "suggests": {
+    "enchdesc": "*"
   }
 }
